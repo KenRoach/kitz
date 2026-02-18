@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kitz-tool-gateway"
+version = "0.1.0"
+description = "Kitz Tool Gateway (v0.1)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Kitz"}]
+dependencies = []
+
+[project.scripts]
+kitz-gateway = "kitz_gateway.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
