@@ -1,4 +1,4 @@
-# RenewFlow (Built on Kitz OS)
+# RenewFlow
 
 AI-Native Warranty Renewal Platform for LATAM IT Channel Partners
 
@@ -8,7 +8,7 @@ RenewFlow is a SaaS platform that helps IT resellers and end-customer businesses
 
 **Core problem:** IT resellers miss warranty renewals → equipment goes unprotected → money left on the table. RenewFlow automates the full renewal lifecycle from asset tracking to PO fulfillment.
 
-**Market context:** LATAM IT services = $83.4B (2025), 78.1% partner-delivered. No existing tool combines warranty lifecycle automation + AI quoting + WhatsApp-native delivery + LATAM channel specialization.
+**Market context:** LATAM IT services = $83.4B (2025), 78.1% partner-delivered. No existing tool combines warranty lifecycle automation + AI quoting + email-native delivery + PO handling + LATAM channel specialization.
 
 ## Tech Stack
 
@@ -18,7 +18,7 @@ RenewFlow is a SaaS platform that helps IT resellers and end-customer businesses
 | Backend | TypeScript, Fastify (planned), Node.js 20+ |
 | Database | PostgreSQL (Supabase), Redis |
 | AI/LLM | Anthropic API (primary), structured output for quotes |
-| WhatsApp | Baileys (MVP) → WhatsApp Cloud API (migration planned) |
+| Email | SMTP / transactional email (planned) |
 | Excel/CSV | SheetJS (xlsx) for asset import/export |
 
 ## Project Structure
@@ -33,8 +33,9 @@ renewflo/
 │   │   └── icons/        # SVG icon system
 │   ├── features/         # Feature modules (vertical slices)
 │   │   ├── dashboard/    # Portfolio overview, metrics, pipeline
-│   │   ├── inbox/        # WhatsApp + Email unified inbox
+│   │   ├── inbox/        # Email inbox
 │   │   ├── quoter/       # TPM + OEM quote generator
+│   │   ├── orders/       # Purchase order management
 │   │   ├── import/       # Excel/CSV asset import (3-step)
 │   │   ├── notifications/# Warranty expiry alerts
 │   │   ├── support/      # Support ticket management
@@ -72,6 +73,7 @@ npm run test:watch   # Vitest watch mode
 - **Zustand for state** — lightweight, no boilerplate
 - **Theme system** — light/dark via React Context, design tokens
 - **Enterprise single-app** — not a monorepo
+- **Email-only communications** — no WhatsApp or messaging integrations
 
 ## Business Logic
 
@@ -104,3 +106,15 @@ discovered → alerted-90 → alerted-60 → alerted-30 → quoted →
   ├── lost
   └── lapsed (recovery)
 ```
+
+### Purchase Order Flow
+
+```
+draft → pending-approval → approved → submitted → acknowledged → fulfilled
+                                                                └→ cancelled
+```
+
+POs are generated from approved quotes and track:
+- Line items (asset, coverage type, price, quantity)
+- Client and vendor PO references
+- Status through fulfillment lifecycle

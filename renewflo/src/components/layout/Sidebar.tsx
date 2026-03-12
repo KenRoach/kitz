@@ -142,7 +142,7 @@ export const Sidebar: FC<SidebarProps> = ({
                 letterSpacing: "0.08em",
               }}
             >
-              by Kitz OS
+              Warranty Platform
             </div>
           </div>
         </div>
@@ -165,6 +165,7 @@ export const Sidebar: FC<SidebarProps> = ({
         </NavSection>
         <NavSection label="Sales">
           <NavBtn id="quoter" icon="quote" label="Quoter" active={activePage === "quoter"} onClick={() => onNavigate("quoter")} />
+          <NavBtn id="orders" icon="order" label="Purchase Orders" active={activePage === "orders"} onClick={() => onNavigate("orders")} />
           <NavBtn id="import" icon="upload" label="Import Assets" active={activePage === "import"} onClick={() => onNavigate("import")} />
         </NavSection>
         <NavSection label="Operations">
@@ -236,11 +237,11 @@ export const Sidebar: FC<SidebarProps> = ({
             color: "#fff",
           }}
         >
-          KR
+          U
         </div>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 500, color: colors.text }}>Ken Roach</div>
-          <div style={{ fontSize: 9, color: colors.warn, fontWeight: 500 }}>Gold Partner</div>
+          <div style={{ fontSize: 11, fontWeight: 500, color: colors.text }}>Partner</div>
+          <div style={{ fontSize: 9, color: colors.warn, fontWeight: 500 }}>Gold</div>
         </div>
       </div>
     </div>

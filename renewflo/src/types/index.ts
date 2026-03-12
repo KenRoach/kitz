@@ -33,16 +33,41 @@ export interface Asset {
   quantity?: number;
 }
 
-export type MessageChannel = "whatsapp" | "email";
-
 export interface InboxMessage {
   id: number;
   from: string;
   company: string;
-  channel: MessageChannel;
+  subject: string;
   preview: string;
   time: string;
   unread: boolean;
+}
+
+// ─── Purchase Order Types ───
+
+export type POStatus = "draft" | "pending-approval" | "approved" | "submitted" | "acknowledged" | "fulfilled" | "cancelled";
+
+export interface PurchaseOrder {
+  id: string;
+  client: string;
+  quoteRef: string;
+  items: POLineItem[];
+  status: POStatus;
+  total: number;
+  created: string;
+  updated: string;
+  vendorPO?: string;
+  notes?: string;
+}
+
+export interface POLineItem {
+  assetId: string;
+  brand: string;
+  model: string;
+  serial: string;
+  coverageType: "tpm" | "oem";
+  price: number;
+  quantity: number;
 }
 
 export type TicketStatus = "open" | "in-progress" | "escalated" | "resolved";
@@ -109,4 +134,5 @@ export type PageId =
   | "inbox"
   | "notifications"
   | "support"
-  | "rewards";
+  | "rewards"
+  | "orders";

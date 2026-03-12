@@ -8,6 +8,7 @@ import { NotificationsPage } from "@/features/notifications";
 import { ImportModule } from "@/features/import";
 import { SupportLogsPage } from "@/features/support";
 import { RewardsPage } from "@/features/rewards";
+import { OrdersPage } from "@/features/orders";
 import { ChatPanel } from "@/features/chat";
 import { INBOX_DATA } from "@/data/seeds";
 import type { Asset, PageId } from "@/types";
@@ -45,6 +46,8 @@ export default function App() {
         return <InboxPage />;
       case "notifications":
         return <NotificationsPage assets={assets} />;
+      case "orders":
+        return <OrdersPage />;
       case "support":
         return <SupportLogsPage />;
       case "rewards":

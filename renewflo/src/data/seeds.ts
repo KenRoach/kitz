@@ -1,4 +1,4 @@
-import type { Asset, InboxMessage, SupportTicket, RewardsProfile } from "@/types";
+import type { Asset, InboxMessage, SupportTicket, RewardsProfile, PurchaseOrder } from "@/types";
 
 export const INITIAL_ASSETS: Asset[] = [
   { id: "A-1001", brand: "Dell", model: "Latitude 5540", serial: "DLTG7X3", client: "Grupo Alfa", tier: "critical", daysLeft: 7, oem: 289, tpm: 149, status: "alerted-7" },
@@ -12,11 +12,42 @@ export const INITIAL_ASSETS: Asset[] = [
 ];
 
 export const INBOX_DATA: InboxMessage[] = [
-  { id: 1, from: "Carlos Méndez", company: "Grupo Alfa", channel: "whatsapp", preview: "We approve the TPM quote for the 5 Dell units.", time: "10:32 AM", unread: true },
-  { id: 2, from: "Ana Rodríguez", company: "Rex Distribution", channel: "email", preview: "Can you send me the quote for the HP EliteBook?", time: "9:15 AM", unread: true },
-  { id: 3, from: "Pedro Silva", company: "TechSoluciones", channel: "whatsapp", preview: "What's the OEM warranty cost for the Lenovo units?", time: "Yesterday", unread: false },
-  { id: 4, from: "María Torres", company: "Beta Investments", channel: "email", preview: "Need to renew warranty on 12 HP devices.", time: "Yesterday", unread: false },
-  { id: 5, from: "Luis García", company: "Café Central", channel: "whatsapp", preview: "The ThinkPad has a screen issue.", time: "Mar 9", unread: false },
+  { id: 1, from: "Carlos Méndez", company: "Grupo Alfa", subject: "RE: TPM Quote — 5 Dell Units", preview: "We approve the TPM quote for the 5 Dell units. Please send PO.", time: "10:32 AM", unread: true },
+  { id: 2, from: "Ana Rodríguez", company: "Rex Distribution", subject: "Quote Request — HP EliteBook", preview: "Can you send me the quote for the HP EliteBook 840 G10?", time: "9:15 AM", unread: true },
+  { id: 3, from: "Pedro Silva", company: "TechSoluciones", subject: "OEM Warranty Pricing", preview: "What's the OEM warranty cost for the Lenovo units?", time: "Yesterday", unread: false },
+  { id: 4, from: "María Torres", company: "Beta Investments", subject: "Warranty Renewal — 12 HP Devices", preview: "Need to renew warranty on 12 HP devices. Can you generate a PO?", time: "Yesterday", unread: false },
+  { id: 5, from: "Luis García", company: "Café Central", subject: "ThinkPad Screen Issue", preview: "The ThinkPad has a screen issue — is this covered under warranty?", time: "Mar 9", unread: false },
+];
+
+export const PURCHASE_ORDERS: PurchaseOrder[] = [
+  {
+    id: "PO-3001", client: "Grupo Alfa", quoteRef: "Q-5001", status: "approved",
+    total: 745, created: "Mar 11", updated: "Mar 11", vendorPO: "GA-2026-0042",
+    items: [
+      { assetId: "A-1001", brand: "Dell", model: "Latitude 5540", serial: "DLTG7X3", coverageType: "tpm", price: 149, quantity: 5 },
+    ],
+  },
+  {
+    id: "PO-3002", client: "Rex Distribution", quoteRef: "Q-5002", status: "pending-approval",
+    total: 119, created: "Mar 10", updated: "Mar 10",
+    items: [
+      { assetId: "A-1002", brand: "HP", model: "EliteBook 840 G10", serial: "HP2K9M1", coverageType: "tpm", price: 119, quantity: 1 },
+    ],
+  },
+  {
+    id: "PO-3003", client: "Modern Arch", quoteRef: "Q-5003", status: "draft",
+    total: 449, created: "Mar 9", updated: "Mar 9",
+    items: [
+      { assetId: "A-1007", brand: "Dell", model: "Precision 5680", serial: "DLM2W9K", coverageType: "oem", price: 449, quantity: 1 },
+    ],
+  },
+  {
+    id: "PO-3004", client: "Café Central", quoteRef: "Q-5004", status: "fulfilled",
+    total: 297, created: "Mar 3", updated: "Mar 7", vendorPO: "CC-2026-0018",
+    items: [
+      { assetId: "A-1003", brand: "Lenovo", model: "ThinkPad T14 Gen 4", serial: "LNV8R2P", coverageType: "tpm", price: 99, quantity: 3 },
+    ],
+  },
 ];
 
 export const SUPPORT_LOGS: SupportTicket[] = [

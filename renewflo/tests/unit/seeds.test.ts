@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { INITIAL_ASSETS, INBOX_DATA, SUPPORT_LOGS, REWARDS_DATA } from "../../src/data/seeds";
+import { INITIAL_ASSETS, INBOX_DATA, PURCHASE_ORDERS, SUPPORT_LOGS, REWARDS_DATA } from "../../src/data/seeds";
 
 describe("seed data integrity", () => {
   it("has initial assets with required fields", () => {
@@ -19,9 +19,22 @@ describe("seed data integrity", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("has inbox messages", () => {
+  it("has inbox messages with subjects", () => {
     expect(INBOX_DATA.length).toBeGreaterThan(0);
     expect(INBOX_DATA.some((m) => m.unread)).toBe(true);
+    for (const msg of INBOX_DATA) {
+      expect(msg.subject).toBeTruthy();
+    }
+  });
+
+  it("has purchase orders with valid statuses", () => {
+    const validStatuses = ["draft", "pending-approval", "approved", "submitted", "acknowledged", "fulfilled", "cancelled"];
+    expect(PURCHASE_ORDERS.length).toBeGreaterThan(0);
+    for (const po of PURCHASE_ORDERS) {
+      expect(validStatuses).toContain(po.status);
+      expect(po.items.length).toBeGreaterThan(0);
+      expect(po.total).toBeGreaterThan(0);
+    }
   });
 
   it("has support tickets with valid statuses", () => {
