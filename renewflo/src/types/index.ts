@@ -57,6 +57,7 @@ export interface PurchaseOrder {
   created: string;
   updated: string;
   vendorPO?: string;
+  deliveryPartner?: string;
   notes?: string;
 }
 

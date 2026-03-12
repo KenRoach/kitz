@@ -22,7 +22,7 @@ export const INBOX_DATA: InboxMessage[] = [
 export const PURCHASE_ORDERS: PurchaseOrder[] = [
   {
     id: "PO-3001", client: "Grupo Alfa", quoteRef: "Q-5001", status: "approved",
-    total: 745, created: "Mar 11", updated: "Mar 11", vendorPO: "GA-2026-0042",
+    total: 745, created: "Mar 11", updated: "Mar 11", vendorPO: "GA-2026-0042", deliveryPartner: "Dell Direct",
     items: [
       { assetId: "A-1001", brand: "Dell", model: "Latitude 5540", serial: "DLTG7X3", coverageType: "tpm", price: 149, quantity: 5 },
     ],
@@ -43,7 +43,7 @@ export const PURCHASE_ORDERS: PurchaseOrder[] = [
   },
   {
     id: "PO-3004", client: "Café Central", quoteRef: "Q-5004", status: "fulfilled",
-    total: 297, created: "Mar 3", updated: "Mar 7", vendorPO: "CC-2026-0018",
+    total: 297, created: "Mar 3", updated: "Mar 7", vendorPO: "CC-2026-0018", deliveryPartner: "ServiceNet LATAM",
     items: [
       { assetId: "A-1003", brand: "Lenovo", model: "ThinkPad T14 Gen 4", serial: "LNV8R2P", coverageType: "tpm", price: 99, quantity: 3 },
     ],

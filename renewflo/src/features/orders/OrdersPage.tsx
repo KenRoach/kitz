@@ -131,6 +131,11 @@ export const OrdersPage: FC = () => {
                 {po.quoteRef} &middot;{" "}
                 {po.items.map((i) => `${i.brand} ${i.model}`).join(", ")}
               </div>
+              {po.deliveryPartner && (
+                <div style={{ fontSize: 11, color: colors.accent, marginTop: 2, fontWeight: 500 }}>
+                  Routed to: {po.deliveryPartner}
+                </div>
+              )}
             </div>
             <div style={{ textAlign: "right" }}>
               <div

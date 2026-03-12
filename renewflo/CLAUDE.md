@@ -75,6 +75,27 @@ npm run test:watch   # Vitest watch mode
 - **Enterprise single-app** — not a monorepo
 - **Email-only communications** — no WhatsApp or messaging integrations
 
+## Business Model
+
+RenewFlow operates as a **broker/intermediary** between VARs and delivery partners:
+
+```
+VAR (user) ──→ RenewFlow ──→ Delivery Partner
+               (broker)
+```
+
+- **VARs** manage their client installed base, generate quotes, and submit POs through RenewFlow
+- **RenewFlow** manages all delivery partner relationships — VARs never deal with partners directly
+- **Delivery Partners** receive POs from RenewFlow and fulfill warranty coverage
+
+### Partner Integration Roadmap
+
+| Phase | Channel | Description |
+|-------|---------|-------------|
+| MVP | Email POs | RenewFlow emails POs to delivery partners, tracks status |
+| Phase 2 | Partner Portal | Delivery partners get read-only login to view/acknowledge POs |
+| Phase 3 | API Integration | Programmatic PO submission and status updates |
+
 ## Business Logic
 
 ### Device Tier Classification
@@ -110,11 +131,13 @@ discovered → alerted-90 → alerted-60 → alerted-30 → quoted →
 ### Purchase Order Flow
 
 ```
-draft → pending-approval → approved → submitted → acknowledged → fulfilled
-                                                                └→ cancelled
+VAR creates PO → pending-approval → approved → submitted (to RenewFlow) →
+  RenewFlow routes to Delivery Partner → acknowledged → fulfilled
+                                                       └→ cancelled
 ```
 
 POs are generated from approved quotes and track:
 - Line items (asset, coverage type, price, quantity)
 - Client and vendor PO references
 - Status through fulfillment lifecycle
+- Delivery partner assignment (managed by RenewFlow)
