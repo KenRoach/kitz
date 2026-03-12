@@ -78,7 +78,7 @@ export const ImportModule: FC<ImportModuleProps> = ({ onImport }) => {
   const processMappedData = () => {
     if (!rawData) return;
     const assets: Asset[] = rawData
-      .map((row, idx) => {
+      .map((row, idx): Asset | null => {
         const get = (key: string) =>
           mapping[key] !== undefined ? String(row[mapping[key]!] ?? "").trim() : "";
         const serial = get("serial");
