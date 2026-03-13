@@ -48,6 +48,20 @@ export async function loginUser(username: string, password: string): Promise<{ t
   return data;
 }
 
+export async function resetPassword(username: string, currentPassword: string, newPassword: string): Promise<void> {
+  const res = await fetch(`${BASE}/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, currentPassword, newPassword }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Password reset failed" }));
+    throw new Error(err.error ?? "Password reset failed");
+  }
+  // Clear session — user must re-login with new password
+  localStorage.removeItem("rf_token");
+}
+
 // ── Asset Tools ──
 
 export async function listAssets(filters?: {

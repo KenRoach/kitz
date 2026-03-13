@@ -74,6 +74,31 @@ def validate_token(conn: sqlite3.Connection, token: str) -> dict[str, Any] | Non
     return {"id": row[0], "username": row[1], "role": row[2]}
 
 
+def reset_password(conn: sqlite3.Connection, username: str, current_password: str, new_password: str) -> dict[str, Any] | None:
+    """Reset a user's password. Returns user info on success, None on auth failure."""
+    row = conn.execute(
+        "SELECT id, password_hash, salt, role FROM users WHERE username = ?",
+        (username,),
+    ).fetchone()
+    if not row:
+        return None
+
+    user_id, stored_hash, salt, role = row
+    if _hash_password(current_password, salt) != stored_hash:
+        return None
+
+    new_salt = secrets.token_hex(16)
+    new_hash = _hash_password(new_password, new_salt)
+    conn.execute(
+        "UPDATE users SET password_hash = ?, salt = ? WHERE id = ?",
+        (new_hash, new_salt, user_id),
+    )
+    # Invalidate all existing sessions for this user
+    conn.execute("DELETE FROM sessions WHERE user_id = ?", (user_id,))
+    conn.commit()
+    return {"username": username, "role": role}
+
+
 def register_user(conn: sqlite3.Connection, username: str, password: str, role: str = "user") -> dict[str, Any]:
     """Register a new user."""
     salt = secrets.token_hex(16)

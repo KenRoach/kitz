@@ -1,18 +1,46 @@
 import { useState, type FC } from "react";
 import { FONT } from "@/theme";
-import { loginUser } from "@/services/gateway";
+import { loginUser, resetPassword } from "@/services/gateway";
 
 interface LoginPageProps {
   onLogin: () => void;
 }
 
+const inputStyle = {
+  width: "100%",
+  padding: "10px 14px",
+  borderRadius: 8,
+  border: "1px solid #2D3154",
+  background: "#161929",
+  color: "#E8ECF4",
+  fontSize: 14,
+  fontFamily: FONT,
+  marginBottom: 16,
+  outline: "none",
+  boxSizing: "border-box" as const,
+};
+
+const labelStyle = {
+  display: "block",
+  fontSize: 11,
+  fontWeight: 600,
+  color: "#8B92A5",
+  marginBottom: 6,
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.05em",
+};
+
 export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
+  const [mode, setMode] = useState<"login" | "reset">("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -24,6 +52,41 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (newPassword !== confirmPassword) {
+      setError("New passwords do not match");
+      return;
+    }
+    if (newPassword.length < 4) {
+      setError("New password must be at least 4 characters");
+      return;
+    }
+    setLoading(true);
+    try {
+      await resetPassword(username, password, newPassword);
+      setSuccess("Password updated. Please sign in with your new password.");
+      setPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setMode("login");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Password reset failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const switchMode = () => {
+    setMode(mode === "login" ? "reset" : "login");
+    setError("");
+    setSuccess("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   return (
@@ -38,7 +101,7 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
       }}
     >
       <form
-        onSubmit={handleSubmit}
+        onSubmit={mode === "login" ? handleLogin : handleReset}
         style={{
           background: "#1E2235",
           border: "1px solid #2D3154",
@@ -68,7 +131,9 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
             RF
           </div>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#E8ECF4", margin: 0 }}>RenewFlow</h1>
-          <p style={{ fontSize: 12, color: "#8B92A5", margin: "4px 0 0" }}>Warranty Renewal Platform</p>
+          <p style={{ fontSize: 12, color: "#8B92A5", margin: "4px 0 0" }}>
+            {mode === "login" ? "Warranty Renewal Platform" : "Reset Your Password"}
+          </p>
         </div>
 
         {error && (
@@ -87,56 +152,73 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
           </div>
         )}
 
-        <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#8B92A5", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          Username
-        </label>
+        {success && (
+          <div
+            style={{
+              background: "#00B89420",
+              border: "1px solid #00B89440",
+              borderRadius: 8,
+              padding: "8px 12px",
+              fontSize: 12,
+              color: "#00D9A5",
+              marginBottom: 16,
+            }}
+          >
+            {success}
+          </div>
+        )}
+
+        <label style={labelStyle}>Username</label>
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px 14px",
-            borderRadius: 8,
-            border: "1px solid #2D3154",
-            background: "#161929",
-            color: "#E8ECF4",
-            fontSize: 14,
-            fontFamily: FONT,
-            marginBottom: 16,
-            outline: "none",
-            boxSizing: "border-box",
-          }}
+          style={inputStyle}
           placeholder="admin"
           autoFocus
         />
 
-        <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#8B92A5", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          Password
+        <label style={labelStyle}>
+          {mode === "login" ? "Password" : "Current Password"}
         </label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px 14px",
-            borderRadius: 8,
-            border: "1px solid #2D3154",
-            background: "#161929",
-            color: "#E8ECF4",
-            fontSize: 14,
-            fontFamily: FONT,
-            marginBottom: 24,
-            outline: "none",
-            boxSizing: "border-box",
-          }}
-          placeholder="admin"
+          style={mode === "login" ? { ...inputStyle, marginBottom: 24 } : inputStyle}
+          placeholder={mode === "login" ? "admin" : "Enter current password"}
         />
+
+        {mode === "reset" && (
+          <>
+            <label style={labelStyle}>New Password</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              style={inputStyle}
+              placeholder="Enter new password"
+            />
+
+            <label style={labelStyle}>Confirm New Password</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={{ ...inputStyle, marginBottom: 24 }}
+              placeholder="Confirm new password"
+            />
+          </>
+        )}
 
         <button
           type="submit"
-          disabled={loading || !username || !password}
+          disabled={
+            loading ||
+            !username ||
+            !password ||
+            (mode === "reset" && (!newPassword || !confirmPassword))
+          }
           style={{
             width: "100%",
             padding: "11px 0",
@@ -151,12 +233,34 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
             boxShadow: "0 4px 12px rgba(0,184,148,0.25)",
           }}
         >
-          {loading ? "Signing in..." : "Sign In"}
+          {loading
+            ? mode === "login" ? "Signing in..." : "Resetting..."
+            : mode === "login" ? "Sign In" : "Reset Password"}
         </button>
 
-        <p style={{ textAlign: "center", fontSize: 11, color: "#555", marginTop: 16, margin: "16px 0 0" }}>
-          Default: admin / admin
+        <p style={{ textAlign: "center", fontSize: 11, color: "#8B92A5", marginTop: 16, margin: "16px 0 0" }}>
+          <button
+            type="button"
+            onClick={switchMode}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#00B894",
+              fontSize: 11,
+              cursor: "pointer",
+              fontFamily: FONT,
+              textDecoration: "underline",
+            }}
+          >
+            {mode === "login" ? "Reset password" : "Back to sign in"}
+          </button>
         </p>
+
+        {mode === "login" && (
+          <p style={{ textAlign: "center", fontSize: 11, color: "#555", margin: "8px 0 0" }}>
+            Default: admin / admin
+          </p>
+        )}
       </form>
     </div>
   );

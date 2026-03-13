@@ -12,7 +12,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from .tools import ToolRegistry, default_registry
-from .auth import init_auth_tables, login as auth_login, validate_token
+from .auth import init_auth_tables, login as auth_login, validate_token, reset_password
 
 
 API_PREFIX = "/v0.1"
@@ -96,6 +96,27 @@ class GatewayHandler(BaseHTTPRequestHandler):
                 self._send_json(HTTPStatus.OK, result)
             else:
                 self._send_json(HTTPStatus.UNAUTHORIZED, {"error": "Invalid credentials"})
+            return
+
+        # Password reset endpoint — requires current password
+        if path == f"{API_PREFIX}/auth/reset-password":
+            body = self._read_json_body()
+            if body is None:
+                return
+            username = body.get("username", "")
+            current_password = body.get("currentPassword", "")
+            new_password = body.get("newPassword", "")
+            if not username or not current_password or not new_password:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": "username, currentPassword, and newPassword are required"})
+                return
+            if len(new_password) < 4:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": "New password must be at least 4 characters"})
+                return
+            result = reset_password(self.db_conn, username, current_password, new_password)
+            if result:
+                self._send_json(HTTPStatus.OK, {"message": "Password updated", **result})
+            else:
+                self._send_json(HTTPStatus.UNAUTHORIZED, {"error": "Invalid username or current password"})
             return
 
         # Auth check for tool invocations
