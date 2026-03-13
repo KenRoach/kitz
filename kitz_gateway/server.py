@@ -56,9 +56,12 @@ class GatewayHandler(BaseHTTPRequestHandler):
 
     def _serve_static(self, path: str) -> None:
         """Serve static files from the frontend dist/ directory."""
-        static = Path(self.static_dir)
-        # Map URL path to file
-        file_path = static / path.lstrip("/")
+        static = Path(self.static_dir).resolve()
+        # Map URL path to file, preventing path traversal
+        file_path = (static / path.lstrip("/")).resolve()
+        if not str(file_path).startswith(str(static)):
+            self._send_json(HTTPStatus.FORBIDDEN, {"error": "forbidden"})
+            return
         if file_path.is_file():
             self._send_file(file_path)
         else:
@@ -139,7 +142,11 @@ class GatewayHandler(BaseHTTPRequestHandler):
         return
 
     def _read_json_body(self) -> dict[str, Any] | None:
+        max_body = 10 * 1024 * 1024  # 10 MB
         content_len = int(self.headers.get("Content-Length", "0"))
+        if content_len < 0 or content_len > max_body:
+            self._send_json(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, {"error": "request too large"})
+            return None
         raw = self.rfile.read(content_len) if content_len else b"{}"
         try:
             return json.loads(raw.decode("utf-8"))
