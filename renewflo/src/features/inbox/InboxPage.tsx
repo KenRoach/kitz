@@ -1,14 +1,21 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useTheme } from "@/theme";
 import { Icon } from "@/components/icons";
 import { Badge, Card } from "@/components/ui";
 import { INBOX_DATA } from "@/data/seeds";
+import { listInbox } from "@/services/gateway";
+import type { InboxMessage } from "@/types";
 
 export const InboxPage: FC = () => {
   const { colors } = useTheme();
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [messages, setMessages] = useState<InboxMessage[]>(INBOX_DATA);
 
-  const unreadCount = INBOX_DATA.filter((m) => m.unread).length;
+  useEffect(() => {
+    listInbox().then(setMessages).catch(() => {});
+  }, []);
+
+  const unreadCount = messages.filter((m) => m.unread).length;
 
   return (
     <div>
@@ -30,7 +37,7 @@ export const InboxPage: FC = () => {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {INBOX_DATA.map((m) => (
+        {messages.map((m) => (
           <Card
             key={m.id}
             onClick={() => setSelectedId(selectedId === m.id ? null : m.id)}

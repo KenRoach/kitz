@@ -197,6 +197,58 @@ def _make_renewflo_tools(conn: sqlite3.Connection) -> list[Tool]:
     def _get_rewards(args: dict[str, Any]) -> dict[str, Any]:
         return query_rewards(conn)
 
+    def _send_email(args: dict[str, Any]) -> dict[str, Any]:
+        from .email import send_email, is_configured
+        if not is_configured():
+            return {"sent": False, "error": "SMTP not configured. Start gateway with --smtp-host."}
+        to = args.get("to", "")
+        subject = args.get("subject", "")
+        body = args.get("body", "")
+        html = args.get("html_body", "")
+        if not to or not subject:
+            raise ValueError("'to' and 'subject' are required")
+        return send_email(to, subject, body, html)
+
+    def _send_warranty_alerts(args: dict[str, Any]) -> dict[str, Any]:
+        from .email import send_email, build_alert_for_asset, is_configured
+        if not is_configured():
+            return {"sent": 0, "error": "SMTP not configured"}
+        max_days = args.get("max_days", 30)
+        to_email = args.get("to", "")
+        if not to_email:
+            raise ValueError("'to' email address is required")
+        assets = query_assets(conn, {"max_days": max_days})
+        # Only alert for non-lapsed assets
+        alertable = [a for a in assets if a["daysLeft"] >= 0]
+        results = []
+        for asset in alertable:
+            alert = build_alert_for_asset(asset)
+            result = send_email(to_email, alert["subject"], alert["body"], alert["html"])
+            results.append({"asset": asset["id"], **result})
+        return {"sent": len([r for r in results if r.get("sent")]), "total": len(alertable), "results": results}
+
+    def _check_alerts(args: dict[str, Any]) -> dict[str, Any]:
+        """Check which assets need warranty alerts (dry run, no emails sent)."""
+        assets = query_assets(conn)
+        schedule = [
+            {"label": "7-day critical", "max": 7, "min": 0},
+            {"label": "14-day urgent", "max": 14, "min": 8},
+            {"label": "30-day warning", "max": 30, "min": 15},
+            {"label": "60-day attention", "max": 60, "min": 31},
+            {"label": "90-day awareness", "max": 90, "min": 61},
+        ]
+        alerts = []
+        for bucket in schedule:
+            matching = [a for a in assets if bucket["min"] <= a["daysLeft"] <= bucket["max"]]
+            if matching:
+                alerts.append({
+                    "bucket": bucket["label"],
+                    "count": len(matching),
+                    "assets": [{"id": a["id"], "brand": a["brand"], "model": a["model"], "client": a["client"], "daysLeft": a["daysLeft"]} for a in matching],
+                })
+        lapsed = [a for a in assets if a["daysLeft"] < 0]
+        return {"alertBuckets": alerts, "lapsedCount": len(lapsed), "totalAlertable": sum(b["count"] for b in alerts)}
+
     return [
         Tool(name="list_assets", description="List all assets with optional filtering.", func=_list_assets),
         Tool(name="add_assets", description="Bulk insert/update assets.", func=_add_assets),
@@ -207,6 +259,9 @@ def _make_renewflo_tools(conn: sqlite3.Connection) -> list[Tool]:
         Tool(name="list_tickets", description="List support tickets with optional status filter.", func=_list_tickets),
         Tool(name="list_inbox", description="List inbox messages.", func=_list_inbox),
         Tool(name="get_rewards", description="Get rewards profile and history.", func=_get_rewards),
+        Tool(name="send_email", description="Send an email via SMTP.", func=_send_email),
+        Tool(name="send_warranty_alerts", description="Send warranty alert emails for expiring assets.", func=_send_warranty_alerts),
+        Tool(name="check_alerts", description="Check which assets need warranty alerts (dry run).", func=_check_alerts),
     ]
 
 

@@ -1,13 +1,19 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useTheme, FONT } from "@/theme";
 import { Icon } from "@/components/icons";
 import { Badge, Card, Pill } from "@/components/ui";
 import { SUPPORT_LOGS } from "@/data/seeds";
-import type { TicketStatus } from "@/types";
+import { listTickets } from "@/services/gateway";
+import type { SupportTicket, TicketStatus } from "@/types";
 
 export const SupportLogsPage: FC = () => {
   const { colors } = useTheme();
   const [filter, setFilter] = useState<"all" | TicketStatus>("all");
+  const [tickets, setTickets] = useState<SupportTicket[]>(SUPPORT_LOGS);
+
+  useEffect(() => {
+    listTickets().then(setTickets).catch(() => {});
+  }, []);
 
   const statusColor = (s: TicketStatus) =>
     ({ open: colors.warn, "in-progress": colors.blue, escalated: colors.danger, resolved: colors.accent }[s] ?? colors.textMid);
@@ -15,7 +21,7 @@ export const SupportLogsPage: FC = () => {
   const priorityColor = (p: string) =>
     ({ critical: colors.danger, high: colors.warn, medium: colors.blue, low: colors.textMid }[p] ?? colors.textMid);
 
-  const filtered = filter === "all" ? SUPPORT_LOGS : SUPPORT_LOGS.filter((t) => t.status === filter);
+  const filtered = filter === "all" ? tickets : tickets.filter((t) => t.status === filter);
 
   return (
     <div>

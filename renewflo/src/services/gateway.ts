@@ -5,20 +5,47 @@
 
 import type { Asset, PurchaseOrder, SupportTicket, InboxMessage, RewardsProfile } from "@/types";
 
-const BASE = "http://localhost:8787/v0.1";
+const BASE = (import.meta.env.VITE_API_BASE as string) || "/v0.1";
+
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem("rf_token");
+  return token ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` } : { "Content-Type": "application/json" };
+}
 
 async function invokeTool<T>(name: string, args: Record<string, unknown> = {}): Promise<T> {
   const res = await fetch(`${BASE}/tools/${name}/invoke`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify({ args }),
   });
+  if (res.status === 401) {
+    localStorage.removeItem("rf_token");
+    window.dispatchEvent(new Event("rf_logout"));
+    throw new Error("Unauthorized");
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(err.error ?? `Tool ${name} failed`);
   }
   const data = await res.json();
   return data.result as T;
+}
+
+// ── Auth ──
+
+export async function loginUser(username: string, password: string): Promise<{ token: string; username: string; role: string }> {
+  const res = await fetch(`${BASE}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Login failed" }));
+    throw new Error(err.error ?? "Login failed");
+  }
+  const data = await res.json();
+  localStorage.setItem("rf_token", data.token);
+  return data;
 }
 
 // ── Asset Tools ──
