@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KitZ Academy — Inteligencia para tu Negocio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #06080c;
+  --bg-main: #0b0e14;
+  --bg-card: #111620;
+  --bg-card-alt: #151b27;
+  --bg-elevated: #1a2233;
+  --lime: #b5ff3b;
+  --lime-dim: rgba(181,255,59,0.12);
+  --cyan: #22d3ee;
+  --orange: #ff7a3d;
+  --magenta: #f43f8e;
+  --blue: #3b82f6;
+  --gold: #fbbf24;
+  --text-white: #eef1f6;
+  --text-gray: #8892a4;
+  --text-muted: #4a5568;
+  --border-dim: rgba(255,255,255,0.06);
+  --border-med: rgba(255,255,255,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-deep);
+  color: var(--text-white);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+/* --- GRAIN --- */
+body::after {
+  content:'';position:fixed;inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;
+}
+::selection { background: var(--lime); color: var(--bg-deep); }
+a { color: inherit; text-decoration: none; }
+.mono { font-family:'IBM Plex Mono',monospace; }
+/* --- NAV --- */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 3%;
+  background:rgba(6,8,12,0.8);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border-dim);
+}
+.logo {
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:1.5rem;
+  letter-spacing:-0.03em;display:flex;align-items:center;gap:0.4rem;
+}
+.logo em { font-style:normal;color:var(--lime); }
+.nav-menu { display:flex;gap:2rem;list-style:none; }
+.nav-menu a {
+  font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-gray);transition:color 0.3s;cursor:pointer;
+}
+.nav-menu a:hover { color:var(--lime); }
+.btn-glow {
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;
+  padding:0.65rem 1.6rem;background:var(--lime);color:var(--bg-deep);
+  border:none;cursor:pointer;letter-spacing:0.04em;
+  transition:all 0.3s;
+}
+.btn-glow:hover { box-shadow:0 0 30px rgba(181,255,59,0.25);transform:translateY(-1px); }
+/* --- MOBILE NAV --- */
+.nav-toggle {
+  display:none;background:none;border:none;cursor:pointer;
+  flex-direction:column;gap:5px;padding:4px;
+}
+.nav-toggle span {
+  display:block;width:24px;height:2px;background:var(--text-white);
+  transition:all 0.3s;
+}
+@media(max-width:768px) {
+  .nav-toggle { display:flex; }
+  .nav-menu {
+    position:fixed;top:60px;left:0;right:0;bottom:0;
+    flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+    background:rgba(6,8,12,0.97);backdrop-filter:blur(24px);
+    transform:translateX(100%);transition:transform 0.3s;
+  }
+  .nav-menu.open { transform:translateX(0); }
+  .nav-cta { display:none; }
+}
+/* --- HERO --- */
+.hero {
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:8rem 5% 5rem;position:relative;
+}
+.hero::before {
+  content:'';position:absolute;top:-20%;right:-10%;width:50vw;height:50vw;
+  background:radial-gradient(circle,rgba(181,255,59,0.05) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero::after {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border-med),transparent);
+}
+.hero-eyebrow {
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:500;
+  color:var(--lime);letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:1.2rem;
+  opacity:0;animation:rise 0.5s ease forwards 0.15s;
+}
+.hero h1 {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(2.6rem,5.5vw,5rem);line-height:1.02;letter-spacing:-0.035em;
+  max-width:850px;margin-bottom:1.4rem;
+  opacity:0;animation:rise 0.5s ease forwards 0.3s;
+}
+.hero h1 .grad {
+  background:linear-gradient(135deg,var(--lime),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-p {
+  font-size:1.15rem;color:var(--text-gray);max-width:540px;margin-bottom:2.4rem;
+  opacity:0;animation:rise 0.5s ease forwards 0.45s;
+}
+.hero-btns {
+  display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;animation:rise 0.5s ease forwards 0.6s;
+}
+.btn-outline {
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;
+  padding:0.85rem 2rem;background:transparent;color:var(--text-white);
+  border:1px solid var(--border-med);cursor:pointer;transition:all 0.3s;
+}
+.btn-outline:hover { border-color:var(--lime);color:var(--lime); }
+.btn-solid {
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;
+  padding:0.85rem 2rem;background:var(--lime);color:var(--bg-deep);
+  border:none;cursor:pointer;transition:all 0.3s;
+}
+.btn-solid:hover { box-shadow:0 0 30px rgba(181,255,59,0.2);transform:translateY(-1px); }
+.hero-counters {
+  display:flex;gap:3rem;margin-top:4rem;padding-top:2rem;
+  border-top:1px solid var(--border-dim);
+  opacity:0;animation:rise 0.5s ease forwards 0.8s;
+}
+.counter-val { font-family:'Outfit',sans-serif;font-weight:800;font-size:2.2rem;color:var(--lime); }
+.counter-lbl { font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em; }
+@keyframes rise {
+  from { opacity:0;transform:translateY(24px); }
+  to { opacity:1;transform:translateY(0); }
+}
+/* --- SECTION UTILITY --- */
+section { padding:6rem 5%; }
+.stag { font-family:'IBM Plex Mono',monospace;font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.6rem; }
+.stitle { font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(1.8rem,3.5vw,2.8rem);letter-spacing:-0.025em;line-height:1.1;margin-bottom:0.6rem; }
+.sdesc { color:var(--text-gray);font-size:1rem;max-width:560px;margin-bottom:2.5rem; }
+.divider {
+  height:1px;margin:0 5%;
+  background:linear-gradient(90deg,transparent,var(--border-med),transparent);
+}
+/* --- APRENDE (LEARN) --- */
+#aprende { background:var(--bg-main); }
+.level-tabs {
+  display:flex;gap:0;margin-bottom:2.5rem;border:1px solid var(--border-dim);
+  width:fit-content;
+}
+.level-tab {
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;padding:0.75rem 1.8rem;
+  background:transparent;color:var(--text-muted);border:none;cursor:pointer;
+  transition:all 0.3s;border-right:1px solid var(--border-dim);
+}
+.level-tab:last-child { border-right:none; }
+.level-tab.active { background:var(--lime);color:var(--bg-deep); }
+.level-tab:hover:not(.active) { color:var(--text-white);background:var(--bg-elevated); }
+.courses-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;
+}
+.course-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:2rem 1.6rem;position:relative;overflow:hidden;
+  transition:all 0.35s;cursor:pointer;
+}
+.course-card::after {
+  content:'';position:absolute;top:0;left:0;width:0;height:2px;
+  transition:width 0.4s;
+}
+.course-card[data-color="lime"]::after { background:var(--lime); }
+.course-card[data-color="cyan"]::after { background:var(--cyan); }
+.course-card[data-color="orange"]::after { background:var(--orange); }
+.course-card[data-color="blue"]::after { background:var(--blue); }
+.course-card[data-color="magenta"]::after { background:var(--magenta); }
+.course-card[data-color="gold"]::after { background:var(--gold); }
+.course-card:hover { background:var(--bg-card-alt);transform:translateY(-3px); }
+.course-card:hover::after { width:100%; }
+.course-icon { font-size:2rem;margin-bottom:1rem;display:block; }
+.course-card h4 { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.5rem; }
+.course-card p { color:var(--text-gray);font-size:0.85rem;line-height:1.5;margin-bottom:1rem; }
+.course-meta {
+  display:flex;align-items:center;gap:1rem;
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--text-muted);
+  letter-spacing:0.05em;
+}
+.course-meta .dot { width:3px;height:3px;border-radius:50%;background:var(--text-muted); }
+.progress-bar {
+  margin-top:1rem;height:3px;background:var(--border-dim);position:relative;
+}
+.progress-fill { height:100%;background:var(--lime);transition:width 0.6s ease; }
+/* --- JUEGA (PLAY) --- */
+#juega { background:var(--bg-deep); }
+.game-zone {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:3rem;max-width:800px;position:relative;overflow:hidden;
+}
+.game-zone::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--lime),var(--cyan),var(--orange));
+}
+.quiz-header {
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border-dim);
+}
+.quiz-title { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem; }
+.quiz-progress { font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--lime); }
+.quiz-question {
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:1.4rem;
+  line-height:1.3;margin-bottom:2rem;
+}
+.quiz-options { display:flex;flex-direction:column;gap:0.8rem; }
+.quiz-option {
+  display:flex;align-items:center;gap:1rem;
+  padding:1.1rem 1.4rem;background:var(--bg-elevated);border:1px solid var(--border-dim);
+  cursor:pointer;transition:all 0.25s;font-size:0.95rem;
+}
+.quiz-option:hover { border-color:var(--lime);background:rgba(181,255,59,0.04); }
+.quiz-option.selected { border-color:var(--lime);background:rgba(181,255,59,0.08); }
+.quiz-option.correct { border-color:#22c55e;background:rgba(34,197,94,0.08); }
+.quiz-option.wrong { border-color:var(--magenta);background:rgba(244,63,142,0.08); }
+.option-letter {
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:0.75rem;
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border-med);color:var(--text-muted);flex-shrink:0;
+  transition:all 0.25s;
+}
+.quiz-option.selected .option-letter { border-color:var(--lime);color:var(--lime); }
+.quiz-option.correct .option-letter { border-color:#22c55e;color:#22c55e; }
+.quiz-footer {
+  display:flex;justify-content:space-between;align-items:center;margin-top:2rem;
+}
+.quiz-btn {
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;
+  padding:0.8rem 2rem;border:none;cursor:pointer;transition:all 0.3s;
+}
+.quiz-btn-primary { background:var(--lime);color:var(--bg-deep); }
+.quiz-btn-primary:hover { box-shadow:0 0 20px rgba(181,255,59,0.2); }
+.quiz-btn-secondary { background:var(--bg-elevated);color:var(--text-gray);border:1px solid var(--border-dim); }
+.quiz-btn-secondary:hover { color:var(--text-white); }
+.quiz-result {
+  text-align:center;padding:2rem 0;display:none;
+}
+.quiz-score {
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:4rem;color:var(--lime);
+}
+.quiz-result-msg { font-size:1.1rem;color:var(--text-gray);margin:1rem 0 2rem; }
+.game-cards {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;
+  margin-top:2.5rem;
+}
+.game-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);padding:1.8rem 1.4rem;
+  cursor:pointer;transition:all 0.3s;
+}
+.game-card:hover { transform:translateY(-3px);border-color:var(--cyan); }
+.game-card-icon { font-size:2rem;margin-bottom:0.8rem; }
+.game-card h5 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.4rem; }
+.game-card p { font-size:0.8rem;color:var(--text-gray); }
+/* --- HERRAMIENTAS (TOOLS) --- */
+#herramientas { background:var(--bg-main); }
+.tools-tabs {
+  display:flex;gap:0.8rem;margin-bottom:2rem;flex-wrap:wrap;
+}
+.tool-tab {
+  font-family:'IBM Plex Mono',monospace;font-size:0.7rem;font-weight:500;
+  padding:0.5rem 1.2rem;background:var(--bg-card);border:1px solid var(--border-dim);
+  color:var(--text-muted);cursor:pointer;transition:all 0.3s;text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.tool-tab.active { background:var(--lime-dim);border-color:var(--lime);color:var(--lime); }
+.tool-tab:hover:not(.active) { color:var(--text-white); }
+.prompts-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.2rem;
+}
+.prompt-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:1.6rem;transition:all 0.3s;position:relative;
+}
+.prompt-card:hover { border-color:var(--border-med);background:var(--bg-card-alt); }
+.prompt-cat {
+  font-family:'IBM Plex Mono',monospace;font-size:0.62rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;
+}
+.prompt-cat.ventas { color:var(--lime); }
+.prompt-cat.marketing { color:var(--cyan); }
+.prompt-cat.operaciones { color:var(--orange); }
+.prompt-cat.ecommerce { color:var(--magenta); }
+.prompt-cat.ia { color:var(--blue); }
+.prompt-cat.social { color:var(--gold); }
+/* --- SOCIAL MEDIA MARKETING --- */
+#social-media { background:var(--bg-deep); }
+.social-platforms {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem;
+  margin-bottom:2.5rem;
+}
+.platform-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:1.8rem 1.4rem;text-align:center;transition:all 0.3s;cursor:pointer;
+}
+.platform-card:hover { transform:translateY(-3px);border-color:var(--gold); }
+.platform-icon { font-size:2.5rem;margin-bottom:0.8rem; }
+.platform-card h5 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.3rem; }
+.platform-card p { font-size:0.78rem;color:var(--text-gray); }
+.platform-stat { font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--gold);margin-top:0.6rem;font-weight:600; }
+.social-tips {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;
+}
+.tip-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:1.6rem;transition:all 0.3s;
+}
+.tip-card:hover { background:var(--bg-card-alt);border-color:var(--border-med); }
+.tip-number {
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:2rem;color:var(--gold);
+  opacity:0.3;margin-bottom:0.5rem;
+}
+.tip-card h5 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.4rem; }
+.tip-card p { font-size:0.85rem;color:var(--text-gray);line-height:1.5; }
+.prompt-card h4 { font-weight:700;font-size:0.95rem;margin-bottom:0.6rem; }
+.prompt-box {
+  background:var(--bg-deep);padding:1rem 1.2rem;font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;line-height:1.6;color:var(--text-gray);
+  border-left:2px solid var(--border-dim);margin-bottom:1rem;
+  white-space:pre-wrap;
+}
+.copy-btn {
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;
+  padding:0.45rem 1rem;background:transparent;border:1px solid var(--border-dim);
+  color:var(--text-muted);cursor:pointer;transition:all 0.3s;
+  letter-spacing:0.05em;
+}
+.copy-btn:hover { border-color:var(--lime);color:var(--lime); }
+.copy-btn.copied { border-color:var(--lime);color:var(--lime);background:var(--lime-dim); }
+/* --- HISTORIAS (STORIES) --- */
+#historias { background:var(--bg-deep); }
+.stories-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;
+}
+.story-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  overflow:hidden;transition:all 0.35s;cursor:pointer;
+}
+.story-card:hover { transform:translateY(-4px);border-color:var(--border-med); }
+.story-visual {
+  height:180px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-size:4rem;
+}
+.story-visual.bg-lime { background:linear-gradient(135deg,rgba(181,255,59,0.08),rgba(34,211,238,0.05)); }
+.story-visual.bg-cyan { background:linear-gradient(135deg,rgba(34,211,238,0.08),rgba(59,130,246,0.05)); }
+.story-visual.bg-orange { background:linear-gradient(135deg,rgba(255,122,61,0.08),rgba(251,191,36,0.05)); }
+.story-body { padding:1.6rem; }
+.story-tag {
+  font-family:'IBM Plex Mono',monospace;font-size:0.62rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--lime);margin-bottom:0.6rem;
+}
+.story-card h4 { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:0.5rem; }
+.story-card p { font-size:0.85rem;color:var(--text-gray);line-height:1.5; }
+.story-metric {
+  display:flex;align-items:center;gap:0.6rem;margin-top:1rem;
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--lime);font-weight:600;
+}
+/* --- COMUNIDAD (COMMUNITY) --- */
+#comunidad { background:var(--bg-main); }
+.community-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;
+}
+.community-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:2rem 1.6rem;text-align:center;transition:all 0.3s;
+}
+.community-card:hover { transform:translateY(-3px);border-color:var(--border-med); }
+.community-icon { font-size:2.5rem;margin-bottom:1rem; }
+.community-card h4 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.5rem; }
+.community-card p { font-size:0.85rem;color:var(--text-gray);line-height:1.5; }
+/* --- FOOTER --- */
+footer {
+  background:var(--bg-deep);padding:4rem 5% 2rem;
+  border-top:1px solid var(--border-dim);
+}
+.footer-grid {
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;
+}
+.footer-brand p { font-size:0.85rem;color:var(--text-gray);margin-top:0.8rem;max-width:300px; }
+.footer-col h5 {
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem;
+}
+.footer-col a {
+  display:block;font-size:0.85rem;color:var(--text-gray);margin-bottom:0.6rem;
+  transition:color 0.3s;
+}
+.footer-col a:hover { color:var(--lime); }
+.footer-bottom {
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:2rem;border-top:1px solid var(--border-dim);
+  font-size:0.75rem;color:var(--text-muted);
+}
+@media(max-width:768px) {
+  .hero-counters { flex-wrap:wrap;gap:1.5rem; }
+  .footer-grid { grid-template-columns:1fr;gap:2rem; }
+  .game-zone { padding:1.5rem; }
+  .prompts-grid { grid-template-columns:1fr; }
+  .stories-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Kit<em>Z</em> Academy</a>
+  <ul class="nav-menu" id="navMenu">
+    <li><a href="#aprende">Aprende</a></li>
+    <li><a href="#juega">Juega</a></li>
+    <li><a href="#herramientas">Herramientas</a></li>
+    <li><a href="#historias">Historias</a></li>
+    <li><a href="#social-media">Social Media</a></li>
+    <li><a href="#comunidad">Comunidad</a></li>
+  </ul>
+  <button class="btn-glow nav-cta" onclick="document.getElementById('aprende').scrollIntoView({behavior:'smooth'})">Empezar Gratis</button>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">// academia para emprendedores</p>
+  <h1>Domina la <span class="grad">inteligencia artificial</span> para hacer crecer tu negocio</h1>
+  <p class="hero-p">Cursos interactivos, herramientas con IA y una comunidad que te impulsa. Todo en espa&ntilde;ol, todo pr&aacute;ctico, todo gratis.</p>
+  <div class="hero-btns">
+    <button class="btn-solid" onclick="document.getElementById('aprende').scrollIntoView({behavior:'smooth'})">Explorar Cursos</button>
+    <button class="btn-outline" onclick="document.getElementById('juega').scrollIntoView({behavior:'smooth'})">Probar Quiz IA</button>
+  </div>
+  <div class="hero-counters">
+    <div><div class="counter-val" data-target="2400">0</div><div class="counter-lbl">Estudiantes</div></div>
+    <div><div class="counter-val" data-target="18">0</div><div class="counter-lbl">Cursos</div></div>
+    <div><div class="counter-val" data-target="50">0</div><div class="counter-lbl">Prompts Listos</div></div>
+    <div><div class="counter-val" data-target="95">0</div><div class="counter-lbl">% Satisfacci&oacute;n</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- APRENDE -->
+<section id="aprende">
+  <p class="stag" style="color:var(--lime)">// aprende</p>
+  <h2 class="stitle">Cursos dise&ntilde;ados para resultados</h2>
+  <p class="sdesc">Desde los fundamentos de IA hasta estrategias avanzadas de automatizaci&oacute;n. Aprende a tu ritmo con lecciones pr&aacute;cticas.</p>
+
+  <div class="level-tabs">
+    <button class="level-tab active" data-level="todos">Todos</button>
+    <button class="level-tab" data-level="basico">B&aacute;sico</button>
+    <button class="level-tab" data-level="intermedio">Intermedio</button>
+    <button class="level-tab" data-level="avanzado">Avanzado</button>
+  </div>
+
+  <div class="courses-grid" id="coursesGrid">
+    <div class="course-card" data-color="lime" data-level="basico">
+      <span class="course-icon">&#x1F916;</span>
+      <h4>Introducci&oacute;n a la IA para Negocios</h4>
+      <p>Entiende qu&eacute; es la IA, c&oacute;mo funciona y por qu&eacute; transformar&aacute; tu empresa. Sin c&oacute;digo, sin jerga.</p>
+      <div class="course-meta">
+        <span>8 lecciones</span><span class="dot"></span><span>2h 15m</span><span class="dot"></span><span>B&aacute;sico</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+    </div>
+    <div class="course-card" data-color="cyan" data-level="basico">
+      <span class="course-icon">&#x1F4AC;</span>
+      <h4>Prompts que Venden</h4>
+      <p>Aprende a escribir instrucciones para ChatGPT y Claude que generan textos de venta, emails y contenido persuasivo.</p>
+      <div class="course-meta">
+        <span>12 lecciones</span><span class="dot"></span><span>3h 40m</span><span class="dot"></span><span>B&aacute;sico</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+    </div>
+    <div class="course-card" data-color="orange" data-level="intermedio">
+      <span class="course-icon">&#x1F4CA;</span>
+      <h4>An&aacute;lisis de Datos con IA</h4>
+      <p>Usa herramientas de IA para analizar ventas, identificar tendencias y tomar decisiones basadas en datos reales.</p>
+      <div class="course-meta">
+        <span>10 lecciones</span><span class="dot"></span><span>4h 20m</span><span class="dot"></span><span>Intermedio</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="course-card" data-color="blue" data-level="intermedio">
+      <span class="course-icon">&#x26A1;</span>
+      <h4>Automatizaci&oacute;n sin C&oacute;digo</h4>
+      <p>Conecta tus aplicaciones favoritas con Make, Zapier y n8n. Automatiza tareas repetitivas y ahorra horas cada semana.</p>
+      <div class="course-meta">
+        <span>14 lecciones</span><span class="dot"></span><span>5h 10m</span><span class="dot"></span><span>Intermedio</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="course-card" data-color="gold" data-level="intermedio">
+      <span class="course-icon">&#x1F4F1;</span>
+      <h4>Social Media Marketing con IA</h4>
+      <p>Domina Instagram, TikTok, LinkedIn y Facebook con estrategias potenciadas por IA. Crea contenido viral, programa publicaciones y analiza m&eacute;tricas.</p>
+      <div class="course-meta">
+        <span>15 lecciones</span><span class="dot"></span><span>5h 30m</span><span class="dot"></span><span>Intermedio</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="course-card" data-color="magenta" data-level="avanzado">
+      <span class="course-icon">&#x1F3AF;</span>
+      <h4>Marketing con IA Avanzado</h4>
+      <p>Crea campa&ntilde;as multicanal, segmenta audiencias con IA y optimiza tu embudo de conversi&oacute;n autom&aacute;ticamente.</p>
+      <div class="course-meta">
+        <span>16 lecciones</span><span class="dot"></span><span>6h 30m</span><span class="dot"></span><span>Avanzado</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="course-card" data-color="gold" data-level="avanzado">
+      <span class="course-icon">&#x1F680;</span>
+      <h4>Agentes de IA para tu Negocio</h4>
+      <p>Construye asistentes inteligentes que atienden clientes, gestionan inventario y generan reportes 24/7.</p>
+      <div class="course-meta">
+        <span>20 lecciones</span><span class="dot"></span><span>8h 45m</span><span class="dot"></span><span>Avanzado</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- JUEGA -->
+<section id="juega">
+  <p class="stag" style="color:var(--cyan)">// juega &amp; aprende</p>
+  <h2 class="stitle">Pon a prueba tu conocimiento</h2>
+  <p class="sdesc">Quizzes interactivos que refuerzan lo aprendido. Compite con la comunidad y gana insignias.</p>
+
+  <div class="game-zone" id="quizZone">
+    <div class="quiz-header">
+      <span class="quiz-title">Quiz: IA para Negocios</span>
+      <span class="quiz-progress" id="quizProgress">1 / 5</span>
+    </div>
+    <div id="quizBody">
+      <p class="quiz-question" id="quizQuestion"></p>
+      <div class="quiz-options" id="quizOptions"></div>
+    </div>
+    <div class="quiz-result" id="quizResult">
+      <div class="quiz-score" id="quizScore">0/5</div>
+      <p class="quiz-result-msg" id="quizMsg"></p>
+      <button class="quiz-btn quiz-btn-primary" onclick="startQuiz()">Intentar de nuevo</button>
+    </div>
+    <div class="quiz-footer" id="quizFooter">
+      <button class="quiz-btn quiz-btn-secondary" onclick="skipQuestion()">Saltar</button>
+      <button class="quiz-btn quiz-btn-primary" id="quizSubmit" onclick="submitAnswer()" disabled>Verificar</button>
+    </div>
+  </div>
+
+  <div class="game-cards">
+    <div class="game-card">
+      <div class="game-card-icon">&#x1F9E0;</div>
+      <h5>Trivia IA</h5>
+      <p>20 preguntas sobre conceptos clave de inteligencia artificial.</p>
+    </div>
+    <div class="game-card">
+      <div class="game-card-icon">&#x1F3C6;</div>
+      <h5>Reto Semanal</h5>
+      <p>Cada semana un nuevo desaf&iacute;o pr&aacute;ctico con premios de la comunidad.</p>
+    </div>
+    <div class="game-card">
+      <div class="game-card-icon">&#x1F4A1;</div>
+      <h5>Prompt Battle</h5>
+      <p>Compite escribiendo el mejor prompt para resolver un caso de negocio real.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HERRAMIENTAS -->
+<section id="herramientas">
+  <p class="stag" style="color:var(--orange)">// herramientas</p>
+  <h2 class="stitle">Prompts listos para usar</h2>
+  <p class="sdesc">Biblioteca curada de prompts profesionales. Copia, pega y adapta a tu negocio en segundos.</p>
+
+  <div class="tools-tabs">
+    <button class="tool-tab active" data-cat="todos">Todos</button>
+    <button class="tool-tab" data-cat="ventas">Ventas</button>
+    <button class="tool-tab" data-cat="marketing">Marketing</button>
+    <button class="tool-tab" data-cat="operaciones">Operaciones</button>
+    <button class="tool-tab" data-cat="ecommerce">E-commerce</button>
+    <button class="tool-tab" data-cat="social">Social Media</button>
+  </div>
+
+  <div class="prompts-grid" id="promptsGrid">
+    <div class="prompt-card" data-cat="ventas">
+      <div class="prompt-cat ventas">Ventas</div>
+      <h4>Generador de Propuestas Comerciales</h4>
+      <div class="prompt-box">Actua como un consultor de ventas B2B. Genera una propuesta comercial para [PRODUCTO/SERVICIO] dirigida a [TIPO DE EMPRESA]. Incluye: resumen ejecutivo, beneficios clave, comparativa con la competencia, plan de implementacion y tres opciones de precio.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="marketing">
+      <div class="prompt-cat marketing">Marketing</div>
+      <h4>Calendario de Contenidos</h4>
+      <div class="prompt-box">Crea un calendario de contenidos para redes sociales de 30 dias para [TIPO DE NEGOCIO]. Para cada dia incluye: plataforma, tipo de contenido (reel, carrusel, historia), copy sugerido, hashtags y el mejor horario para publicar en [PAIS/REGION].</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="operaciones">
+      <div class="prompt-cat operaciones">Operaciones</div>
+      <h4>Optimizador de Procesos</h4>
+      <div class="prompt-box">Analiza el siguiente proceso de negocio y sugiere mejoras: [DESCRIBIR PROCESO]. Identifica cuellos de botella, tareas que se pueden automatizar, y crea un diagrama de flujo optimizado con tiempos estimados de ahorro.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="ecommerce">
+      <div class="prompt-cat ecommerce">E-commerce</div>
+      <h4>Descripciones de Producto SEO</h4>
+      <div class="prompt-box">Escribe una descripcion de producto optimizada para SEO para [PRODUCTO]. Incluye: titulo atractivo con keyword principal, 5 bullet points de beneficios, descripcion larga de 200 palabras, meta description de 155 caracteres y 10 keywords relacionadas.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="ventas">
+      <div class="prompt-cat ventas">Ventas</div>
+      <h4>Email de Seguimiento Inteligente</h4>
+      <div class="prompt-box">Escribe una secuencia de 5 emails de seguimiento para un lead que mostro interes en [PRODUCTO/SERVICIO] pero no ha respondido. Cada email debe ser progresivamente mas directo, incluir un CTA claro y usar tecnicas de urgencia y prueba social.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="marketing">
+      <div class="prompt-cat marketing">Marketing</div>
+      <h4>Analizador de Competencia</h4>
+      <div class="prompt-box">Actua como un analista de mercado. Analiza la presencia digital de [COMPETIDOR]. Evalua: sitio web (UX, SEO), redes sociales (engagement, frecuencia), estrategia de contenidos, propuesta de valor y areas donde mi negocio [DESCRIPCION] puede diferenciarse.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="social">
+      <div class="prompt-cat social">Social Media</div>
+      <h4>Estrategia de Contenido para Instagram</h4>
+      <div class="prompt-box">Actua como un social media manager experto. Crea una estrategia de contenido para Instagram para [TIPO DE NEGOCIO]. Incluye: 4 pilares de contenido, proporcion ideal de posts (educativo/entretenimiento/venta), guia de hashtags por pilar, horarios optimos para [PAIS], y 10 ideas de Reels con hooks de apertura virales.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="social">
+      <div class="prompt-cat social">Social Media</div>
+      <h4>Generador de Captions Virales</h4>
+      <div class="prompt-box">Escribe 10 captions para [RED SOCIAL] sobre [TEMA/PRODUCTO]. Cada caption debe: empezar con un hook que detenga el scroll, incluir storytelling o datos curiosos, terminar con un CTA claro, y tener formato facil de leer (lineas cortas, emojis estrategicos). Adapta el tono a [MARCA/VOZ].</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="social">
+      <div class="prompt-cat social">Social Media</div>
+      <h4>Plan de TikTok para Negocios</h4>
+      <div class="prompt-box">Crea un plan de contenido para TikTok de 2 semanas para [NEGOCIO]. Para cada video incluye: concepto/idea, hook de los primeros 3 segundos, guion resumido, texto en pantalla sugerido, sonido/tendencia recomendada, y hashtags. Enfocate en contenido que genere guardados y compartidos.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+    <div class="prompt-card" data-cat="social">
+      <div class="prompt-cat social">Social Media</div>
+      <h4>Auditor&iacute;a de Redes Sociales</h4>
+      <div class="prompt-box">Actua como consultor de social media. Realiza una auditoria completa de la estrategia de redes sociales de [NEGOCIO] con estas metricas: [SEGUIDORES, ENGAGEMENT, FRECUENCIA]. Evalua: consistencia de marca, calidad de contenido, engagement rate vs industria, oportunidades perdidas y un plan de accion de 30 dias para mejorar resultados.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HISTORIAS -->
+<section id="historias">
+  <p class="stag" style="color:var(--magenta)">// historias de exito</p>
+  <h2 class="stitle">Emprendedores que ya est&aacute;n usando IA</h2>
+  <p class="sdesc">Casos reales de negocios latinos que transformaron sus resultados con lo aprendido en KitZ Academy.</p>
+
+  <div class="stories-grid">
+    <div class="story-card">
+      <div class="story-visual bg-lime">&#x1F6CD;&#xFE0F;</div>
+      <div class="story-body">
+        <div class="story-tag">E-commerce &bull; M&eacute;xico</div>
+        <h4>Tienda Orgánica Mx triplic&oacute; sus ventas online</h4>
+        <p>Mar&iacute;a us&oacute; los prompts de marketing y el curso de automatizaci&oacute;n para crear un embudo que trabaja 24/7.</p>
+        <div class="story-metric">+210% ventas en 3 meses</div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-visual bg-cyan">&#x1F4BB;</div>
+      <div class="story-body">
+        <div class="story-tag">Servicios &bull; Colombia</div>
+        <h4>Consultora Digital automatiz&oacute; su atenci&oacute;n al cliente</h4>
+        <p>Carlos implement&oacute; un agente de IA para responder consultas y agendar citas, liberando 20 horas semanales.</p>
+        <div class="story-metric">-20hrs/semana en tareas manuales</div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-visual bg-orange">&#x1F37D;&#xFE0F;</div>
+      <div class="story-body">
+        <div class="story-tag">Restaurante &bull; Per&uacute;</div>
+        <h4>Sabor Criollo optimiz&oacute; su men&uacute; con datos</h4>
+        <p>Ana us&oacute; el curso de an&aacute;lisis de datos para identificar platos estrella y reducir desperdicios en un 35%.</p>
+        <div class="story-metric">-35% desperdicio de alimentos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SOCIAL MEDIA MARKETING -->
+<section id="social-media">
+  <p class="stag" style="color:var(--gold)">// social media marketing</p>
+  <h2 class="stitle">Domina las redes sociales con IA</h2>
+  <p class="sdesc">Estrategias, herramientas y t&aacute;cticas para cada plataforma. Aprende a crear contenido que convierte seguidores en clientes.</p>
+
+  <div class="social-platforms">
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F4F8;</div>
+      <h5>Instagram</h5>
+      <p>Reels, Stories, Carruseles y estrategias de crecimiento org&aacute;nico.</p>
+      <div class="platform-stat">+180% alcance con IA</div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F3AC;</div>
+      <h5>TikTok</h5>
+      <p>Videos cortos virales, tendencias y hooks que capturan atenci&oacute;n.</p>
+      <div class="platform-stat">+320% views promedio</div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F4BC;</div>
+      <h5>LinkedIn</h5>
+      <p>Personal branding, contenido B2B y generaci&oacute;n de leads profesionales.</p>
+      <div class="platform-stat">+95% engagement B2B</div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F4E3;</div>
+      <h5>Facebook &amp; Ads</h5>
+      <p>Campa&ntilde;as publicitarias, grupos y automatizaci&oacute;n de respuestas.</p>
+      <div class="platform-stat">-40% costo por lead</div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F426;</div>
+      <h5>X (Twitter)</h5>
+      <p>Hilos virales, posicionamiento de marca y atenci&oacute;n al cliente r&aacute;pida.</p>
+      <div class="platform-stat">+150% impresiones</div>
+    </div>
+  </div>
+
+  <h3 class="stitle" style="font-size:1.4rem;margin-bottom:1.5rem;">Consejos clave de Social Media</h3>
+
+  <div class="social-tips">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <h5>Contenido que educa vende m&aacute;s</h5>
+      <p>El 70% de tu contenido debe aportar valor. Usa IA para generar tips, tutoriales y datos &uacute;tiles de tu industria autom&aacute;ticamente.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <h5>Los primeros 3 segundos lo deciden todo</h5>
+      <p>Usa IA para generar hooks irresistibles. Prueba 5 variaciones de apertura y mide cu&aacute;l retiene m&aacute;s a tu audiencia.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <h5>Publica cuando tu audiencia est&aacute; activa</h5>
+      <p>Analiza tus m&eacute;tricas con IA para encontrar los horarios exactos donde tu engagement es m&aacute;ximo. No adivines, mide.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <h5>Repurposing: un contenido, 5 plataformas</h5>
+      <p>Usa IA para transformar un blog en un hilo de Twitter, un carrusel de Instagram, un TikTok, un post de LinkedIn y un email.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">05</div>
+      <h5>Responde comentarios con IA</h5>
+      <p>Configura respuestas inteligentes que mantienen la conversaci&oacute;n activa. M&aacute;s comentarios = m&aacute;s alcance del algoritmo.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">06</div>
+      <h5>Hashtags estrat&eacute;gicos, no aleatorios</h5>
+      <p>Usa IA para investigar hashtags con alto volumen y baja competencia. Crea sets de hashtags por pilar de contenido.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMUNIDAD -->
+<section id="comunidad">
+  <p class="stag" style="color:var(--blue)">// comunidad</p>
+  <h2 class="stitle">&Uacute;nete a emprendedores como t&uacute;</h2>
+  <p class="sdesc">Un espacio para compartir experiencias, resolver dudas y crecer juntos con inteligencia artificial.</p>
+
+  <div class="community-grid">
+    <div class="community-card">
+      <div class="community-icon">&#x1F4E2;</div>
+      <h4>Foro de Preguntas</h4>
+      <p>Publica tus dudas y recibe respuestas de la comunidad y mentores verificados.</p>
+    </div>
+    <div class="community-card">
+      <div class="community-icon">&#x1F91D;</div>
+      <h4>Networking</h4>
+      <p>Conecta con emprendedores de toda Latinoam&eacute;rica que comparten tu visi&oacute;n.</p>
+    </div>
+    <div class="community-card">
+      <div class="community-icon">&#x1F3A4;</div>
+      <h4>Webinars en Vivo</h4>
+      <p>Sesiones semanales con expertos en IA, marketing digital y automatizaci&oacute;n.</p>
+    </div>
+    <div class="community-card">
+      <div class="community-icon">&#x1F3C5;</div>
+      <h4>Insignias y Logros</h4>
+      <p>Gana reconocimientos por completar cursos, ayudar a otros y participar en retos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">Kit<em>Z</em> Academy</div>
+      <p>Inteligencia artificial pr&aacute;ctica para emprendedores latinoamericanos. Aprende, juega, crece.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Plataforma</h5>
+      <a href="#aprende">Cursos</a>
+      <a href="#juega">Quizzes</a>
+      <a href="#herramientas">Prompts</a>
+      <a href="#historias">Historias</a>
+    </div>
+    <div class="footer-col">
+      <h5>Comunidad</h5>
+      <a href="#comunidad">Foro</a>
+      <a href="#comunidad">Webinars</a>
+      <a href="#comunidad">Networking</a>
+      <a href="#">Discord</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="#">Privacidad</a>
+      <a href="#">T&eacute;rminos</a>
+      <a href="#">Contacto</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 KitZ Academy. Todos los derechos reservados.</span>
+    <span class="mono">v1.0.0</span>
+  </div>
+</footer>
+
+<script>
+// ── Mobile Nav Toggle ──
+document.getElementById('navToggle').addEventListener('click', function() {
+  document.getElementById('navMenu').classList.toggle('open');
+});
+
+// ── Counter Animation ──
+function animateCounters() {
+  document.querySelectorAll('.counter-val').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    let current = 0;
+    const step = Math.ceil(target / 60);
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = current.toLocaleString() + suffix;
+    }, 25);
+  });
+}
+
+// ── Intersection Observer for counters ──
+const heroObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); heroObs.disconnect(); } });
+}, { threshold: 0.3 });
+document.querySelectorAll('.hero-counters').forEach(el => heroObs.observe(el));
+
+// ── Level Tabs ──
+document.querySelectorAll('.level-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const level = tab.dataset.level;
+    document.querySelectorAll('.course-card').forEach(card => {
+      card.style.display = (level === 'todos' || card.dataset.level === level) ? '' : 'none';
+    });
+  });
+});
+
+// ── Tool Tabs ──
+document.querySelectorAll('.tool-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const cat = tab.dataset.cat;
+    document.querySelectorAll('.prompt-card').forEach(card => {
+      card.style.display = (cat === 'todos' || card.dataset.cat === cat) ? '' : 'none';
+    });
+  });
+});
+
+// ── Copy Prompt ──
+function copyPrompt(btn) {
+  const text = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar prompt'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── Quiz ──
+const quizData = [
+  {
+    q: "Cual es la principal ventaja de usar IA en un negocio pequeno?",
+    opts: ["Reemplazar a todos los empleados", "Automatizar tareas repetitivas y ahorrar tiempo", "Hacer que el negocio parezca mas tecnologico", "Subir los precios de los productos"],
+    correct: 1
+  },
+  {
+    q: "Que es un 'prompt' en el contexto de la inteligencia artificial?",
+    opts: ["Un tipo de software empresarial", "Una instruccion o texto que le das a la IA para obtener una respuesta", "Un plan de marketing digital", "Una base de datos de clientes"],
+    correct: 1
+  },
+  {
+    q: "Cual de estas herramientas es una plataforma de automatizacion sin codigo?",
+    opts: ["Photoshop", "Excel", "Zapier", "WordPress"],
+    correct: 2
+  },
+  {
+    q: "Para que sirve un chatbot con IA en un e-commerce?",
+    opts: ["Solo para decorar la pagina web", "Para atender consultas de clientes 24/7 y aumentar conversiones", "Para reemplazar el sitio web completo", "Para enviar spam a los competidores"],
+    correct: 1
+  },
+  {
+    q: "Que significa 'segmentacion de audiencia' con IA?",
+    opts: ["Bloquear usuarios no deseados", "Dividir tu publico en grupos especificos para mensajes personalizados", "Eliminar seguidores falsos", "Crear multiples cuentas de redes sociales"],
+    correct: 1
+  }
+];
+
+let currentQ = 0, score = 0, selectedOpt = -1;
+
+function startQuiz() {
+  currentQ = 0; score = 0; selectedOpt = -1;
+  document.getElementById('quizBody').style.display = '';
+  document.getElementById('quizFooter').style.display = 'flex';
+  document.getElementById('quizResult').style.display = 'none';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const data = quizData[currentQ];
+  document.getElementById('quizProgress').textContent = (currentQ + 1) + ' / ' + quizData.length;
+  document.getElementById('quizQuestion').textContent = data.q;
+  const letters = ['A','B','C','D'];
+  document.getElementById('quizOptions').innerHTML = data.opts.map((opt, i) =>
+    '<div class="quiz-option" onclick="selectOption(' + i + ')" data-idx="' + i + '">' +
+    '<span class="option-letter">' + letters[i] + '</span><span>' + opt + '</span></div>'
+  ).join('');
+  document.getElementById('quizSubmit').disabled = true;
+  selectedOpt = -1;
+}
+
+function selectOption(idx) {
+  selectedOpt = idx;
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector('.quiz-option[data-idx="' + idx + '"]').classList.add('selected');
+  document.getElementById('quizSubmit').disabled = false;
+}
+
+function submitAnswer() {
+  if (selectedOpt < 0) return;
+  const correct = quizData[currentQ].correct;
+  document.querySelectorAll('.quiz-option').forEach(o => {
+    const idx = parseInt(o.dataset.idx);
+    if (idx === correct) o.classList.add('correct');
+    else if (idx === selectedOpt && idx !== correct) o.classList.add('wrong');
+    o.style.pointerEvents = 'none';
+  });
+  if (selectedOpt === correct) score++;
+  setTimeout(nextQuestion, 1200);
+}
+
+function skipQuestion() { nextQuestion(); }
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= quizData.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizBody').style.display = 'none';
+  document.getElementById('quizFooter').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  document.getElementById('quizScore').textContent = score + '/' + quizData.length;
+  const pct = (score / quizData.length) * 100;
+  let msg = '';
+  if (pct === 100) msg = 'Perfecto! Eres un experto en IA para negocios.';
+  else if (pct >= 60) msg = 'Muy bien! Sigue aprendiendo para dominar todos los conceptos.';
+  else msg = 'No te rindas! Repasa los cursos y vuelve a intentarlo.';
+  document.getElementById('quizMsg').textContent = msg;
+}
+
+// Start quiz on load
+startQuiz();
+
+// ── Scroll animations ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.course-card, .prompt-card, .story-card, .community-card, .game-card, .platform-card, .tip-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
