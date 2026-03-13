@@ -136,4 +136,5 @@ export type PageId =
   | "notifications"
   | "support"
   | "rewards"
-  | "orders";
+  | "orders"
+  | "insights";

@@ -169,6 +169,7 @@ export const Sidebar: FC<SidebarProps> = ({
           <NavBtn id="import" icon="upload" label="Import Assets" active={activePage === "import"} onClick={() => onNavigate("import")} />
         </NavSection>
         <NavSection label="Operations">
+          <NavBtn id="insights" icon="insights" label="Insights" active={activePage === "insights"} onClick={() => onNavigate("insights")} />
           <NavBtn id="support" icon="support" label="Support" active={activePage === "support"} onClick={() => onNavigate("support")} />
           <NavBtn id="rewards" icon="rewards" label="Rewards" active={activePage === "rewards"} onClick={() => onNavigate("rewards")} />
         </NavSection>

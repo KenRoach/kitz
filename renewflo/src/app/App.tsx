@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeContext, LIGHT, DARK, FONT } from "@/theme";
 import { Sidebar } from "@/components/layout";
 import { DashboardPage } from "@/features/dashboard";
@@ -9,6 +9,7 @@ import { ImportModule } from "@/features/import";
 import { SupportLogsPage } from "@/features/support";
 import { RewardsPage } from "@/features/rewards";
 import { OrdersPage } from "@/features/orders";
+import { InsightsPage } from "@/features/insights";
 import { ChatPanel } from "@/features/chat";
 import { INBOX_DATA } from "@/data/seeds";
 import type { Asset, PageId } from "@/types";
@@ -21,6 +22,9 @@ export default function App() {
 
   const assets = useAssetStore((s) => s.assets);
   const addAssets = useAssetStore((s) => s.addAssets);
+  const hydrate = useAssetStore((s) => s.hydrate);
+
+  useEffect(() => { hydrate(); }, [hydrate]);
 
   const colors = isDark ? DARK : LIGHT;
   const unread = INBOX_DATA.filter((m) => m.unread).length;
@@ -52,6 +56,8 @@ export default function App() {
         return <SupportLogsPage />;
       case "rewards":
         return <RewardsPage />;
+      case "insights":
+        return <InsightsPage />;
       default:
         return <DashboardPage setPage={setPage} assets={assets} />;
     }
