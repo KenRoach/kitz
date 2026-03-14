@@ -98,39 +98,62 @@ export function buildPasswordResetEmail(resetUrl: string): { subject: string; bo
     "https://renewflow.io",
   ].join("\n");
 
-  const html = `
-    <div style="font-family:'DM Sans',Arial,sans-serif;max-width:600px;margin:0 auto;padding:0;">
-      <div style="background:linear-gradient(135deg,#00B894,#00A88A);padding:32px 24px;text-align:center;border-radius:12px 12px 0 0;">
-        <div style="display:inline-block;width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.2);line-height:48px;font-size:18px;font-weight:700;color:#fff;margin-bottom:12px;">RF</div>
-        <h1 style="margin:0;font-size:24px;font-weight:700;color:#fff;">RenewFlow</h1>
-        <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.8);">Warranty Renewal Platform</p>
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:linear-gradient(135deg,#0B0F1A 0%,#1A1F36 100%);font-family:'DM Sans','Segoe UI',system-ui,sans-serif;">
+  <div style="max-width:480px;margin:0 auto;padding:40px 20px;">
+    <!-- Card -->
+    <div style="background:#1E2235;border:1px solid #2D3154;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+      <!-- Header with logo -->
+      <div style="text-align:center;padding:36px 36px 0;">
+        <div style="display:inline-block;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#00B894,#00A88A);line-height:48px;font-size:18px;font-weight:700;color:#fff;box-shadow:0 4px 16px rgba(0,184,148,0.3);">RF</div>
+        <h1 style="margin:12px 0 0;font-size:20px;font-weight:700;color:#E8ECF4;">RenewFlow</h1>
+        <p style="margin:4px 0 0;font-size:11px;font-weight:500;color:#8B92A5;text-transform:uppercase;letter-spacing:0.08em;">Warranty Platform</p>
       </div>
-      <div style="background:#ffffff;padding:32px 24px;border:1px solid #e5e7eb;border-top:none;">
-        <h2 style="margin:0 0 8px;font-size:20px;font-weight:700;color:#1a1f36;">Reset your password</h2>
-        <p style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.5;">
+
+      <!-- Body -->
+      <div style="padding:28px 36px 36px;">
+        <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:#E8ECF4;">Reset your password</h2>
+        <p style="margin:0 0 24px;font-size:13px;color:#8B92A5;line-height:1.6;">
           You requested a password reset for your RenewFlow account. Click the button below to choose a new password.
         </p>
+
+        <!-- CTA Button -->
         <div style="text-align:center;margin:24px 0;">
-          <a href="${escapeHtml(resetUrl)}" style="display:inline-block;background:linear-gradient(135deg,#00B894,#00A88A);color:#fff;text-decoration:none;padding:14px 32px;border-radius:9px;font-size:14px;font-weight:600;box-shadow:0 4px 12px rgba(0,184,148,0.25);">
+          <a href="${escapeHtml(resetUrl)}" style="display:inline-block;background:linear-gradient(135deg,#00B894,#00A88A);color:#fff;text-decoration:none;padding:11px 32px;border-radius:9px;font-size:14px;font-weight:600;box-shadow:0 4px 12px rgba(0,184,148,0.25);">
             Reset Password
           </a>
         </div>
-        <p style="margin:24px 0 0;font-size:12px;color:#9ca3af;line-height:1.5;">
-          This link expires in 1 hour. If you didn't request this reset, you can safely ignore this email — your password won't be changed.
+
+        <!-- Expiry notice -->
+        <p style="margin:24px 0 0;font-size:11px;color:#6B7794;line-height:1.6;">
+          This link expires in 1 hour. If you didn't request this reset, you can safely ignore this email &mdash; your password won't be changed.
         </p>
-        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
-        <p style="margin:0;font-size:11px;color:#9ca3af;">
+
+        <!-- Divider -->
+        <hr style="border:none;border-top:1px solid #2D3154;margin:24px 0;" />
+
+        <!-- Fallback link -->
+        <p style="margin:0;font-size:11px;color:#6B7794;">
           If the button doesn't work, copy and paste this link into your browser:<br/>
-          <a href="${escapeHtml(resetUrl)}" style="color:#00B894;word-break:break-all;">${escapeHtml(resetUrl)}</a>
+          <a href="${escapeHtml(resetUrl)}" style="color:#00B894;word-break:break-all;font-size:11px;">${escapeHtml(resetUrl)}</a>
         </p>
       </div>
-      <div style="padding:16px 24px;text-align:center;border-radius:0 0 12px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;">
-        <p style="margin:0;font-size:11px;color:#9ca3af;">
-          &copy; ${new Date().getFullYear()} RenewFlow &middot; <a href="https://renewflow.io" style="color:#00B894;text-decoration:none;">renewflow.io</a>
-          <br/>Warranty renewal management for LATAM IT channel partners
-        </p>
-      </div>
-    </div>`;
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:20px 0 0;">
+      <p style="margin:0;font-size:11px;color:#4A5578;">
+        &copy; ${new Date().getFullYear()} RenewFlow &middot; <a href="https://renewflow.io" style="color:#00B894;text-decoration:none;">renewflow.io</a>
+      </p>
+      <p style="margin:4px 0 0;font-size:10px;color:#4A5578;">
+        AI-native warranty renewal management for LATAM IT channel partners
+      </p>
+    </div>
+  </div>
+</body>
+</html>`;
 
   return { subject, body, html };
 }
