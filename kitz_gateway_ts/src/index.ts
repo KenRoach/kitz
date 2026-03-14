@@ -1,11 +1,9 @@
-/** RenewFlow Gateway — powered by AI orchestration. */
+/** KitZ OS Gateway — AI orchestration engine. */
 
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
-import fastifyStatic from "@fastify/static";
-import path from "node:path";
 
 import { loadConfig } from "./config.js";
 import { initSupabase } from "./db/client.js";
@@ -14,17 +12,10 @@ import authPlugin from "./auth/plugin.js";
 import { authRoutes } from "./auth/routes.js";
 import { ToolRegistry } from "./tools/registry.js";
 import { builtinTools } from "./tools/builtin.js";
-import { assetTools } from "./tools/assets.js";
-import { insightTools } from "./tools/insights.js";
-import { orderTools } from "./tools/orders.js";
-import { ticketTools } from "./tools/tickets.js";
-import { inboxTools } from "./tools/inbox.js";
-import { rewardTools } from "./tools/rewards.js";
-import { emailTools } from "./tools/email.js";
 import { quoterTools, initAnthropic } from "./tools/quoter.js";
-import { partnerTools } from "./tools/partners.js";
 import { toolRoutes } from "./routes/tools.js";
-import { configure as configureMail } from "./services/mailer.js";
+import { aiRoutes } from "./routes/ai.js";
+import { webhookRoutes } from "./routes/webhooks.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -37,27 +28,14 @@ async function main(): Promise<void> {
     initAnthropic(config.anthropicApiKey);
   }
 
-  // Configure SMTP if available
-  if (config.smtp.host) {
-    configureMail(config.smtp.host, config.smtp.port, config.smtp.user, config.smtp.pass, config.smtp.from);
-  }
-
   // Seed default admin user
   await initDefaultAdmin();
 
-  // Build tool registry
+  // Build tool registry — KitZ OS retains AI tools only
   const registry = new ToolRegistry();
   const allTools = [
     ...builtinTools,
-    ...assetTools,
-    ...insightTools,
-    ...orderTools,
-    ...ticketTools,
-    ...inboxTools,
-    ...rewardTools,
-    ...emailTools,
     ...quoterTools,
-    ...partnerTools,
   ];
   for (const tool of allTools) {
     registry.register(tool);
@@ -95,20 +73,11 @@ async function main(): Promise<void> {
   // Tool routes (health, list, invoke)
   await app.register(async (instance) => toolRoutes(instance, registry));
 
-  // Static file serving (SPA fallback)
-  if (config.staticDir) {
-    const root = path.resolve(config.staticDir);
-    await app.register(fastifyStatic, {
-      root,
-      prefix: "/",
-      wildcard: false,
-    });
+  // AI API routes (called by RenewFlow via API key)
+  await app.register(aiRoutes);
 
-    // SPA fallback — serve index.html for unmatched routes
-    app.setNotFoundHandler(async (_request, reply) => {
-      return reply.sendFile("index.html", root);
-    });
-  }
+  // Webhook routes (async processing for RenewFlow)
+  await app.register(webhookRoutes);
 
   // Graceful shutdown
   const shutdown = async (signal: string) => {
@@ -123,13 +92,11 @@ async function main(): Promise<void> {
   const features = [
     config.authEnabled ? "auth" : null,
     config.anthropicApiKey ? "ai" : null,
-    config.smtp.host ? "smtp" : null,
-    config.staticDir ? "static" : null,
   ].filter(Boolean);
 
   await app.listen({ port: config.port, host: config.host });
   app.log.info(
-    `RenewFlow Gateway v0.1 ready on port ${config.port} [${features.join(", ")}]`
+    `KitZ OS v0.1 ready on port ${config.port} [${features.join(", ")}]`
   );
 }
 
