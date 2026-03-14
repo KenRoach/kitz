@@ -28,7 +28,7 @@ interface AssetInput {
   deviceType?: string;
 }
 
-const SYSTEM_PROMPT = `You are Kitz, the AI engine powering RenewFlow — a warranty renewal platform for LATAM IT channel partners (VARs).
+const SYSTEM_PROMPT = `You are RenewFlow AI — the intelligent warranty renewal assistant for LATAM IT channel partners (VARs).
 
 Your role: Analyze device portfolios and generate intelligent warranty renewal quotes that maximize coverage while minimizing cost.
 
@@ -111,7 +111,7 @@ Provide recommendations optimizing for the best balance of cost savings and risk
   },
   {
     name: "chat",
-    description: "AI chat with Kitz — warranty renewal assistant for VARs and partners",
+    description: "RenewFlow AI chat — warranty renewal assistant for VARs and partners",
     handler: async (args) => {
       const client = getClient();
       const messages = args.messages as { role: string; text: string }[];
@@ -130,7 +130,7 @@ Provide recommendations optimizing for the best balance of cost savings and risk
       const response = await client.messages.create({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
-        system: `You are Kitz, the AI engine behind RenewFlow — a warranty renewal platform for LATAM IT channel partners.
+        system: `You are RenewFlow AI — the intelligent warranty renewal assistant for LATAM IT channel partners.
 
 You help VARs (Value-Added Resellers) and delivery partners with:
 - Warranty renewal strategy and pricing

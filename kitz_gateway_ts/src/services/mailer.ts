@@ -95,7 +95,7 @@ export function buildAlertForAsset(asset: AssetRow): { subject: string; body: st
           <strong>Recommendation:</strong> ${recommendation}
         </div>
       </div>
-      <p style="margin-top:16px;font-size:12px;color:#9ca3af;">Sent by RenewFlow — Powered by Kitz</p>
+      <p style="margin-top:16px;font-size:12px;color:#9ca3af;">Sent by RenewFlow</p>
     </div>`;
 
   return { subject, body, html };

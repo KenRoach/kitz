@@ -53,6 +53,5 @@ describe("buildAlertForAsset", () => {
   it("includes RenewFlow branding in HTML", () => {
     const { html } = buildAlertForAsset(baseAsset);
     expect(html).toContain("RenewFlow");
-    expect(html).toContain("Kitz");
   });
 });
