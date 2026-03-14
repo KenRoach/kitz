@@ -42,7 +42,7 @@ export const InsightsPage: FC = () => {
   if (!data) {
     return (
       <div style={{ padding: 24, color: colors.danger, fontFamily: FONT }}>
-        Failed to load insights. Is the Kitz Gateway running?
+        Failed to load insights. Is the gateway running?
       </div>
     );
   }

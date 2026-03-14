@@ -1,0 +1,41 @@
+/** Environment configuration for Kitz Gateway. */
+
+export interface Config {
+  port: number;
+  host: string;
+  supabaseUrl: string;
+  supabaseServiceKey: string;
+  authEnabled: boolean;
+  anthropicApiKey: string;
+  smtp: {
+    host: string;
+    port: number;
+    user: string;
+    pass: string;
+    from: string;
+  };
+  staticDir: string | null;
+}
+
+function env(key: string, fallback = ""): string {
+  return process.env[key] ?? fallback;
+}
+
+export function loadConfig(): Config {
+  return {
+    port: parseInt(env("PORT", "8787"), 10),
+    host: env("HOST", "0.0.0.0"),
+    supabaseUrl: env("SUPABASE_URL"),
+    supabaseServiceKey: env("SUPABASE_SERVICE_KEY"),
+    authEnabled: env("AUTH_ENABLED", "false") === "true",
+    anthropicApiKey: env("ANTHROPIC_API_KEY"),
+    smtp: {
+      host: env("SMTP_HOST"),
+      port: parseInt(env("SMTP_PORT", "587"), 10),
+      user: env("SMTP_USER"),
+      pass: env("SMTP_PASS"),
+      from: env("SMTP_FROM", "alerts@renewflow.io"),
+    },
+    staticDir: env("STATIC_DIR") || null,
+  };
+}

@@ -168,3 +168,73 @@ export async function listInbox(): Promise<InboxMessage[]> {
 export async function getRewards(): Promise<RewardsProfile> {
   return invokeTool<RewardsProfile>("get_rewards");
 }
+
+// ── AI Quoting (Kitz OS) ──
+
+export interface QuoteResult {
+  quoteId: string;
+  recommendations: {
+    assetId: string;
+    coverageType: "oem" | "tpm";
+    reason: string;
+    risk: "critical" | "high" | "medium" | "low";
+    price: number;
+  }[];
+  totalOem: number;
+  totalTpm: number;
+  savings: number;
+  savingsPct: number;
+  summary: string;
+  clientEmail: { subject: string; body: string };
+}
+
+export async function generateQuote(assets: Asset[]): Promise<QuoteResult> {
+  return invokeTool<QuoteResult>("generate_quote", {
+    assets: assets.map((a) => ({
+      id: a.id,
+      brand: a.brand,
+      model: a.model,
+      serial: a.serial,
+      client: a.client,
+      tier: a.tier,
+      daysLeft: a.daysLeft,
+      oem: a.oem,
+      tpm: a.tpm,
+      deviceType: a.deviceType,
+    })),
+  });
+}
+
+// ── Delivery Partners ──
+
+export interface DeliveryPartner {
+  id: string;
+  name: string;
+  email: string;
+  capabilities: string[];
+  regions: string[];
+  active: boolean;
+}
+
+export async function listPartners(): Promise<DeliveryPartner[]> {
+  const result = await invokeTool<{ partners: DeliveryPartner[]; count: number }>("list_partners");
+  return result.partners;
+}
+
+export async function submitPoToPartner(orderId: string, partnerId: string): Promise<{
+  submissionId: string;
+  orderId: string;
+  partnerId: string;
+  partnerName: string;
+  status: string;
+}> {
+  return invokeTool("submit_po_to_partner", { orderId, partnerId });
+}
+
+export async function acknowledgePo(submissionId: string): Promise<{ submissionId: string; status: string }> {
+  return invokeTool("acknowledge_po", { submissionId });
+}
+
+export async function fulfillPo(submissionId: string, tracking?: string): Promise<{ submissionId: string; status: string; tracking: string | null }> {
+  return invokeTool("fulfill_po", { submissionId, tracking });
+}
