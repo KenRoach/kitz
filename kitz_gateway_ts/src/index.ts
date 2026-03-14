@@ -24,6 +24,8 @@ import { emailTools } from "./tools/email.js";
 import { quoterTools, initAnthropic } from "./tools/quoter.js";
 import { partnerTools } from "./tools/partners.js";
 import { toolRoutes } from "./routes/tools.js";
+import { aiRoutes } from "./routes/ai.js";
+import { webhookRoutes } from "./routes/webhooks.js";
 import { configure as configureMail, configureResend } from "./services/mailer.js";
 
 async function main(): Promise<void> {
@@ -96,6 +98,12 @@ async function main(): Promise<void> {
 
   // Tool routes (health, list, invoke)
   await app.register(async (instance) => toolRoutes(instance, registry));
+
+  // AI API routes (called by RenewFlow via API key)
+  await app.register(aiRoutes);
+
+  // Webhook routes (async processing for RenewFlow)
+  await app.register(webhookRoutes);
 
   // Static file serving (SPA fallback)
   if (config.staticDir) {
