@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KitZ Academy — Inteligencia para tu Negocio</title>
+<title>KitZ Academy — Conocimiento Abierto para Latinoam&eacute;rica</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -301,12 +301,12 @@ section { padding:6rem 5%; }
   font-family:'IBM Plex Mono',monospace;font-size:0.62rem;font-weight:600;
   letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;
 }
-.prompt-cat.ventas { color:var(--lime); }
-.prompt-cat.marketing { color:var(--cyan); }
-.prompt-cat.operaciones { color:var(--orange); }
-.prompt-cat.ecommerce { color:var(--magenta); }
+.prompt-cat.ventas, .prompt-cat.core { color:var(--lime); }
+.prompt-cat.marketing, .prompt-cat.data { color:var(--cyan); }
+.prompt-cat.operaciones, .prompt-cat.api { color:var(--orange); }
+.prompt-cat.ecommerce, .prompt-cat.ai { color:var(--magenta); }
 .prompt-cat.ia { color:var(--blue); }
-.prompt-cat.social { color:var(--gold); }
+.prompt-cat.social, .prompt-cat.tools { color:var(--gold); }
 /* --- SOCIAL MEDIA MARKETING --- */
 #social-media { background:var(--bg-deep); }
 .social-platforms {
@@ -433,12 +433,12 @@ footer {
   <ul class="nav-menu" id="navMenu">
     <li><a href="#aprende">Aprende</a></li>
     <li><a href="#juega">Juega</a></li>
-    <li><a href="#herramientas">Herramientas</a></li>
-    <li><a href="#historias">Historias</a></li>
-    <li><a href="#social-media">Social Media</a></li>
+    <li><a href="#herramientas">Gateway</a></li>
+    <li><a href="#historias">Showcase</a></li>
+    <li><a href="#docs">Docs</a></li>
     <li><a href="#comunidad">Comunidad</a></li>
   </ul>
-  <button class="btn-glow nav-cta" onclick="document.getElementById('aprende').scrollIntoView({behavior:'smooth'})">Empezar Gratis</button>
+  <a class="btn-glow nav-cta" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a>
   <button class="nav-toggle" id="navToggle" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -446,18 +446,18 @@ footer {
 
 <!-- HERO -->
 <section class="hero">
-  <p class="hero-eyebrow">// academia para emprendedores</p>
-  <h1>Domina la <span class="grad">inteligencia artificial</span> para hacer crecer tu negocio</h1>
-  <p class="hero-p">Cursos interactivos, herramientas con IA y una comunidad que te impulsa. Todo en espa&ntilde;ol, todo pr&aacute;ctico, todo gratis.</p>
+  <p class="hero-eyebrow">// open-source &middot; libre &middot; LATAM</p>
+  <h1>Conocimiento abierto de <span class="grad">inteligencia artificial</span> para Latinoam&eacute;rica</h1>
+  <p class="hero-p">Cursos libres, herramientas open-source y una comunidad que construye junta. En espa&ntilde;ol, pr&aacute;ctico y 100% gratis.</p>
   <div class="hero-btns">
     <button class="btn-solid" onclick="document.getElementById('aprende').scrollIntoView({behavior:'smooth'})">Explorar Cursos</button>
-    <button class="btn-outline" onclick="document.getElementById('juega').scrollIntoView({behavior:'smooth'})">Probar Quiz IA</button>
+    <a class="btn-outline" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;">GitHub &rarr;</a>
   </div>
   <div class="hero-counters">
-    <div><div class="counter-val" data-target="2400">0</div><div class="counter-lbl">Estudiantes</div></div>
-    <div><div class="counter-val" data-target="18">0</div><div class="counter-lbl">Cursos</div></div>
-    <div><div class="counter-val" data-target="50">0</div><div class="counter-lbl">Prompts Listos</div></div>
-    <div><div class="counter-val" data-target="95">0</div><div class="counter-lbl">% Satisfacci&oacute;n</div></div>
+    <div><div class="counter-val" data-target="12">0</div><div class="counter-lbl">Tools en el Gateway</div></div>
+    <div><div class="counter-val" data-target="0" data-suffix=" deps">0</div><div class="counter-lbl">Dependencias</div></div>
+    <div><div class="counter-val" data-target="100" data-suffix="%">0</div><div class="counter-lbl">Open Source</div></div>
+    <div><div class="counter-val" data-target="7">0</div><div class="counter-lbl">Cursos Libres</div></div>
   </div>
 </section>
 
@@ -466,8 +466,8 @@ footer {
 <!-- APRENDE -->
 <section id="aprende">
   <p class="stag" style="color:var(--lime)">// aprende</p>
-  <h2 class="stitle">Cursos dise&ntilde;ados para resultados</h2>
-  <p class="sdesc">Desde los fundamentos de IA hasta estrategias avanzadas de automatizaci&oacute;n. Aprende a tu ritmo con lecciones pr&aacute;cticas.</p>
+  <h2 class="stitle">Aprende a construir con KitZ</h2>
+  <p class="sdesc">Desde los fundamentos de Python y APIs hasta integraci&oacute;n con IA. Rutas de aprendizaje abiertas, a tu ritmo.</p>
 
   <div class="level-tabs">
     <button class="level-tab active" data-level="todos">Todos</button>
@@ -478,65 +478,65 @@ footer {
 
   <div class="courses-grid" id="coursesGrid">
     <div class="course-card" data-color="lime" data-level="basico">
-      <span class="course-icon">&#x1F916;</span>
-      <h4>Introducci&oacute;n a la IA para Negocios</h4>
-      <p>Entiende qu&eacute; es la IA, c&oacute;mo funciona y por qu&eacute; transformar&aacute; tu empresa. Sin c&oacute;digo, sin jerga.</p>
+      <span class="course-icon">&#x1F30D;</span>
+      <h4>Introducci&oacute;n a KitZ OS</h4>
+      <p>Qu&eacute; es KitZ, c&oacute;mo funciona el gateway de herramientas, y por qu&eacute; open-source importa. Sin requisitos previos.</p>
       <div class="course-meta">
-        <span>8 lecciones</span><span class="dot"></span><span>2h 15m</span><span class="dot"></span><span>B&aacute;sico</span>
+        <span>6 lecciones</span><span class="dot"></span><span>1h 30m</span><span class="dot"></span><span>B&aacute;sico</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
     </div>
     <div class="course-card" data-color="cyan" data-level="basico">
-      <span class="course-icon">&#x1F4AC;</span>
-      <h4>Prompts que Venden</h4>
-      <p>Aprende a escribir instrucciones para ChatGPT y Claude que generan textos de venta, emails y contenido persuasivo.</p>
+      <span class="course-icon">&#x1F40D;</span>
+      <h4>Tu Primer Tool con Python</h4>
+      <p>Construye tu primera herramienta para el KitZ Gateway usando solo la biblioteca est&aacute;ndar de Python. Cero dependencias.</p>
       <div class="course-meta">
-        <span>12 lecciones</span><span class="dot"></span><span>3h 40m</span><span class="dot"></span><span>B&aacute;sico</span>
+        <span>8 lecciones</span><span class="dot"></span><span>2h 45m</span><span class="dot"></span><span>B&aacute;sico</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
     </div>
     <div class="course-card" data-color="orange" data-level="intermedio">
-      <span class="course-icon">&#x1F4CA;</span>
-      <h4>An&aacute;lisis de Datos con IA</h4>
-      <p>Usa herramientas de IA para analizar ventas, identificar tendencias y tomar decisiones basadas en datos reales.</p>
+      <span class="course-icon">&#x1F310;</span>
+      <h4>API REST y el Gateway</h4>
+      <p>Endpoints HTTP, registro de tools, protocolo JSON y c&oacute;mo consumir el gateway desde cualquier frontend o servicio.</p>
       <div class="course-meta">
-        <span>10 lecciones</span><span class="dot"></span><span>4h 20m</span><span class="dot"></span><span>Intermedio</span>
+        <span>10 lecciones</span><span class="dot"></span><span>3h 20m</span><span class="dot"></span><span>Intermedio</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
     </div>
     <div class="course-card" data-color="blue" data-level="intermedio">
-      <span class="course-icon">&#x26A1;</span>
-      <h4>Automatizaci&oacute;n sin C&oacute;digo</h4>
-      <p>Conecta tus aplicaciones favoritas con Make, Zapier y n8n. Automatiza tareas repetitivas y ahorra horas cada semana.</p>
+      <span class="course-icon">&#x1F4CA;</span>
+      <h4>Datos con SQLite e IA</h4>
+      <p>Persistencia con SQLite, consultas de datos, m&eacute;tricas y an&aacute;lisis automatizado con modelos de lenguaje.</p>
       <div class="course-meta">
-        <span>14 lecciones</span><span class="dot"></span><span>5h 10m</span><span class="dot"></span><span>Intermedio</span>
+        <span>10 lecciones</span><span class="dot"></span><span>3h 40m</span><span class="dot"></span><span>Intermedio</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
     </div>
     <div class="course-card" data-color="gold" data-level="intermedio">
-      <span class="course-icon">&#x1F4F1;</span>
-      <h4>Social Media Marketing con IA</h4>
-      <p>Domina Instagram, TikTok, LinkedIn y Facebook con estrategias potenciadas por IA. Crea contenido viral, programa publicaciones y analiza m&eacute;tricas.</p>
+      <span class="course-icon">&#x26A1;</span>
+      <h4>Frontend con React y TypeScript</h4>
+      <p>Construye interfaces modernas que consumen el KitZ Gateway. React 19, Zustand, y dise&ntilde;o de tokens.</p>
       <div class="course-meta">
-        <span>15 lecciones</span><span class="dot"></span><span>5h 30m</span><span class="dot"></span><span>Intermedio</span>
+        <span>12 lecciones</span><span class="dot"></span><span>4h 30m</span><span class="dot"></span><span>Intermedio</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
     </div>
     <div class="course-card" data-color="magenta" data-level="avanzado">
-      <span class="course-icon">&#x1F3AF;</span>
-      <h4>Marketing con IA Avanzado</h4>
-      <p>Crea campa&ntilde;as multicanal, segmenta audiencias con IA y optimiza tu embudo de conversi&oacute;n autom&aacute;ticamente.</p>
+      <span class="course-icon">&#x1F916;</span>
+      <h4>Integraci&oacute;n con Claude API</h4>
+      <p>Conecta modelos de IA a tus tools: salida estructurada, chat inteligente y asistentes con contexto de negocio.</p>
       <div class="course-meta">
-        <span>16 lecciones</span><span class="dot"></span><span>6h 30m</span><span class="dot"></span><span>Avanzado</span>
+        <span>10 lecciones</span><span class="dot"></span><span>4h 15m</span><span class="dot"></span><span>Avanzado</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
     </div>
     <div class="course-card" data-color="gold" data-level="avanzado">
       <span class="course-icon">&#x1F680;</span>
-      <h4>Agentes de IA para tu Negocio</h4>
-      <p>Construye asistentes inteligentes que atienden clientes, gestionan inventario y generan reportes 24/7.</p>
+      <h4>Contribuir a Open Source</h4>
+      <p>Git workflow, pull requests, c&oacute;digo de conducta y c&oacute;mo contribuir al ecosistema KitZ y otros proyectos libres.</p>
       <div class="course-meta">
-        <span>20 lecciones</span><span class="dot"></span><span>8h 45m</span><span class="dot"></span><span>Avanzado</span>
+        <span>8 lecciones</span><span class="dot"></span><span>2h 30m</span><span class="dot"></span><span>Avanzado</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
     </div>
@@ -549,11 +549,11 @@ footer {
 <section id="juega">
   <p class="stag" style="color:var(--cyan)">// juega &amp; aprende</p>
   <h2 class="stitle">Pon a prueba tu conocimiento</h2>
-  <p class="sdesc">Quizzes interactivos que refuerzan lo aprendido. Compite con la comunidad y gana insignias.</p>
+  <p class="sdesc">Quizzes interactivos sobre open-source, Python, APIs y el ecosistema KitZ.</p>
 
   <div class="game-zone" id="quizZone">
     <div class="quiz-header">
-      <span class="quiz-title">Quiz: IA para Negocios</span>
+      <span class="quiz-title">Quiz: KitZ &amp; Open Source</span>
       <span class="quiz-progress" id="quizProgress">1 / 5</span>
     </div>
     <div id="quizBody">
@@ -574,137 +574,213 @@ footer {
   <div class="game-cards">
     <div class="game-card">
       <div class="game-card-icon">&#x1F9E0;</div>
-      <h5>Trivia IA</h5>
-      <p>20 preguntas sobre conceptos clave de inteligencia artificial.</p>
+      <h5>Reto Gateway</h5>
+      <p>Construye un tool personalizado para el gateway y comp&aacute;rtelo con la comunidad.</p>
     </div>
     <div class="game-card">
-      <div class="game-card-icon">&#x1F3C6;</div>
-      <h5>Reto Semanal</h5>
-      <p>Cada semana un nuevo desaf&iacute;o pr&aacute;ctico con premios de la comunidad.</p>
+      <div class="game-card-icon">&#x1F41B;</div>
+      <h5>Debug Challenge</h5>
+      <p>Encuentra y corrige bugs en c&oacute;digo real. Aprende depuraci&oacute;n con casos pr&aacute;cticos.</p>
     </div>
     <div class="game-card">
       <div class="game-card-icon">&#x1F4A1;</div>
-      <h5>Prompt Battle</h5>
-      <p>Compite escribiendo el mejor prompt para resolver un caso de negocio real.</p>
+      <h5>API Quiz</h5>
+      <p>Pon a prueba tu conocimiento de REST APIs, HTTP y protocolos JSON.</p>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- HERRAMIENTAS -->
+<!-- HERRAMIENTAS (GATEWAY TOOLS) -->
 <section id="herramientas">
-  <p class="stag" style="color:var(--orange)">// herramientas</p>
-  <h2 class="stitle">Prompts listos para usar</h2>
-  <p class="sdesc">Biblioteca curada de prompts profesionales. Copia, pega y adapta a tu negocio en segundos.</p>
+  <p class="stag" style="color:var(--orange)">// gateway tools</p>
+  <h2 class="stitle">Herramientas del KitZ Gateway</h2>
+  <p class="sdesc">Ejemplos reales de las herramientas disponibles en el gateway. Copia los ejemplos JSON y prueba localmente.</p>
 
   <div class="tools-tabs">
     <button class="tool-tab active" data-cat="todos">Todos</button>
-    <button class="tool-tab" data-cat="ventas">Ventas</button>
-    <button class="tool-tab" data-cat="marketing">Marketing</button>
-    <button class="tool-tab" data-cat="operaciones">Operaciones</button>
-    <button class="tool-tab" data-cat="ecommerce">E-commerce</button>
-    <button class="tool-tab" data-cat="social">Social Media</button>
+    <button class="tool-tab" data-cat="core">Core</button>
+    <button class="tool-tab" data-cat="data">Datos</button>
+    <button class="tool-tab" data-cat="api">API</button>
+    <button class="tool-tab" data-cat="ai">IA</button>
   </div>
 
   <div class="prompts-grid" id="promptsGrid">
-    <div class="prompt-card" data-cat="ventas">
-      <div class="prompt-cat ventas">Ventas</div>
-      <h4>Generador de Propuestas Comerciales</h4>
-      <div class="prompt-box">Actua como un consultor de ventas B2B. Genera una propuesta comercial para [PRODUCTO/SERVICIO] dirigida a [TIPO DE EMPRESA]. Incluye: resumen ejecutivo, beneficios clave, comparativa con la competencia, plan de implementacion y tres opciones de precio.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>echo &mdash; Prueba de Conectividad</h4>
+      <div class="prompt-box">POST /v0.1/tools/echo
+Content-Type: application/json
+
+{
+  "message": "hola desde KitZ"
+}
+
+// Respuesta:
+{ "result": "hola desde KitZ" }</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="marketing">
-      <div class="prompt-cat marketing">Marketing</div>
-      <h4>Calendario de Contenidos</h4>
-      <div class="prompt-box">Crea un calendario de contenidos para redes sociales de 30 dias para [TIPO DE NEGOCIO]. Para cada dia incluye: plataforma, tipo de contenido (reel, carrusel, historia), copy sugerido, hashtags y el mejor horario para publicar en [PAIS/REGION].</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>utc_now &mdash; Timestamp UTC</h4>
+      <div class="prompt-box">POST /v0.1/tools/utc_now
+Content-Type: application/json
+
+{}
+
+// Respuesta:
+{ "result": "2026-03-14T10:30:00Z" }</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="operaciones">
-      <div class="prompt-cat operaciones">Operaciones</div>
-      <h4>Optimizador de Procesos</h4>
-      <div class="prompt-box">Analiza el siguiente proceso de negocio y sugiere mejoras: [DESCRIBIR PROCESO]. Identifica cuellos de botella, tareas que se pueden automatizar, y crea un diagrama de flujo optimizado con tiempos estimados de ahorro.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>sum &mdash; Sumar Valores</h4>
+      <div class="prompt-box">POST /v0.1/tools/sum
+Content-Type: application/json
+
+{
+  "values": [10, 25, 37, 8]
+}
+
+// Respuesta:
+{ "result": 80 }</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="ecommerce">
-      <div class="prompt-cat ecommerce">E-commerce</div>
-      <h4>Descripciones de Producto SEO</h4>
-      <div class="prompt-box">Escribe una descripcion de producto optimizada para SEO para [PRODUCTO]. Incluye: titulo atractivo con keyword principal, 5 bullet points de beneficios, descripcion larga de 200 palabras, meta description de 155 caracteres y 10 keywords relacionadas.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="data">
+      <div class="prompt-cat data">Datos</div>
+      <h4>list_assets &mdash; Consultar Activos</h4>
+      <div class="prompt-box">POST /v0.1/tools/list_assets
+Content-Type: application/json
+
+{
+  "client": "Acme Corp",
+  "status": "active"
+}
+
+// Filtra por cliente, tier, status,
+// marca o fecha de vencimiento</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="ventas">
-      <div class="prompt-cat ventas">Ventas</div>
-      <h4>Email de Seguimiento Inteligente</h4>
-      <div class="prompt-box">Escribe una secuencia de 5 emails de seguimiento para un lead que mostro interes en [PRODUCTO/SERVICIO] pero no ha respondido. Cada email debe ser progresivamente mas directo, incluir un CTA claro y usar tecnicas de urgencia y prueba social.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="data">
+      <div class="prompt-cat data">Datos</div>
+      <h4>get_asset_metrics &mdash; M&eacute;tricas del Portafolio</h4>
+      <div class="prompt-box">POST /v0.1/tools/get_asset_metrics
+Content-Type: application/json
+
+{}
+
+// Respuesta incluye:
+// total_devices, unique_clients,
+// oem_cost, tpm_cost, savings, alerts</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="marketing">
-      <div class="prompt-cat marketing">Marketing</div>
-      <h4>Analizador de Competencia</h4>
-      <div class="prompt-box">Actua como un analista de mercado. Analiza la presencia digital de [COMPETIDOR]. Evalua: sitio web (UX, SEO), redes sociales (engagement, frecuencia), estrategia de contenidos, propuesta de valor y areas donde mi negocio [DESCRIPCION] puede diferenciarse.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="api">
+      <div class="prompt-cat api">API</div>
+      <h4>create_order &mdash; Crear Orden de Compra</h4>
+      <div class="prompt-box">POST /v0.1/tools/create_order
+Content-Type: application/json
+
+{
+  "client": "TechLatam SA",
+  "items": ["asset_001", "asset_002"],
+  "type": "tpm"
+}
+
+// Crea PO en estado "draft"</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="social">
-      <div class="prompt-cat social">Social Media</div>
-      <h4>Estrategia de Contenido para Instagram</h4>
-      <div class="prompt-box">Actua como un social media manager experto. Crea una estrategia de contenido para Instagram para [TIPO DE NEGOCIO]. Incluye: 4 pilares de contenido, proporcion ideal de posts (educativo/entretenimiento/venta), guia de hashtags por pilar, horarios optimos para [PAIS], y 10 ideas de Reels con hooks de apertura virales.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="api">
+      <div class="prompt-cat api">API</div>
+      <h4>list_orders &mdash; Consultar &Oacute;rdenes</h4>
+      <div class="prompt-box">POST /v0.1/tools/list_orders
+Content-Type: application/json
+
+{
+  "status": "pending-approval"
+}
+
+// Filtra por estado del flujo:
+// draft, pending-approval, approved,
+// submitted, fulfilled</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="social">
-      <div class="prompt-cat social">Social Media</div>
-      <h4>Generador de Captions Virales</h4>
-      <div class="prompt-box">Escribe 10 captions para [RED SOCIAL] sobre [TEMA/PRODUCTO]. Cada caption debe: empezar con un hook que detenga el scroll, incluir storytelling o datos curiosos, terminar con un CTA claro, y tener formato facil de leer (lineas cortas, emojis estrategicos). Adapta el tono a [MARCA/VOZ].</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="ai">
+      <div class="prompt-cat ai">IA</div>
+      <h4>generate_insights &mdash; An&aacute;lisis con IA</h4>
+      <div class="prompt-box">POST /v0.1/tools/generate_insights
+Content-Type: application/json
+
+{}
+
+// Genera autom&aacute;ticamente:
+// - Concentraci&oacute;n de clientes
+// - Heatmap de vencimientos
+// - Comparativa de costos
+// - Revenue at risk</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="social">
-      <div class="prompt-cat social">Social Media</div>
-      <h4>Plan de TikTok para Negocios</h4>
-      <div class="prompt-box">Crea un plan de contenido para TikTok de 2 semanas para [NEGOCIO]. Para cada video incluye: concepto/idea, hook de los primeros 3 segundos, guion resumido, texto en pantalla sugerido, sonido/tendencia recomendada, y hashtags. Enfocate en contenido que genere guardados y compartidos.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="api">
+      <div class="prompt-cat api">API</div>
+      <h4>Listar Tools Disponibles (GET)</h4>
+      <div class="prompt-box">GET /v0.1/tools
+
+// Respuesta: lista de todas las
+// herramientas registradas en el
+// gateway con sus nombres y
+// descripciones.
+// No requiere body.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="social">
-      <div class="prompt-cat social">Social Media</div>
-      <h4>Auditor&iacute;a de Redes Sociales</h4>
-      <div class="prompt-box">Actua como consultor de social media. Realiza una auditoria completa de la estrategia de redes sociales de [NEGOCIO] con estas metricas: [SEGUIDORES, ENGAGEMENT, FRECUENCIA]. Evalua: consistencia de marca, calidad de contenido, engagement rate vs industria, oportunidades perdidas y un plan de accion de 30 dias para mejorar resultados.</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar prompt</button>
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>Health Check</h4>
+      <div class="prompt-box">GET /v0.1/health
+
+// Respuesta:
+{ "status": "ok", "version": "0.1" }
+
+// Verifica que el gateway
+// esta corriendo correctamente</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- HISTORIAS -->
+<!-- SHOWCASE (ex-HISTORIAS) -->
 <section id="historias">
-  <p class="stag" style="color:var(--magenta)">// historias de exito</p>
-  <h2 class="stitle">Emprendedores que ya est&aacute;n usando IA</h2>
-  <p class="sdesc">Casos reales de negocios latinos que transformaron sus resultados con lo aprendido en KitZ Academy.</p>
+  <p class="stag" style="color:var(--magenta)">// showcase</p>
+  <h2 class="stitle">Construido con KitZ</h2>
+  <p class="sdesc">Proyectos reales que demuestran el poder del ecosistema open-source KitZ.</p>
 
   <div class="stories-grid">
     <div class="story-card">
-      <div class="story-visual bg-lime">&#x1F6CD;&#xFE0F;</div>
+      <div class="story-visual bg-lime">&#x1F527;</div>
       <div class="story-body">
-        <div class="story-tag">E-commerce &bull; M&eacute;xico</div>
-        <h4>Tienda Orgánica Mx triplic&oacute; sus ventas online</h4>
-        <p>Mar&iacute;a us&oacute; los prompts de marketing y el curso de automatizaci&oacute;n para crear un embudo que trabaja 24/7.</p>
-        <div class="story-metric">+210% ventas en 3 meses</div>
+        <div class="story-tag">Backend &bull; Python</div>
+        <h4>KitZ Gateway &mdash; Servidor de Herramientas</h4>
+        <p>Servidor HTTP ligero con registro de tools invocables v&iacute;a REST. Construido con la stdlib de Python, cero dependencias externas.</p>
+        <div class="story-metric">Python stdlib &bull; Puerto 8787</div>
       </div>
     </div>
     <div class="story-card">
-      <div class="story-visual bg-cyan">&#x1F4BB;</div>
+      <div class="story-visual bg-cyan">&#x1F4DA;</div>
       <div class="story-body">
-        <div class="story-tag">Servicios &bull; Colombia</div>
-        <h4>Consultora Digital automatiz&oacute; su atenci&oacute;n al cliente</h4>
-        <p>Carlos implement&oacute; un agente de IA para responder consultas y agendar citas, liberando 20 horas semanales.</p>
-        <div class="story-metric">-20hrs/semana en tareas manuales</div>
+        <div class="story-tag">Educaci&oacute;n &bull; Open Source</div>
+        <h4>KitZ Academy &mdash; Conocimiento Libre</h4>
+        <p>Esta plataforma educativa: cursos, quizzes y documentaci&oacute;n abierta para la comunidad de desarrolladores LATAM.</p>
+        <div class="story-metric">HTML/CSS/JS &bull; Sin frameworks</div>
       </div>
     </div>
     <div class="story-card">
-      <div class="story-visual bg-orange">&#x1F37D;&#xFE0F;</div>
+      <div class="story-visual bg-orange">&#x1F4BE;</div>
       <div class="story-body">
-        <div class="story-tag">Restaurante &bull; Per&uacute;</div>
-        <h4>Sabor Criollo optimiz&oacute; su men&uacute; con datos</h4>
-        <p>Ana us&oacute; el curso de an&aacute;lisis de datos para identificar platos estrella y reducir desperdicios en un 35%.</p>
-        <div class="story-metric">-35% desperdicio de alimentos</div>
+        <div class="story-tag">Base de Datos &bull; SQLite</div>
+        <h4>Capa de Persistencia con WAL</h4>
+        <p>Almacenamiento ligero con SQLite y Write-Ahead Logging para datos empresariales: activos, &oacute;rdenes, tickets y m&aacute;s.</p>
+        <div class="story-metric">SQLite WAL &bull; Sin servidor DB</div>
       </div>
     </div>
   </div>
@@ -712,77 +788,77 @@ footer {
 
 <div class="divider"></div>
 
-<!-- SOCIAL MEDIA MARKETING -->
-<section id="social-media">
-  <p class="stag" style="color:var(--gold)">// social media marketing</p>
-  <h2 class="stitle">Domina las redes sociales con IA</h2>
-  <p class="sdesc">Estrategias, herramientas y t&aacute;cticas para cada plataforma. Aprende a crear contenido que convierte seguidores en clientes.</p>
+<!-- DOCS (ex-SOCIAL MEDIA) -->
+<section id="docs">
+  <p class="stag" style="color:var(--gold)">// documentaci&oacute;n</p>
+  <h2 class="stitle">Gu&iacute;as y documentaci&oacute;n abierta</h2>
+  <p class="sdesc">Todo lo que necesitas para empezar a construir, contribuir y aprender con KitZ.</p>
 
   <div class="social-platforms">
-    <div class="platform-card">
-      <div class="platform-icon">&#x1F4F8;</div>
-      <h5>Instagram</h5>
-      <p>Reels, Stories, Carruseles y estrategias de crecimiento org&aacute;nico.</p>
-      <div class="platform-stat">+180% alcance con IA</div>
+    <div class="platform-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')">
+      <div class="platform-icon">&#x1F680;</div>
+      <h5>Getting Started</h5>
+      <p>Clona el repo, levanta el gateway y haz tu primera llamada API en minutos.</p>
+      <div class="platform-stat">python -m kitz_gateway</div>
     </div>
     <div class="platform-card">
-      <div class="platform-icon">&#x1F3AC;</div>
-      <h5>TikTok</h5>
-      <p>Videos cortos virales, tendencias y hooks que capturan atenci&oacute;n.</p>
-      <div class="platform-stat">+320% views promedio</div>
+      <div class="platform-icon">&#x1F4D6;</div>
+      <h5>API Reference</h5>
+      <p>Documentaci&oacute;n completa de endpoints, par&aacute;metros y respuestas del gateway v0.1.</p>
+      <div class="platform-stat">REST &bull; JSON</div>
     </div>
     <div class="platform-card">
-      <div class="platform-icon">&#x1F4BC;</div>
-      <h5>LinkedIn</h5>
-      <p>Personal branding, contenido B2B y generaci&oacute;n de leads profesionales.</p>
-      <div class="platform-stat">+95% engagement B2B</div>
+      <div class="platform-icon">&#x1F6E0;&#xFE0F;</div>
+      <h5>Crear un Tool</h5>
+      <p>Gu&iacute;a paso a paso para registrar tu propia herramienta en el gateway.</p>
+      <div class="platform-stat">tools.py &bull; Python</div>
     </div>
     <div class="platform-card">
-      <div class="platform-icon">&#x1F4E3;</div>
-      <h5>Facebook &amp; Ads</h5>
-      <p>Campa&ntilde;as publicitarias, grupos y automatizaci&oacute;n de respuestas.</p>
-      <div class="platform-stat">-40% costo por lead</div>
+      <div class="platform-icon">&#x1F4BE;</div>
+      <h5>Base de Datos</h5>
+      <p>C&oacute;mo funciona la capa de persistencia SQLite con WAL y el esquema de datos.</p>
+      <div class="platform-stat">db.py &bull; SQLite</div>
     </div>
-    <div class="platform-card">
-      <div class="platform-icon">&#x1F426;</div>
-      <h5>X (Twitter)</h5>
-      <p>Hilos virales, posicionamiento de marca y atenci&oacute;n al cliente r&aacute;pida.</p>
-      <div class="platform-stat">+150% impresiones</div>
+    <div class="platform-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')">
+      <div class="platform-icon">&#x1F91D;</div>
+      <h5>Contribuir</h5>
+      <p>C&oacute;mo hacer fork, crear branches, enviar PRs y seguir el flujo de contribuci&oacute;n.</p>
+      <div class="platform-stat">git &bull; GitHub</div>
     </div>
   </div>
 
-  <h3 class="stitle" style="font-size:1.4rem;margin-bottom:1.5rem;">Consejos clave de Social Media</h3>
+  <h3 class="stitle" style="font-size:1.4rem;margin-bottom:1.5rem;">Principios del proyecto</h3>
 
   <div class="social-tips">
     <div class="tip-card">
       <div class="tip-number">01</div>
-      <h5>Contenido que educa vende m&aacute;s</h5>
-      <p>El 70% de tu contenido debe aportar valor. Usa IA para generar tips, tutoriales y datos &uacute;tiles de tu industria autom&aacute;ticamente.</p>
+      <h5>Zero dependencias</h5>
+      <p>El gateway usa exclusivamente la biblioteca est&aacute;ndar de Python. Sin pip install, sin node_modules, sin sorpresas.</p>
     </div>
     <div class="tip-card">
       <div class="tip-number">02</div>
-      <h5>Los primeros 3 segundos lo deciden todo</h5>
-      <p>Usa IA para generar hooks irresistibles. Prueba 5 variaciones de apertura y mide cu&aacute;l retiene m&aacute;s a tu audiencia.</p>
+      <h5>Modular por dise&ntilde;o</h5>
+      <p>Cada tool es independiente. Agrega, modifica o elimina herramientas sin afectar el resto del sistema.</p>
     </div>
     <div class="tip-card">
       <div class="tip-number">03</div>
-      <h5>Publica cuando tu audiencia est&aacute; activa</h5>
-      <p>Analiza tus m&eacute;tricas con IA para encontrar los horarios exactos donde tu engagement es m&aacute;ximo. No adivines, mide.</p>
+      <h5>LATAM first</h5>
+      <p>Construido para y por la comunidad latinoamericana. Documentaci&oacute;n en espa&ntilde;ol, ejemplos regionales.</p>
     </div>
     <div class="tip-card">
       <div class="tip-number">04</div>
-      <h5>Repurposing: un contenido, 5 plataformas</h5>
-      <p>Usa IA para transformar un blog en un hilo de Twitter, un carrusel de Instagram, un TikTok, un post de LinkedIn y un email.</p>
+      <h5>AI-native</h5>
+      <p>Dise&ntilde;ado para integrarse con modelos de lenguaje como Claude. Los tools son invocables por agentes de IA.</p>
     </div>
     <div class="tip-card">
       <div class="tip-number">05</div>
-      <h5>Responde comentarios con IA</h5>
-      <p>Configura respuestas inteligentes que mantienen la conversaci&oacute;n activa. M&aacute;s comentarios = m&aacute;s alcance del algoritmo.</p>
+      <h5>C&oacute;digo abierto, siempre</h5>
+      <p>El conocimiento y las herramientas deben ser accesibles para todos. Sin muros de pago, sin restricciones.</p>
     </div>
     <div class="tip-card">
       <div class="tip-number">06</div>
-      <h5>Hashtags estrat&eacute;gicos, no aleatorios</h5>
-      <p>Usa IA para investigar hashtags con alto volumen y baja competencia. Crea sets de hashtags por pilar de contenido.</p>
+      <h5>Ligero y portable</h5>
+      <p>Corre en cualquier m&aacute;quina con Python 3. Un solo archivo, un solo comando para iniciar.</p>
     </div>
   </div>
 </section>
@@ -792,29 +868,29 @@ footer {
 <!-- COMUNIDAD -->
 <section id="comunidad">
   <p class="stag" style="color:var(--blue)">// comunidad</p>
-  <h2 class="stitle">&Uacute;nete a emprendedores como t&uacute;</h2>
-  <p class="sdesc">Un espacio para compartir experiencias, resolver dudas y crecer juntos con inteligencia artificial.</p>
+  <h2 class="stitle">Construye con nosotros</h2>
+  <p class="sdesc">KitZ es un proyecto abierto. Contribuye c&oacute;digo, reporta bugs, mejora la documentaci&oacute;n o simplemente aprende.</p>
 
   <div class="community-grid">
-    <div class="community-card">
-      <div class="community-icon">&#x1F4E2;</div>
-      <h4>Foro de Preguntas</h4>
-      <p>Publica tus dudas y recibe respuestas de la comunidad y mentores verificados.</p>
+    <div class="community-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')" style="cursor:pointer">
+      <div class="community-icon">&#x1F4BB;</div>
+      <h4>GitHub</h4>
+      <p>Explora el c&oacute;digo, abre issues, env&iacute;a pull requests y dale estrella al repo.</p>
     </div>
     <div class="community-card">
-      <div class="community-icon">&#x1F91D;</div>
-      <h4>Networking</h4>
-      <p>Conecta con emprendedores de toda Latinoam&eacute;rica que comparten tu visi&oacute;n.</p>
+      <div class="community-icon">&#x1F4AC;</div>
+      <h4>Discussions</h4>
+      <p>Conversaciones abiertas, RFCs, ideas de nuevos tools y preguntas de la comunidad.</p>
     </div>
     <div class="community-card">
-      <div class="community-icon">&#x1F3A4;</div>
-      <h4>Webinars en Vivo</h4>
-      <p>Sesiones semanales con expertos en IA, marketing digital y automatizaci&oacute;n.</p>
+      <div class="community-icon">&#x1F4DD;</div>
+      <h4>Documentaci&oacute;n</h4>
+      <p>Ayuda a escribir y traducir gu&iacute;as. El conocimiento es mejor cuando se comparte.</p>
     </div>
     <div class="community-card">
-      <div class="community-icon">&#x1F3C5;</div>
-      <h4>Insignias y Logros</h4>
-      <p>Gana reconocimientos por completar cursos, ayudar a otros y participar en retos.</p>
+      <div class="community-icon">&#x1F30E;</div>
+      <h4>LATAM Devs</h4>
+      <p>Una comunidad de desarrolladores latinoamericanos construyendo herramientas abiertas con IA.</p>
     </div>
   </div>
 </section>
@@ -824,32 +900,32 @@ footer {
   <div class="footer-grid">
     <div class="footer-brand">
       <div class="logo">Kit<em>Z</em> Academy</div>
-      <p>Inteligencia artificial pr&aacute;ctica para emprendedores latinoamericanos. Aprende, juega, crece.</p>
+      <p>Conocimiento abierto de inteligencia artificial para la comunidad de desarrolladores latinoamericanos. Libre, pr&aacute;ctico y open-source.</p>
     </div>
     <div class="footer-col">
       <h5>Plataforma</h5>
       <a href="#aprende">Cursos</a>
       <a href="#juega">Quizzes</a>
-      <a href="#herramientas">Prompts</a>
-      <a href="#historias">Historias</a>
+      <a href="#herramientas">Gateway Tools</a>
+      <a href="#historias">Showcase</a>
     </div>
     <div class="footer-col">
       <h5>Comunidad</h5>
-      <a href="#comunidad">Foro</a>
-      <a href="#comunidad">Webinars</a>
-      <a href="#comunidad">Networking</a>
-      <a href="#">Discord</a>
+      <a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a>
+      <a href="#comunidad">Discussions</a>
+      <a href="#docs">Documentaci&oacute;n</a>
+      <a href="#comunidad">LATAM Devs</a>
     </div>
     <div class="footer-col">
-      <h5>Legal</h5>
-      <a href="#">Privacidad</a>
-      <a href="#">T&eacute;rminos</a>
-      <a href="#">Contacto</a>
+      <h5>Proyecto</h5>
+      <a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">C&oacute;digo Fuente</a>
+      <a href="https://github.com/KenRoach/kitz/issues" target="_blank" rel="noopener">Reportar Bug</a>
+      <a href="#">Licencia Open Source</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2026 KitZ Academy. Todos los derechos reservados.</span>
-    <span class="mono">v1.0.0</span>
+    <span>&copy; 2026 KitZ Academy &mdash; Open Source &middot; Conocimiento Libre</span>
+    <span class="mono">v0.1.0</span>
   </div>
 </footer>
 
@@ -865,6 +941,7 @@ function animateCounters() {
     const target = parseInt(el.dataset.target);
     const suffix = el.dataset.suffix || '';
     let current = 0;
+    if (target === 0) { el.textContent = '0' + suffix; return; }
     const step = Math.ceil(target / 60);
     const timer = setInterval(() => {
       current += step;
@@ -904,42 +981,42 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
   });
 });
 
-// ── Copy Prompt ──
+// ── Copy Example ──
 function copyPrompt(btn) {
   const text = btn.previousElementSibling.textContent;
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = 'Copiado!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copiar prompt'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => { btn.textContent = 'Copiar ejemplo'; btn.classList.remove('copied'); }, 2000);
   });
 }
 
 // ── Quiz ──
 const quizData = [
   {
-    q: "Cual es la principal ventaja de usar IA en un negocio pequeno?",
-    opts: ["Reemplazar a todos los empleados", "Automatizar tareas repetitivas y ahorrar tiempo", "Hacer que el negocio parezca mas tecnologico", "Subir los precios de los productos"],
-    correct: 1
-  },
-  {
-    q: "Que es un 'prompt' en el contexto de la inteligencia artificial?",
-    opts: ["Un tipo de software empresarial", "Una instruccion o texto que le das a la IA para obtener una respuesta", "Un plan de marketing digital", "Una base de datos de clientes"],
-    correct: 1
-  },
-  {
-    q: "Cual de estas herramientas es una plataforma de automatizacion sin codigo?",
-    opts: ["Photoshop", "Excel", "Zapier", "WordPress"],
+    q: "Cuantas dependencias externas necesita el KitZ Gateway?",
+    opts: ["Depende del proyecto", "Al menos 3 (Flask, requests, dotenv)", "Zero - usa solo la stdlib de Python", "Solo necesita pip install kitz"],
     correct: 2
   },
   {
-    q: "Para que sirve un chatbot con IA en un e-commerce?",
-    opts: ["Solo para decorar la pagina web", "Para atender consultas de clientes 24/7 y aumentar conversiones", "Para reemplazar el sitio web completo", "Para enviar spam a los competidores"],
+    q: "Que protocolo usa el KitZ Gateway para comunicarse?",
+    opts: ["GraphQL", "gRPC", "REST/HTTP con JSON", "WebSockets unicamente"],
+    correct: 2
+  },
+  {
+    q: "Que base de datos usa KitZ por defecto para persistencia?",
+    opts: ["PostgreSQL", "MongoDB", "SQLite con WAL", "No tiene persistencia"],
+    correct: 2
+  },
+  {
+    q: "Que modelo de IA se puede integrar con el ecosistema KitZ?",
+    opts: ["Solo modelos locales", "Claude de Anthropic", "Solo GPT-4", "No soporta IA"],
     correct: 1
   },
   {
-    q: "Que significa 'segmentacion de audiencia' con IA?",
-    opts: ["Bloquear usuarios no deseados", "Dividir tu publico en grupos especificos para mensajes personalizados", "Eliminar seguidores falsos", "Crear multiples cuentas de redes sociales"],
-    correct: 1
+    q: "En que puerto corre el KitZ Gateway por defecto?",
+    opts: ["3000", "8080", "8787", "5000"],
+    correct: 2
   }
 ];
 
@@ -1004,9 +1081,9 @@ function showResult() {
   document.getElementById('quizScore').textContent = score + '/' + quizData.length;
   const pct = (score / quizData.length) * 100;
   let msg = '';
-  if (pct === 100) msg = 'Perfecto! Eres un experto en IA para negocios.';
-  else if (pct >= 60) msg = 'Muy bien! Sigue aprendiendo para dominar todos los conceptos.';
-  else msg = 'No te rindas! Repasa los cursos y vuelve a intentarlo.';
+  if (pct === 100) msg = 'Perfecto! Conoces KitZ a fondo. Hora de contribuir!';
+  else if (pct >= 60) msg = 'Muy bien! Sigue explorando el codigo y la documentacion.';
+  else msg = 'No te rindas! Revisa los cursos y la documentacion del gateway.';
   document.getElementById('quizMsg').textContent = msg;
 }
 
