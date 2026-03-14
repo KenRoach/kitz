@@ -1,12 +1,12 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { FONT } from "@/theme";
-import { loginUser, resetPassword, registerUser } from "@/services/gateway";
+import { loginUser, resetPassword, registerUser, forgotPassword, resetPasswordWithToken } from "@/services/gateway";
 
 interface LoginPageProps {
   onLogin: () => void;
 }
 
-type Mode = "login" | "register" | "reset";
+type Mode = "login" | "register" | "reset" | "forgot" | "reset-token";
 
 const inputStyle = {
   width: "100%",
@@ -43,14 +43,30 @@ const linkBtnStyle = {
 };
 
 export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
-  const [mode, setMode] = useState<Mode>("login");
+  const [mode, setMode] = useState<Mode>(() => {
+    // Check if URL has a reset token
+    const params = new URLSearchParams(window.location.search);
+    return params.get("token") ? "reset-token" : "login";
+  });
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetToken] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("token") ?? "";
+  });
+
+  // Clean up URL after reading token
+  useEffect(() => {
+    if (resetToken) {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [resetToken]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +139,51 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
     }
   };
 
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+    setLoading(true);
+    try {
+      await forgotPassword(email);
+      setSuccess("If an account exists with that email, you'll receive a reset link shortly. Check your inbox.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Request failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetWithToken = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+    setLoading(true);
+    try {
+      await resetPasswordWithToken(resetToken, newPassword);
+      setSuccess("Password updated! Please sign in with your new password.");
+      setNewPassword("");
+      setConfirmPassword("");
+      setMode("login");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Reset failed — the link may have expired");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const switchTo = (target: Mode) => {
     setMode(target);
     setError("");
@@ -134,27 +195,34 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
   const subtitle: Record<Mode, string> = {
     login: "Warranty Renewal Platform",
     register: "Create Your Account",
-    reset: "Reset Your Password",
+    reset: "Change Your Password",
+    forgot: "Reset Your Password",
+    "reset-token": "Choose a New Password",
   };
 
   const submitLabel: Record<Mode, [string, string]> = {
     login: ["Sign In", "Signing in..."],
     register: ["Create Account", "Creating..."],
-    reset: ["Reset Password", "Resetting..."],
+    reset: ["Change Password", "Updating..."],
+    forgot: ["Send Reset Link", "Sending..."],
+    "reset-token": ["Set New Password", "Updating..."],
   };
 
   const handlers: Record<Mode, (e: React.FormEvent) => Promise<void>> = {
     login: handleLogin,
     register: handleRegister,
     reset: handleReset,
+    forgot: handleForgot,
+    "reset-token": handleResetWithToken,
   };
 
   const isDisabled =
     loading ||
-    !username ||
-    !password ||
-    (mode === "register" && !confirmPassword) ||
-    (mode === "reset" && (!newPassword || !confirmPassword));
+    (mode === "login" && (!username || !password)) ||
+    (mode === "register" && (!username || !password || !confirmPassword)) ||
+    (mode === "reset" && (!username || !password || !newPassword || !confirmPassword)) ||
+    (mode === "forgot" && !email) ||
+    (mode === "reset-token" && (!newPassword || !confirmPassword));
 
   return (
     <div
@@ -233,26 +301,70 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
           </div>
         )}
 
-        <label style={labelStyle}>Username</label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={inputStyle}
-          placeholder={mode === "register" ? "Choose a username" : "Enter username"}
-          autoFocus
-        />
+        {/* Forgot password mode — email only */}
+        {mode === "forgot" && (
+          <>
+            <label style={labelStyle}>Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ ...inputStyle, marginBottom: 24 }}
+              placeholder="Enter your email"
+              autoFocus
+            />
+          </>
+        )}
 
-        <label style={labelStyle}>
-          {mode === "reset" ? "Current Password" : "Password"}
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={mode === "login" ? { ...inputStyle, marginBottom: 24 } : inputStyle}
-          placeholder={mode === "register" ? "Choose a password" : mode === "reset" ? "Enter current password" : "Enter password"}
-        />
+        {/* Reset with token — new password only */}
+        {mode === "reset-token" && (
+          <>
+            <label style={labelStyle}>New Password</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              style={inputStyle}
+              placeholder="Enter new password (min 8 chars)"
+              autoFocus
+            />
+
+            <label style={labelStyle}>Confirm New Password</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={{ ...inputStyle, marginBottom: 24 }}
+              placeholder="Confirm new password"
+            />
+          </>
+        )}
+
+        {/* Login, register, and change-password modes */}
+        {(mode === "login" || mode === "register" || mode === "reset") && (
+          <>
+            <label style={labelStyle}>Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              style={inputStyle}
+              placeholder={mode === "register" ? "Choose a username" : "Enter username"}
+              autoFocus
+            />
+
+            <label style={labelStyle}>
+              {mode === "reset" ? "Current Password" : "Password"}
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={mode === "login" ? { ...inputStyle, marginBottom: 24 } : inputStyle}
+              placeholder={mode === "register" ? "Choose a password" : mode === "reset" ? "Enter current password" : "Enter password"}
+            />
+          </>
+        )}
 
         {mode === "register" && (
           <>
@@ -315,8 +427,8 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
               <button type="button" onClick={() => switchTo("register")} style={linkBtnStyle}>
                 Create an account
               </button>
-              <button type="button" onClick={() => switchTo("reset")} style={linkBtnStyle}>
-                Reset password
+              <button type="button" onClick={() => switchTo("forgot")} style={linkBtnStyle}>
+                Forgot password?
               </button>
             </>
           )}
@@ -326,7 +438,6 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
             </button>
           )}
         </div>
-
       </form>
     </div>
   );

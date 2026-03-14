@@ -39,6 +39,60 @@ export async function sendEmail(
   return { sent: true, to, subject };
 }
 
+export function buildPasswordResetEmail(resetUrl: string): { subject: string; body: string; html: string } {
+  const subject = "Reset your RenewFlow password";
+
+  const body = [
+    "Reset your RenewFlow password",
+    "",
+    "You requested a password reset for your RenewFlow account.",
+    "",
+    `Click the link below to set a new password:`,
+    resetUrl,
+    "",
+    "This link expires in 1 hour. If you didn't request this, you can safely ignore this email.",
+    "",
+    "— The RenewFlow Team",
+    "https://renewflow.io",
+  ].join("\n");
+
+  const html = `
+    <div style="font-family:'DM Sans',Arial,sans-serif;max-width:600px;margin:0 auto;padding:0;">
+      <div style="background:linear-gradient(135deg,#00B894,#00A88A);padding:32px 24px;text-align:center;border-radius:12px 12px 0 0;">
+        <div style="display:inline-block;width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.2);line-height:48px;font-size:18px;font-weight:700;color:#fff;margin-bottom:12px;">RF</div>
+        <h1 style="margin:0;font-size:24px;font-weight:700;color:#fff;">RenewFlow</h1>
+        <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.8);">Warranty Renewal Platform</p>
+      </div>
+      <div style="background:#ffffff;padding:32px 24px;border:1px solid #e5e7eb;border-top:none;">
+        <h2 style="margin:0 0 8px;font-size:20px;font-weight:700;color:#1a1f36;">Reset your password</h2>
+        <p style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.5;">
+          You requested a password reset for your RenewFlow account. Click the button below to choose a new password.
+        </p>
+        <div style="text-align:center;margin:24px 0;">
+          <a href="${escapeHtml(resetUrl)}" style="display:inline-block;background:linear-gradient(135deg,#00B894,#00A88A);color:#fff;text-decoration:none;padding:14px 32px;border-radius:9px;font-size:14px;font-weight:600;box-shadow:0 4px 12px rgba(0,184,148,0.25);">
+            Reset Password
+          </a>
+        </div>
+        <p style="margin:24px 0 0;font-size:12px;color:#9ca3af;line-height:1.5;">
+          This link expires in 1 hour. If you didn't request this reset, you can safely ignore this email — your password won't be changed.
+        </p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
+        <p style="margin:0;font-size:11px;color:#9ca3af;">
+          If the button doesn't work, copy and paste this link into your browser:<br/>
+          <a href="${escapeHtml(resetUrl)}" style="color:#00B894;word-break:break-all;">${escapeHtml(resetUrl)}</a>
+        </p>
+      </div>
+      <div style="padding:16px 24px;text-align:center;border-radius:0 0 12px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;">
+        <p style="margin:0;font-size:11px;color:#9ca3af;">
+          &copy; ${new Date().getFullYear()} RenewFlow &middot; <a href="https://renewflow.io" style="color:#00B894;text-decoration:none;">renewflow.io</a>
+          <br/>Warranty renewal management for LATAM IT channel partners
+        </p>
+      </div>
+    </div>`;
+
+  return { subject, body, html };
+}
+
 interface AssetRow {
   brand: string;
   model: string;

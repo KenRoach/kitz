@@ -3,6 +3,7 @@
 export interface Config {
   port: number;
   host: string;
+  appUrl: string;
   supabaseUrl: string;
   supabaseServiceKey: string;
   authEnabled: boolean;
@@ -25,6 +26,7 @@ export function loadConfig(): Config {
   const config: Config = {
     port: parseInt(env("PORT", "8787"), 10),
     host: env("HOST", "0.0.0.0"),
+    appUrl: env("APP_URL", "https://renewflow.io"),
     supabaseUrl: env("SUPABASE_URL"),
     supabaseServiceKey: env("SUPABASE_SERVICE_KEY"),
     authEnabled: env("AUTH_ENABLED", "false") === "true",
@@ -34,7 +36,7 @@ export function loadConfig(): Config {
       port: parseInt(env("SMTP_PORT", "587"), 10),
       user: env("SMTP_USER"),
       pass: env("SMTP_PASS"),
-      from: env("SMTP_FROM", "alerts@renewflow.io"),
+      from: env("SMTP_FROM", "noreply@renewflow.io"),
     },
     staticDir: env("STATIC_DIR") || null,
   };
