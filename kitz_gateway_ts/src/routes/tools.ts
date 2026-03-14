@@ -2,6 +2,7 @@
 
 import type { FastifyInstance } from "fastify";
 import { ToolRegistry, ToolNotFoundError } from "../tools/registry.js";
+import { getSupabase } from "../db/client.js";
 
 export async function toolRoutes(app: FastifyInstance, registry: ToolRegistry): Promise<void> {
   // List all tools
@@ -9,9 +10,15 @@ export async function toolRoutes(app: FastifyInstance, registry: ToolRegistry): 
     return { tools: registry.list() };
   });
 
-  // Health check
+  // Health check with DB connectivity
   app.get("/v0.1/health", async () => {
-    return { status: "ok", version: "0.1" };
+    try {
+      const db = getSupabase();
+      await db.from("users").select("id", { count: "exact", head: true });
+      return { status: "ok", version: "0.1", db: "connected" };
+    } catch {
+      return { status: "degraded", version: "0.1", db: "unreachable" };
+    }
   });
 
   // Invoke a tool
@@ -27,10 +34,9 @@ export async function toolRoutes(app: FastifyInstance, registry: ToolRegistry): 
       if (err instanceof ToolNotFoundError) {
         return reply.status(404).send({ error: err.message });
       }
-      if (err instanceof Error && err.message.includes("must be")) {
-        return reply.status(400).send({ error: err.message });
-      }
-      throw err;
+      const message = err instanceof Error ? err.message : "Internal error";
+      const status = message.includes("required") || message.includes("must be") ? 400 : 500;
+      return reply.status(status).send({ error: message });
     }
   });
 }

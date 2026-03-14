@@ -65,7 +65,7 @@ export async function registerUser(
   role = "user"
 ): Promise<{ username: string; role: string }> {
   if (username.length < 3) throw new Error("Username must be at least 3 characters");
-  if (password.length < 4) throw new Error("Password must be at least 4 characters");
+  if (password.length < 8) throw new Error("Password must be at least 8 characters");
 
   const db = getSupabase();
 
@@ -84,7 +84,7 @@ export async function resetPassword(
   currentPassword: string,
   newPassword: string
 ): Promise<{ username: string; role: string }> {
-  if (newPassword.length < 4) throw new Error("New password must be at least 4 characters");
+  if (newPassword.length < 8) throw new Error("New password must be at least 8 characters");
 
   const db = getSupabase();
   const { data: user } = await db

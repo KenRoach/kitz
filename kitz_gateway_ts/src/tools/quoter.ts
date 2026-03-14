@@ -1,4 +1,4 @@
-/** Kitz OS quote generation — AI orchestration engine for RenewFlow. */
+/** RenewFlow quote generation — AI orchestration engine. */
 
 import Anthropic from "@anthropic-ai/sdk";
 import type { ToolDef } from "./registry.js";
@@ -60,7 +60,7 @@ Respond in valid JSON matching this schema:
 export const quoterTools: ToolDef[] = [
   {
     name: "generate_quote",
-    description: "Kitz OS warranty renewal quote generation",
+    description: "RenewFlow warranty renewal quote generation",
     handler: async (args) => {
       const client = getClient();
       const assets = args.assets as AssetInput[];
@@ -89,8 +89,14 @@ Provide recommendations optimizing for the best balance of cost savings and risk
         .join("");
 
       // Parse JSON from response (handle markdown code blocks)
+      if (!text) throw new Error("Empty response from AI — please try again");
       const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/) ?? [null, text];
-      const quoteData = JSON.parse(jsonMatch[1]!.trim());
+      let quoteData: Record<string, unknown>;
+      try {
+        quoteData = JSON.parse(jsonMatch[1]!.trim());
+      } catch {
+        throw new Error("Failed to parse AI response — please try again");
+      }
 
       // Store quote in database
       const db = getSupabase();
@@ -148,7 +154,7 @@ Communication is email-only. Keep responses under 200 words. Be direct and actio
         .map((block) => block.text)
         .join("");
 
-      return { response: text };
+      return { response: text || "I couldn't generate a response. Please try again." };
     },
   },
 ];

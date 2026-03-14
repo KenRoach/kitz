@@ -1,4 +1,4 @@
-/** Environment configuration for Kitz Gateway. */
+/** Environment configuration for RenewFlow gateway. */
 
 export interface Config {
   port: number;
@@ -22,7 +22,7 @@ function env(key: string, fallback = ""): string {
 }
 
 export function loadConfig(): Config {
-  return {
+  const config: Config = {
     port: parseInt(env("PORT", "8787"), 10),
     host: env("HOST", "0.0.0.0"),
     supabaseUrl: env("SUPABASE_URL"),
@@ -38,4 +38,9 @@ export function loadConfig(): Config {
     },
     staticDir: env("STATIC_DIR") || null,
   };
+
+  if (!config.supabaseUrl) throw new Error("SUPABASE_URL environment variable is required");
+  if (!config.supabaseServiceKey) throw new Error("SUPABASE_SERVICE_KEY environment variable is required");
+
+  return config;
 }

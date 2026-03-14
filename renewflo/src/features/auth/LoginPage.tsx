@@ -78,8 +78,8 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
       setError("Username must be at least 3 characters");
       return;
     }
-    if (password.length < 4) {
-      setError("Password must be at least 4 characters");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
     setLoading(true);
@@ -104,8 +104,8 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
       setError("New passwords do not match");
       return;
     }
-    if (newPassword.length < 4) {
-      setError("New password must be at least 4 characters");
+    if (newPassword.length < 8) {
+      setError("New password must be at least 8 characters");
       return;
     }
     setLoading(true);
@@ -239,7 +239,7 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={inputStyle}
-          placeholder={mode === "register" ? "Choose a username" : "admin"}
+          placeholder={mode === "register" ? "Choose a username" : "Enter username"}
           autoFocus
         />
 
@@ -251,7 +251,7 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={mode === "login" ? { ...inputStyle, marginBottom: 24 } : inputStyle}
-          placeholder={mode === "register" ? "Choose a password" : mode === "reset" ? "Enter current password" : "admin"}
+          placeholder={mode === "register" ? "Choose a password" : mode === "reset" ? "Enter current password" : "Enter password"}
         />
 
         {mode === "register" && (
@@ -327,11 +327,6 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
           )}
         </div>
 
-        {mode === "login" && (
-          <p style={{ textAlign: "center", fontSize: 11, color: "#555", margin: "8px 0 0" }}>
-            Default: admin / admin
-          </p>
-        )}
       </form>
     </div>
   );

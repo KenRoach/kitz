@@ -61,18 +61,24 @@ export const partnerTools: ToolDef[] = [
       }).eq("id", orderId);
 
       // Send email to partner if SMTP is configured
+      let emailSent = false;
       if (isConfigured()) {
-        const items = order.items as { brand: string; model: string; coverageType: string; price: number }[];
+        const items = (order.items ?? []) as { brand: string; model: string; coverageType: string; price: number }[];
         const itemLines = items
           .map((item, i) => `${i + 1}. ${item.brand} ${item.model} — ${item.coverageType.toUpperCase()} — $${item.price}`)
           .join("\n");
 
-        await sendEmail(
-          partner.email,
-          `RenewFlow PO ${orderId} — ${order.client}`,
-          `New purchase order from RenewFlow.\n\nPO: ${orderId}\nClient: ${order.client}\nTotal: $${order.total}\n\nItems:\n${itemLines}\n\nPlease acknowledge receipt.`,
-          undefined
-        );
+        try {
+          await sendEmail(
+            partner.email,
+            `RenewFlow PO ${orderId} — ${order.client}`,
+            `New purchase order from RenewFlow.\n\nPO: ${orderId}\nClient: ${order.client}\nTotal: $${order.total}\n\nItems:\n${itemLines}\n\nPlease acknowledge receipt.`,
+            undefined
+          );
+          emailSent = true;
+        } catch {
+          // PO record created, email failed — logged by Fastify
+        }
       }
 
       return {
@@ -81,6 +87,7 @@ export const partnerTools: ToolDef[] = [
         partnerId,
         partnerName: partner.name,
         status: "submitted",
+        emailSent,
       };
     },
   },

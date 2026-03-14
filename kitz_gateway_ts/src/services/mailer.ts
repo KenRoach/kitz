@@ -50,6 +50,15 @@ interface AssetRow {
   tpm: number | null;
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export function buildAlertForAsset(asset: AssetRow): { subject: string; body: string; html: string } {
   const { brand, model, serial, client, days_left, tier, oem, tpm } = asset;
 
@@ -77,6 +86,12 @@ export function buildAlertForAsset(asset: AssetRow): { subject: string; body: st
     `Recommendation: ${recommendation}`,
   ].filter(Boolean).join("\n");
 
+  const eBrand = escapeHtml(brand);
+  const eModel = escapeHtml(model);
+  const eSerial = escapeHtml(serial);
+  const eClient = escapeHtml(client);
+  const eTier = escapeHtml(tier);
+
   const html = `
     <div style="font-family:'DM Sans',sans-serif;max-width:600px;margin:0 auto;padding:24px;">
       <div style="background:${urgencyColor};color:#fff;padding:12px 20px;border-radius:8px 8px 0 0;">
@@ -84,15 +99,15 @@ export function buildAlertForAsset(asset: AssetRow): { subject: string; body: st
       </div>
       <div style="border:1px solid #e5e7eb;border-top:none;padding:20px;border-radius:0 0 8px 8px;">
         <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:6px 0;color:#6b7280;">Device</td><td style="padding:6px 0;font-weight:600;">${brand} ${model}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;">Serial</td><td style="padding:6px 0;">${serial}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;">Client</td><td style="padding:6px 0;">${client}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;">Tier</td><td style="padding:6px 0;">${tier}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;">Device</td><td style="padding:6px 0;font-weight:600;">${eBrand} ${eModel}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;">Serial</td><td style="padding:6px 0;">${eSerial}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;">Client</td><td style="padding:6px 0;">${eClient}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;">Tier</td><td style="padding:6px 0;">${eTier}</td></tr>
           ${oem ? `<tr><td style="padding:6px 0;color:#6b7280;">OEM Price</td><td style="padding:6px 0;">$${oem}</td></tr>` : ""}
           ${tpm ? `<tr><td style="padding:6px 0;color:#6b7280;">TPM Price</td><td style="padding:6px 0;">$${tpm}</td></tr>` : ""}
         </table>
         <div style="margin-top:16px;padding:12px;background:#f3f4f6;border-radius:6px;">
-          <strong>Recommendation:</strong> ${recommendation}
+          <strong>Recommendation:</strong> ${escapeHtml(recommendation)}
         </div>
       </div>
       <p style="margin-top:16px;font-size:12px;color:#9ca3af;">Sent by RenewFlow</p>

@@ -10,12 +10,11 @@ export const emailTools: ToolDef[] = [
     description: "Send an email via SMTP",
     handler: async (args) => {
       if (!isConfigured()) throw new Error("SMTP not configured");
-      return mailerSend(
-        args.to as string,
-        args.subject as string,
-        args.body as string,
-        args.html_body as string | undefined
-      );
+      const to = args.to as string;
+      const subject = args.subject as string;
+      const body = args.body as string;
+      if (!to || !subject || !body) throw new Error("to, subject, and body are required");
+      return mailerSend(to, subject, body, args.html_body as string | undefined);
     },
   },
   {
@@ -34,15 +33,20 @@ export const emailTools: ToolDef[] = [
 
       if (error) throw new Error(error.message);
 
-      const results = [];
+      const results: { sent: boolean; to: string; subject: string; error?: string }[] = [];
       for (const asset of data ?? []) {
         const { subject, body, html } = buildAlertForAsset(asset);
         const to = (args.to as string) ?? "renewals@renewflow.io";
-        const result = await mailerSend(to, subject, body, html);
-        results.push(result);
+        try {
+          const result = await mailerSend(to, subject, body, html);
+          results.push(result);
+        } catch (err) {
+          results.push({ sent: false, to, subject, error: (err as Error).message });
+        }
       }
 
-      return { sent: results.length, results };
+      const succeeded = results.filter((r) => r.sent).length;
+      return { sent: succeeded, total: results.length, results };
     },
   },
   {

@@ -1,5 +1,5 @@
 /**
- * Kitz Gateway API client for RenewFlow.
+ * RenewFlow Gateway API client.
  * Calls tools via POST /v0.1/tools/{name}/invoke
  */
 
@@ -169,7 +169,7 @@ export async function getRewards(): Promise<RewardsProfile> {
   return invokeTool<RewardsProfile>("get_rewards");
 }
 
-// ── AI Quoting (Kitz OS) ──
+// ── AI Quoting ──
 
 export interface QuoteResult {
   quoteId: string;

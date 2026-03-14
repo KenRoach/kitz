@@ -10,7 +10,9 @@ export const rewardTools: ToolDef[] = [
     handler: async () => {
       const db = getSupabase();
       const { data, error } = await db.from("rewards").select("*").eq("id", 1).single();
-      if (error) throw new Error(error.message);
+      if (error || !data) {
+        return { points: 0, level: "Bronze", nextLevel: "Silver", nextAt: 1000, history: [] };
+      }
 
       return {
         points: data.points,
