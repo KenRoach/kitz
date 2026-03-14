@@ -47,7 +47,7 @@ export const InsightsPage: FC = () => {
     );
   }
 
-  const maxConcentration = Math.max(...data.clientConcentration.map((c) => c.count));
+  const maxConcentration = Math.max(...data.clientConcentration.map((c) => c.count), 1);
   const maxBrandSavings = Math.max(...data.brandSavings.map((b) => b.savings), 1);
   const totalHeatmap = Object.values(data.expiryHeatmap).reduce((s, n) => s + n, 0);
 

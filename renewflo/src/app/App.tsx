@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ThemeContext, LIGHT, DARK, FONT } from "@/theme";
 import { Sidebar } from "@/components/layout";
+import { LoginPage } from "@/features/auth";
 import { DashboardPage } from "@/features/dashboard";
 import { QuoterPage } from "@/features/quoter";
 import { InboxPage } from "@/features/inbox";
@@ -19,12 +20,28 @@ export default function App() {
   const [isDark, setIsDark] = useState(false);
   const [page, setPage] = useState<PageId>("dashboard");
   const [chatOpen, setChatOpen] = useState(false);
+  const [authenticated, setAuthenticated] = useState(() => !!localStorage.getItem("rf_token"));
 
   const assets = useAssetStore((s) => s.assets);
   const addAssets = useAssetStore((s) => s.addAssets);
   const hydrate = useAssetStore((s) => s.hydrate);
 
-  useEffect(() => { hydrate(); }, [hydrate]);
+  useEffect(() => { if (authenticated) hydrate(); }, [hydrate, authenticated]);
+
+  // Listen for forced logout (401 responses)
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("rf_token");
+    setAuthenticated(false);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("rf_logout", handleLogout);
+    return () => window.removeEventListener("rf_logout", handleLogout);
+  }, [handleLogout]);
+
+  if (!authenticated) {
+    return <LoginPage onLogin={() => setAuthenticated(true)} />;
+  }
 
   const colors = isDark ? DARK : LIGHT;
   const unread = INBOX_DATA.filter((m) => m.unread).length;
@@ -45,7 +62,7 @@ export default function App() {
       case "import":
         return <ImportModule onImport={handleImport} />;
       case "quoter":
-        return <QuoterPage assets={assets} />;
+        return <QuoterPage assets={assets} onNavigate={setPage} />;
       case "inbox":
         return <InboxPage />;
       case "notifications":

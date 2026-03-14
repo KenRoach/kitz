@@ -3,15 +3,18 @@ import { useTheme, MONO, FONT } from "@/theme";
 import { Icon } from "@/components/icons";
 import { Badge, Card } from "@/components/ui";
 import { tierColor, urgencyColor } from "@/utils";
-import type { Asset } from "@/types";
+import { createOrder } from "@/services/gateway";
+import type { Asset, PageId } from "@/types";
 
 interface QuoterPageProps {
   assets: Asset[];
+  onNavigate?: (page: PageId) => void;
 }
 
-export const QuoterPage: FC<QuoterPageProps> = ({ assets }) => {
+export const QuoterPage: FC<QuoterPageProps> = ({ assets, onNavigate }) => {
   const { colors } = useTheme();
   const [selected, setSelected] = useState<string[]>([]);
+  const [creating, setCreating] = useState(false);
 
   const toggle = (id: string) =>
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
@@ -29,20 +32,55 @@ export const QuoterPage: FC<QuoterPageProps> = ({ assets }) => {
         </div>
         {picked.length > 0 && (
           <button
+            disabled={creating}
+            onClick={async () => {
+              setCreating(true);
+              const now = new Date();
+              const dateStr = now.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+              const poId = `PO-${3000 + Math.floor(Math.random() * 7000)}`;
+              const quoteRef = `Q-${5000 + Math.floor(Math.random() * 5000)}`;
+              const client = picked[0]?.client ?? "Unknown";
+              try {
+                await createOrder({
+                  id: poId,
+                  client,
+                  quoteRef,
+                  status: "draft",
+                  total: totalTPM,
+                  created: dateStr,
+                  updated: dateStr,
+                  items: picked.map((a) => ({
+                    assetId: a.id,
+                    brand: a.brand,
+                    model: a.model,
+                    serial: a.serial,
+                    coverageType: a.tier === "critical" ? "oem" as const : "tpm" as const,
+                    price: a.tier === "critical" ? (a.oem ?? a.tpm) : a.tpm,
+                    quantity: a.quantity ?? 1,
+                  })),
+                });
+                setSelected([]);
+                onNavigate?.("orders");
+              } catch {
+                // Silently fail — order may still show on next load
+              } finally {
+                setCreating(false);
+              }
+            }}
             style={{
-              background: colors.accent,
+              background: creating ? colors.textDim : colors.accent,
               color: "#fff",
               border: "none",
               borderRadius: 9,
               padding: "9px 18px",
               fontSize: 13,
               fontWeight: 600,
-              cursor: "pointer",
+              cursor: creating ? "wait" : "pointer",
               fontFamily: FONT,
               boxShadow: `0 2px 8px ${colors.accent}40`,
             }}
           >
-            Generate Quote ({picked.length})
+            {creating ? "Creating PO..." : `Generate Quote (${picked.length})`}
           </button>
         )}
       </div>

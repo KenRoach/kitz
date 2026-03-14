@@ -1,12 +1,19 @@
-import type { FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useTheme, MONO } from "@/theme";
 import { Icon } from "@/components/icons";
 import { Card, SectionHeader } from "@/components/ui";
 import { REWARDS_DATA } from "@/data/seeds";
+import { getRewards } from "@/services/gateway";
+import type { RewardsProfile } from "@/types";
 
 export const RewardsPage: FC = () => {
   const { colors } = useTheme();
-  const r = REWARDS_DATA;
+  const [r, setR] = useState<RewardsProfile>(REWARDS_DATA);
+
+  useEffect(() => {
+    getRewards().then(setR).catch(() => {});
+  }, []);
+
   const progress = (r.points / r.nextAt) * 100;
 
   return (

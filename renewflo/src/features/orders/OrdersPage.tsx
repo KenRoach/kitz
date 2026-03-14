@@ -1,13 +1,19 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useTheme, MONO, FONT } from "@/theme";
 import { Icon } from "@/components/icons";
 import { Badge, Card, Pill, SectionHeader } from "@/components/ui";
 import { PURCHASE_ORDERS } from "@/data/seeds";
-import type { POStatus } from "@/types";
+import { listOrders } from "@/services/gateway";
+import type { POStatus, PurchaseOrder } from "@/types";
 
 export const OrdersPage: FC = () => {
   const { colors } = useTheme();
   const [filter, setFilter] = useState<"all" | POStatus>("all");
+  const [orders, setOrders] = useState<PurchaseOrder[]>(PURCHASE_ORDERS);
+
+  useEffect(() => {
+    listOrders().then(setOrders).catch(() => {});
+  }, []);
 
   const statusColor = (s: POStatus) =>
     ({
@@ -32,10 +38,10 @@ export const OrdersPage: FC = () => {
     })[s] ?? s;
 
   const filtered =
-    filter === "all" ? PURCHASE_ORDERS : PURCHASE_ORDERS.filter((po) => po.status === filter);
+    filter === "all" ? orders : orders.filter((po) => po.status === filter);
 
-  const totalValue = PURCHASE_ORDERS.reduce((s, po) => s + po.total, 0);
-  const activeCount = PURCHASE_ORDERS.filter(
+  const totalValue = orders.reduce((s, po) => s + po.total, 0);
+  const activeCount = orders.filter(
     (po) => po.status !== "fulfilled" && po.status !== "cancelled",
   ).length;
 
@@ -171,8 +177,8 @@ export const OrdersPage: FC = () => {
               { stage: "Fulfilled", status: "fulfilled" as POStatus, color: colors.accent },
             ] as const
           ).map((s, i) => {
-            const count = PURCHASE_ORDERS.filter((po) => po.status === s.status).length;
-            const value = PURCHASE_ORDERS.filter((po) => po.status === s.status).reduce(
+            const count = orders.filter((po) => po.status === s.status).length;
+            const value = orders.filter((po) => po.status === s.status).reduce(
               (sum, po) => sum + po.total,
               0,
             );

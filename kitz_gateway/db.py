@@ -127,7 +127,7 @@ _SEED_REWARDS = (
 def get_connection() -> sqlite3.Connection:
     """Return a connection, creating the DB + schema if needed."""
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.executescript(_SCHEMA)
