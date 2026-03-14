@@ -100,10 +100,11 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
     }
     setLoading(true);
     try {
-      await registerUser(username, password);
+      await registerUser(username, password, email || undefined);
       setSuccess("Account created! Please sign in.");
       setPassword("");
       setConfirmPassword("");
+      setEmail("");
       setMode("login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
@@ -368,6 +369,15 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
 
         {mode === "register" && (
           <>
+            <label style={labelStyle}>Email (for password recovery)</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={inputStyle}
+              placeholder="you@company.com"
+            />
+
             <label style={labelStyle}>Confirm Password</label>
             <input
               type="password"

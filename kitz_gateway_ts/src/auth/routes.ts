@@ -19,12 +19,12 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
   });
 
   app.post("/v0.1/auth/register", async (request, reply) => {
-    const { username, password } = request.body as { username: string; password: string };
+    const { username, password, email } = request.body as { username: string; password: string; email?: string };
     if (!username || !password) {
       return reply.status(400).send({ error: "username and password required" });
     }
     try {
-      return await registerUser(username, password);
+      return await registerUser(username, password, "user", email);
     } catch (err) {
       return reply.status(400).send({ error: (err as Error).message });
     }

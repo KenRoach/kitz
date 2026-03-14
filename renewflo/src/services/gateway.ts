@@ -48,11 +48,11 @@ export async function loginUser(username: string, password: string): Promise<{ t
   return data;
 }
 
-export async function registerUser(username: string, password: string): Promise<{ username: string; role: string }> {
+export async function registerUser(username: string, password: string, email?: string): Promise<{ username: string; role: string }> {
   const res = await fetch(`${BASE}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, password, ...(email && { email }) }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Registration failed" }));
