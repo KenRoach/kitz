@@ -24,7 +24,7 @@ import { emailTools } from "./tools/email.js";
 import { quoterTools, initAnthropic } from "./tools/quoter.js";
 import { partnerTools } from "./tools/partners.js";
 import { toolRoutes } from "./routes/tools.js";
-import { configure as configureMail } from "./services/mailer.js";
+import { configure as configureMail, configureResend } from "./services/mailer.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -37,8 +37,10 @@ async function main(): Promise<void> {
     initAnthropic(config.anthropicApiKey);
   }
 
-  // Configure SMTP if available
-  if (config.smtp.host) {
+  // Configure email delivery — Resend API key takes priority over SMTP
+  if (config.resendApiKey) {
+    configureResend(config.resendApiKey, config.smtp.from || "onboarding@resend.dev");
+  } else if (config.smtp.host) {
     configureMail(config.smtp.host, config.smtp.port, config.smtp.user, config.smtp.pass, config.smtp.from);
   }
 
@@ -123,7 +125,7 @@ async function main(): Promise<void> {
   const features = [
     config.authEnabled ? "auth" : null,
     config.anthropicApiKey ? "ai" : null,
-    config.smtp.host ? "smtp" : null,
+    config.resendApiKey ? "resend" : config.smtp.host ? "smtp" : null,
     config.staticDir ? "static" : null,
   ].filter(Boolean);
 

@@ -1,23 +1,41 @@
-/** Nodemailer SMTP service — warranty alert templates. */
+/** Email service — Resend API (primary) with Nodemailer SMTP fallback. */
 
+import { Resend } from "resend";
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
 
+let _resend: Resend | null = null;
 let _transport: Transporter | null = null;
-let _from = "alerts@renewflow.io";
+let _from = "onboarding@resend.dev";
 
 export function configure(host: string, port: number, user: string, pass: string, from: string): void {
   _from = from;
-  _transport = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: user ? { user, pass } : undefined,
-  });
+
+  // If using Resend SMTP credentials, use the Resend HTTP API instead (faster + more reliable)
+  if (host === "smtp.resend.com" && pass.startsWith("re_")) {
+    _resend = new Resend(pass);
+    return;
+  }
+
+  // Fall back to Nodemailer SMTP for other providers
+  if (host) {
+    _transport = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: user ? { user, pass } : undefined,
+    });
+  }
+}
+
+/** Configure directly with a Resend API key. */
+export function configureResend(apiKey: string, from?: string): void {
+  _resend = new Resend(apiKey);
+  if (from) _from = from;
 }
 
 export function isConfigured(): boolean {
-  return _transport !== null;
+  return _resend !== null || _transport !== null;
 }
 
 export async function sendEmail(
@@ -26,27 +44,40 @@ export async function sendEmail(
   body: string,
   html?: string
 ): Promise<{ sent: boolean; to: string; subject: string }> {
-  if (!_transport) {
-    // Dev fallback: log email to console so reset links are visible
-    console.log("\n╔══════════════════════════════════════════════════════════════╗");
-    console.log("║  📧  EMAIL (SMTP not configured — console fallback)        ║");
-    console.log("╠══════════════════════════════════════════════════════════════╣");
-    console.log(`║  To:      ${to}`);
-    console.log(`║  Subject: ${subject}`);
-    console.log("╠══════════════════════════════════════════════════════════════╣");
-    console.log(body);
-    console.log("╚══════════════════════════════════════════════════════════════╝\n");
+  // 1. Resend HTTP API (preferred)
+  if (_resend) {
+    const { error } = await _resend.emails.send({
+      from: _from,
+      to,
+      subject,
+      text: body,
+      html: html ?? undefined,
+    });
+    if (error) throw new Error(`Resend error: ${error.message}`);
     return { sent: true, to, subject };
   }
 
-  await _transport.sendMail({
-    from: _from,
-    to,
-    subject,
-    text: body,
-    html: html ?? undefined,
-  });
+  // 2. Nodemailer SMTP fallback
+  if (_transport) {
+    await _transport.sendMail({
+      from: _from,
+      to,
+      subject,
+      text: body,
+      html: html ?? undefined,
+    });
+    return { sent: true, to, subject };
+  }
 
+  // 3. Dev fallback: log email to console so reset links are visible
+  console.log("\n╔══════════════════════════════════════════════════════════════╗");
+  console.log("║  📧  EMAIL (not configured — console fallback)             ║");
+  console.log("╠══════════════════════════════════════════════════════════════╣");
+  console.log(`║  To:      ${to}`);
+  console.log(`║  Subject: ${subject}`);
+  console.log("╠══════════════════════════════════════════════════════════════╣");
+  console.log(body);
+  console.log("╚══════════════════════════════════════════════════════════════╝\n");
   return { sent: true, to, subject };
 }
 

@@ -8,6 +8,7 @@ export interface Config {
   supabaseServiceKey: string;
   authEnabled: boolean;
   anthropicApiKey: string;
+  resendApiKey: string;
   smtp: {
     host: string;
     port: number;
@@ -31,6 +32,7 @@ export function loadConfig(): Config {
     supabaseServiceKey: env("SUPABASE_SERVICE_KEY"),
     authEnabled: env("AUTH_ENABLED", "false") === "true",
     anthropicApiKey: env("ANTHROPIC_API_KEY"),
+    resendApiKey: env("RESEND_API_KEY"),
     smtp: {
       host: env("SMTP_HOST"),
       port: parseInt(env("SMTP_PORT", "587"), 10),
