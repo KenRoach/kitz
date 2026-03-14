@@ -110,7 +110,7 @@ async function main(): Promise<void> {
   // Start
   const features = [
     config.authEnabled ? "auth" : null,
-    config.anthropicApiKey ? "ai: claude" : null,
+    config.anthropicApiKey ? "kitz-os" : null,
     config.smtp.host ? `smtp: ${config.smtp.host}` : null,
     config.staticDir ? `static: ${config.staticDir}` : null,
   ].filter(Boolean);

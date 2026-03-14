@@ -61,7 +61,7 @@ export const QuoterPage: FC<QuoterPageProps> = ({ assets, onNavigate }) => {
                 boxShadow: `0 2px 8px ${colors.purple}40`,
               }}
             >
-              {quoting ? "AI Analyzing..." : `AI Quote (${picked.length})`}
+              {quoting ? "Kitz Analyzing..." : `Kitz Quote (${picked.length})`}
             </button>
             <button
               disabled={creating}
@@ -231,7 +231,7 @@ export const QuoterPage: FC<QuoterPageProps> = ({ assets, onNavigate }) => {
       {quote && (
         <Card style={{ marginTop: 16, background: `${colors.purple}08`, border: `1px solid ${colors.purple}25` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <Badge color={colors.purple}>Kitz AI</Badge>
+            <Badge color={colors.purple}>Kitz OS</Badge>
             <span style={{ fontSize: 13, fontWeight: 600, color: colors.text }}>
               Quote {quote.quoteId}
             </span>

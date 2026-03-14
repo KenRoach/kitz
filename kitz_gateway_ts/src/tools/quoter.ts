@@ -1,4 +1,4 @@
-/** AI-powered quote generation — Kitz OS orchestration via Claude API. */
+/** Kitz OS quote generation — AI orchestration engine for RenewFlow. */
 
 import Anthropic from "@anthropic-ai/sdk";
 import type { ToolDef } from "./registry.js";
@@ -60,7 +60,7 @@ Respond in valid JSON matching this schema:
 export const quoterTools: ToolDef[] = [
   {
     name: "generate_quote",
-    description: "AI-powered warranty renewal quote generation via Claude",
+    description: "Kitz OS warranty renewal quote generation",
     handler: async (args) => {
       const client = getClient();
       const assets = args.assets as AssetInput[];
