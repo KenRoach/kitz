@@ -10,9 +10,14 @@ export const OrdersPage: FC = () => {
   const { colors } = useTheme();
   const [filter, setFilter] = useState<"all" | POStatus>("all");
   const [orders, setOrders] = useState<PurchaseOrder[]>(PURCHASE_ORDERS);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    listOrders().then(setOrders).catch(() => {});
+    listOrders()
+      .then(setOrders)
+      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load orders"))
+      .finally(() => setLoading(false));
   }, []);
 
   const statusColor = (s: POStatus) =>
@@ -44,6 +49,18 @@ export const OrdersPage: FC = () => {
   const activeCount = orders.filter(
     (po) => po.status !== "fulfilled" && po.status !== "cancelled",
   ).length;
+
+  if (loading) {
+    return <div style={{ padding: 40, textAlign: "center", color: colors.textMid }}>Loading orders...</div>;
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 40, textAlign: "center", color: colors.danger ?? "#FF4757" }}>
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div>

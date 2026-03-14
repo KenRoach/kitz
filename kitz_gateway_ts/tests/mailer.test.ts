@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildAlertForAsset } from "../src/services/mailer.js";
+import { buildAlertForAsset, buildPasswordResetEmail } from "../src/services/mailer.js";
 
 describe("buildAlertForAsset", () => {
   const baseAsset = {
@@ -53,5 +53,68 @@ describe("buildAlertForAsset", () => {
   it("includes RenewFlow branding in HTML", () => {
     const { html } = buildAlertForAsset(baseAsset);
     expect(html).toContain("RenewFlow");
+  });
+
+  it("escapes HTML in asset fields", () => {
+    const xssAsset = { ...baseAsset, client: '<script>alert("xss")</script>' };
+    const { html } = buildAlertForAsset(xssAsset);
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
+});
+
+describe("buildPasswordResetEmail", () => {
+  const resetUrl = "https://renewflow.io/reset-password?token=abc123";
+
+  it("generates correct subject line", () => {
+    const { subject } = buildPasswordResetEmail(resetUrl);
+    expect(subject).toBe("Reset your RenewFlow password");
+  });
+
+  it("includes reset URL in plain text body", () => {
+    const { body } = buildPasswordResetEmail(resetUrl);
+    expect(body).toContain(resetUrl);
+    expect(body).toContain("RenewFlow");
+  });
+
+  it("includes RenewFlow branding in HTML", () => {
+    const { html } = buildPasswordResetEmail(resetUrl);
+    expect(html).toContain("RenewFlow");
+    expect(html).toContain("renewflow.io");
+    expect(html).toContain("RF");
+  });
+
+  it("includes reset button with correct URL", () => {
+    const { html } = buildPasswordResetEmail(resetUrl);
+    expect(html).toContain(`href="${resetUrl}"`);
+    expect(html).toContain("Reset Password");
+  });
+
+  it("includes fallback link for email clients that hide buttons", () => {
+    const { html } = buildPasswordResetEmail(resetUrl);
+    // Should have the URL mentioned twice — once in button, once as fallback text
+    const matches = html.match(new RegExp(resetUrl.replace(/[?]/g, "\\?"), "g"));
+    expect(matches).not.toBeNull();
+    expect(matches!.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("includes expiry notice", () => {
+    const { html } = buildPasswordResetEmail(resetUrl);
+    expect(html).toContain("1 hour");
+    const { body } = buildPasswordResetEmail(resetUrl);
+    expect(body).toContain("1 hour");
+  });
+
+  it("includes copyright footer with renewflow.io", () => {
+    const { html } = buildPasswordResetEmail(resetUrl);
+    expect(html).toContain("renewflow.io");
+    expect(html).toContain("LATAM IT channel partners");
+  });
+
+  it("escapes HTML in the reset URL", () => {
+    const xssUrl = 'https://renewflow.io/reset?token="><script>alert(1)</script>';
+    const { html } = buildPasswordResetEmail(xssUrl);
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
   });
 });

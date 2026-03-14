@@ -1,4 +1,4 @@
-/** Kitz Gateway — AI orchestration engine for RenewFlow. */
+/** RenewFlow Gateway — powered by AI orchestration. */
 
 import Fastify from "fastify";
 import cors from "@fastify/cors";
@@ -32,7 +32,7 @@ async function main(): Promise<void> {
   // Initialize Supabase
   initSupabase(config.supabaseUrl, config.supabaseServiceKey);
 
-  // Configure Anthropic AI (Kitz OS)
+  // Configure AI engine
   if (config.anthropicApiKey) {
     initAnthropic(config.anthropicApiKey);
   }
@@ -72,10 +72,13 @@ async function main(): Promise<void> {
   // Security headers
   await app.register(helmet, { contentSecurityPolicy: false });
 
-  // CORS
-  await app.register(cors, { origin: true });
+  // CORS — restrict to configured origins or same-origin
+  const allowedOrigins = process.env.CORS_ORIGIN?.split(",") ?? [];
+  await app.register(cors, {
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+  });
 
-  // Rate limiting on auth endpoints
+  // Rate limiting
   await app.register(rateLimit, {
     max: 100,
     timeWindow: "1 minute",
@@ -107,22 +110,30 @@ async function main(): Promise<void> {
     });
   }
 
+  // Graceful shutdown
+  const shutdown = async (signal: string) => {
+    app.log.info(`${signal} received — shutting down`);
+    await app.close();
+    process.exit(0);
+  };
+  process.on("SIGTERM", () => void shutdown("SIGTERM"));
+  process.on("SIGINT", () => void shutdown("SIGINT"));
+
   // Start
   const features = [
     config.authEnabled ? "auth" : null,
-    config.anthropicApiKey ? "kitz-os" : null,
-    config.smtp.host ? `smtp: ${config.smtp.host}` : null,
-    config.staticDir ? `static: ${config.staticDir}` : null,
+    config.anthropicApiKey ? "ai" : null,
+    config.smtp.host ? "smtp" : null,
+    config.staticDir ? "static" : null,
   ].filter(Boolean);
 
   await app.listen({ port: config.port, host: config.host });
-  console.log(
-    `Kitz Gateway v0.1 listening on http://${config.host}:${config.port}` +
-    (features.length > 0 ? ` [${features.join("] [")}]` : "")
+  app.log.info(
+    `RenewFlow Gateway v0.1 ready on port ${config.port} [${features.join(", ")}]`
   );
 }
 
 main().catch((err) => {
-  console.error("Failed to start Kitz Gateway:", err);
+  console.error("Failed to start:", err);
   process.exit(1);
 });

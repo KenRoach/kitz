@@ -1,5 +1,5 @@
 /**
- * Kitz Gateway API client for RenewFlow.
+ * RenewFlow Gateway API client.
  * Calls tools via POST /v0.1/tools/{name}/invoke
  */
 
@@ -73,6 +73,32 @@ export async function resetPassword(username: string, currentPassword: string, n
   }
   // Clear session — user must re-login with new password
   localStorage.removeItem("rf_token");
+}
+
+export async function forgotPassword(email: string): Promise<{ sent: boolean }> {
+  const res = await fetch(`${BASE}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Request failed" }));
+    throw new Error(err.error ?? "Request failed");
+  }
+  return res.json();
+}
+
+export async function resetPasswordWithToken(token: string, newPassword: string): Promise<{ username: string; role: string }> {
+  const res = await fetch(`${BASE}/auth/reset-password-with-token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, newPassword }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Password reset failed" }));
+    throw new Error(err.error ?? "Password reset failed");
+  }
+  return res.json();
 }
 
 // ── Asset Tools ──
@@ -169,7 +195,7 @@ export async function getRewards(): Promise<RewardsProfile> {
   return invokeTool<RewardsProfile>("get_rewards");
 }
 
-// ── AI Quoting (Kitz OS) ──
+// ── AI Quoting ──
 
 export interface QuoteResult {
   quoteId: string;

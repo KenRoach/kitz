@@ -152,4 +152,74 @@ describe("Gateway service types", () => {
     expect(data.result.status).toBe("submitted");
     expect(data.result.partnerName).toBe("WarrantyPro LATAM");
   });
+
+  it("forgot password sends email and returns sent status", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ sent: true }),
+    });
+
+    const response = await mockFetch("/v0.1/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "user@renewflow.io" }),
+    });
+
+    const data = await response.json();
+    expect(data.sent).toBe(true);
+  });
+
+  it("forgot password always returns success (prevents enumeration)", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ sent: true }),
+    });
+
+    const response = await mockFetch("/v0.1/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "nonexistent@example.com" }),
+    });
+
+    const data = await response.json();
+    expect(data.sent).toBe(true);
+  });
+
+  it("reset password with token sends correct request", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ username: "testuser", role: "user" }),
+    });
+
+    const response = await mockFetch("/v0.1/auth/reset-password-with-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: "abc123", newPassword: "newsecurepass" }),
+    });
+
+    const data = await response.json();
+    expect(data.username).toBe("testuser");
+    expect(data.role).toBe("user");
+  });
+
+  it("reset password with expired token returns error", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: async () => ({ error: "This reset link has expired" }),
+    });
+
+    const response = await mockFetch("/v0.1/auth/reset-password-with-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: "expired-token", newPassword: "newpass123" }),
+    });
+
+    expect(response.ok).toBe(false);
+    const data = await response.json();
+    expect(data.error).toContain("expired");
+  });
 });

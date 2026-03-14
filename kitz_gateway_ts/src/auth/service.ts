@@ -1,8 +1,9 @@
-/** Authentication service — bcrypt hashing, session tokens. */
+/** Authentication service — bcrypt hashing, session tokens, password reset. */
 
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcrypt";
 import { getSupabase } from "../db/client.js";
+import { sendEmail, buildPasswordResetEmail, isConfigured } from "../services/mailer.js";
 
 const SALT_ROUNDS = 10;
 
@@ -65,7 +66,7 @@ export async function registerUser(
   role = "user"
 ): Promise<{ username: string; role: string }> {
   if (username.length < 3) throw new Error("Username must be at least 3 characters");
-  if (password.length < 4) throw new Error("Password must be at least 4 characters");
+  if (password.length < 8) throw new Error("Password must be at least 8 characters");
 
   const db = getSupabase();
 
@@ -84,7 +85,7 @@ export async function resetPassword(
   currentPassword: string,
   newPassword: string
 ): Promise<{ username: string; role: string }> {
-  if (newPassword.length < 4) throw new Error("New password must be at least 4 characters");
+  if (newPassword.length < 8) throw new Error("New password must be at least 8 characters");
 
   const db = getSupabase();
   const { data: user } = await db
@@ -100,6 +101,106 @@ export async function resetPassword(
 
   const hash = await bcrypt.hash(newPassword, SALT_ROUNDS);
   await db.from("users").update({ password_hash: hash }).eq("id", user.id);
+
+  // Invalidate all sessions
+  await db.from("sessions").delete().eq("user_id", user.id);
+
+  return { username: user.username, role: user.role };
+}
+
+const RESET_TOKEN_EXPIRY_HOURS = 1;
+
+export async function forgotPassword(
+  identifier: string,
+  baseUrl: string
+): Promise<{ sent: boolean }> {
+  if (!isConfigured()) throw new Error("Email service not configured");
+
+  const db = getSupabase();
+
+  // Look up user by email or username
+  let user: { id: string; email: string | null; username: string } | null = null;
+  const { data: byEmail } = await db
+    .from("users")
+    .select("id, email, username")
+    .eq("email", identifier)
+    .single();
+
+  if (byEmail) {
+    user = byEmail;
+  } else {
+    const { data: byUsername } = await db
+      .from("users")
+      .select("id, email, username")
+      .eq("username", identifier)
+      .single();
+    if (byUsername) user = byUsername;
+  }
+
+  // Always return success to prevent user enumeration
+  if (!user || !user.email) return { sent: true };
+
+  // Invalidate any existing reset tokens for this user
+  await db
+    .from("password_reset_tokens")
+    .update({ used: true })
+    .eq("user_id", user.id)
+    .eq("used", false);
+
+  // Generate a secure token
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000).toISOString();
+
+  await db.from("password_reset_tokens").insert({
+    token,
+    user_id: user.id,
+    expires_at: expiresAt,
+  });
+
+  // Build reset URL
+  const resetUrl = `${baseUrl}/reset-password?token=${token}`;
+
+  // Send branded email
+  const { subject, body, html } = buildPasswordResetEmail(resetUrl);
+  await sendEmail(user.email, subject, body, html);
+
+  return { sent: true };
+}
+
+export async function resetPasswordWithToken(
+  token: string,
+  newPassword: string
+): Promise<{ username: string; role: string }> {
+  if (newPassword.length < 8) throw new Error("Password must be at least 8 characters");
+
+  const db = getSupabase();
+
+  // Find valid token
+  const { data: resetToken } = await db
+    .from("password_reset_tokens")
+    .select("user_id, expires_at, used")
+    .eq("token", token)
+    .single();
+
+  if (!resetToken) throw new Error("Invalid or expired reset link");
+  if (resetToken.used) throw new Error("This reset link has already been used");
+  if (new Date(resetToken.expires_at) < new Date()) throw new Error("This reset link has expired");
+
+  // Get user
+  const { data: user } = await db
+    .from("users")
+    .select("id, username, role")
+    .eq("id", resetToken.user_id)
+    .single();
+
+  if (!user) throw new Error("User not found");
+
+  // Update password
+  const hash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+  await db.from("users").update({ password_hash: hash }).eq("id", user.id);
+
+  // Mark token as used
+  await db.from("password_reset_tokens").update({ used: true }).eq("token", token);
 
   // Invalidate all sessions
   await db.from("sessions").delete().eq("user_id", user.id);

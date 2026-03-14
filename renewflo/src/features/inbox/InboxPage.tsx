@@ -10,12 +10,29 @@ export const InboxPage: FC = () => {
   const { colors } = useTheme();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [messages, setMessages] = useState<InboxMessage[]>(INBOX_DATA);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    listInbox().then(setMessages).catch(() => {});
+    listInbox()
+      .then(setMessages)
+      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load inbox"))
+      .finally(() => setLoading(false));
   }, []);
 
   const unreadCount = messages.filter((m) => m.unread).length;
+
+  if (loading) {
+    return <div style={{ padding: 40, textAlign: "center", color: colors.textMid }}>Loading inbox...</div>;
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 40, textAlign: "center", color: colors.danger ?? "#FF4757" }}>
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div>

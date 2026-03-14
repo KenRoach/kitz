@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { Component, useCallback, useEffect, useState, type ReactNode } from "react";
 import { ThemeContext, LIGHT, DARK, FONT } from "@/theme";
 import { Sidebar } from "@/components/layout";
 import { LoginPage } from "@/features/auth";
@@ -15,6 +15,33 @@ import { ChatPanel } from "@/features/chat";
 import { INBOX_DATA } from "@/data/seeds";
 import type { Asset, PageId } from "@/types";
 import { useAssetStore } from "@/stores";
+
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 40, textAlign: "center", fontFamily: "DM Sans, sans-serif" }}>
+          <h2 style={{ color: "#FF4757", marginBottom: 12 }}>Something went wrong</h2>
+          <p style={{ color: "#8B92A5", marginBottom: 16 }}>An unexpected error occurred. Please refresh the page.</p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{ padding: "8px 20px", borderRadius: 8, border: "none", background: "#00B894", color: "#fff", cursor: "pointer", fontSize: 14 }}
+          >
+            Refresh
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   const [isDark, setIsDark] = useState(false);
@@ -81,6 +108,7 @@ export default function App() {
   };
 
   return (
+    <ErrorBoundary>
     <ThemeContext.Provider value={{ colors, isDark, toggle: () => setIsDark((d) => !d) }}>
       <div
         style={{
@@ -112,5 +140,6 @@ export default function App() {
         <div style={{ flex: 1, overflowY: "auto", padding: 24 }}>{renderPage()}</div>
       </div>
     </ThemeContext.Provider>
+    </ErrorBoundary>
   );
 }

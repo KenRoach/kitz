@@ -10,9 +10,14 @@ export const SupportLogsPage: FC = () => {
   const { colors } = useTheme();
   const [filter, setFilter] = useState<"all" | TicketStatus>("all");
   const [tickets, setTickets] = useState<SupportTicket[]>(SUPPORT_LOGS);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    listTickets().then(setTickets).catch(() => {});
+    listTickets()
+      .then(setTickets)
+      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load tickets"))
+      .finally(() => setLoading(false));
   }, []);
 
   const statusColor = (s: TicketStatus) =>
@@ -22,6 +27,18 @@ export const SupportLogsPage: FC = () => {
     ({ critical: colors.danger, high: colors.warn, medium: colors.blue, low: colors.textMid }[p] ?? colors.textMid);
 
   const filtered = filter === "all" ? tickets : tickets.filter((t) => t.status === filter);
+
+  if (loading) {
+    return <div style={{ padding: 40, textAlign: "center", color: colors.textMid }}>Loading tickets...</div>;
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 40, textAlign: "center", color: colors.danger ?? "#FF4757" }}>
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div>

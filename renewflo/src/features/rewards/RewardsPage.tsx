@@ -9,12 +9,29 @@ import type { RewardsProfile } from "@/types";
 export const RewardsPage: FC = () => {
   const { colors } = useTheme();
   const [r, setR] = useState<RewardsProfile>(REWARDS_DATA);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    getRewards().then(setR).catch(() => {});
+    getRewards()
+      .then(setR)
+      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load rewards"))
+      .finally(() => setLoading(false));
   }, []);
 
   const progress = (r.points / r.nextAt) * 100;
+
+  if (loading) {
+    return <div style={{ padding: 40, textAlign: "center", color: colors.textMid }}>Loading rewards...</div>;
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 40, textAlign: "center", color: colors.danger ?? "#FF4757" }}>
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div>
