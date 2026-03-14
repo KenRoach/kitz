@@ -48,6 +48,19 @@ export async function loginUser(username: string, password: string): Promise<{ t
   return data;
 }
 
+export async function registerUser(username: string, password: string): Promise<{ username: string; role: string }> {
+  const res = await fetch(`${BASE}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Registration failed" }));
+    throw new Error(err.error ?? "Registration failed");
+  }
+  return res.json();
+}
+
 export async function resetPassword(username: string, currentPassword: string, newPassword: string): Promise<void> {
   const res = await fetch(`${BASE}/auth/reset-password`, {
     method: "POST",

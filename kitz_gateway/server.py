@@ -12,7 +12,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from .tools import ToolRegistry, default_registry
-from .auth import init_auth_tables, login as auth_login, validate_token, reset_password
+from .auth import init_auth_tables, login as auth_login, validate_token, reset_password, register_user
 
 
 API_PREFIX = "/v0.1"
@@ -96,6 +96,29 @@ class GatewayHandler(BaseHTTPRequestHandler):
                 self._send_json(HTTPStatus.OK, result)
             else:
                 self._send_json(HTTPStatus.UNAUTHORIZED, {"error": "Invalid credentials"})
+            return
+
+        # Registration endpoint
+        if path == f"{API_PREFIX}/auth/register":
+            body = self._read_json_body()
+            if body is None:
+                return
+            username = body.get("username", "").strip()
+            password = body.get("password", "")
+            if not username or not password:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": "username and password are required"})
+                return
+            if len(username) < 3:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Username must be at least 3 characters"})
+                return
+            if len(password) < 4:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Password must be at least 4 characters"})
+                return
+            try:
+                result = register_user(self.db_conn, username, password)
+                self._send_json(HTTPStatus.CREATED, {"message": "Account created", **result})
+            except Exception:
+                self._send_json(HTTPStatus.CONFLICT, {"error": "Username already taken"})
             return
 
         # Password reset endpoint — requires current password

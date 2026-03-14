@@ -1,10 +1,12 @@
 import { useState, type FC } from "react";
 import { FONT } from "@/theme";
-import { loginUser, resetPassword } from "@/services/gateway";
+import { loginUser, resetPassword, registerUser } from "@/services/gateway";
 
 interface LoginPageProps {
   onLogin: () => void;
 }
+
+type Mode = "login" | "register" | "reset";
 
 const inputStyle = {
   width: "100%",
@@ -30,8 +32,18 @@ const labelStyle = {
   letterSpacing: "0.05em",
 };
 
+const linkBtnStyle = {
+  background: "none",
+  border: "none",
+  color: "#00B894",
+  fontSize: 11,
+  cursor: "pointer",
+  fontFamily: FONT,
+  textDecoration: "underline" as const,
+};
+
 export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
-  const [mode, setMode] = useState<"login" | "reset">("login");
+  const [mode, setMode] = useState<Mode>("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -49,6 +61,36 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
       onLogin();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (username.length < 3) {
+      setError("Username must be at least 3 characters");
+      return;
+    }
+    if (password.length < 4) {
+      setError("Password must be at least 4 characters");
+      return;
+    }
+    setLoading(true);
+    try {
+      await registerUser(username, password);
+      setSuccess("Account created! Please sign in.");
+      setPassword("");
+      setConfirmPassword("");
+      setMode("login");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -81,13 +123,38 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
     }
   };
 
-  const switchMode = () => {
-    setMode(mode === "login" ? "reset" : "login");
+  const switchTo = (target: Mode) => {
+    setMode(target);
     setError("");
     setSuccess("");
     setNewPassword("");
     setConfirmPassword("");
   };
+
+  const subtitle: Record<Mode, string> = {
+    login: "Warranty Renewal Platform",
+    register: "Create Your Account",
+    reset: "Reset Your Password",
+  };
+
+  const submitLabel: Record<Mode, [string, string]> = {
+    login: ["Sign In", "Signing in..."],
+    register: ["Create Account", "Creating..."],
+    reset: ["Reset Password", "Resetting..."],
+  };
+
+  const handlers: Record<Mode, (e: React.FormEvent) => Promise<void>> = {
+    login: handleLogin,
+    register: handleRegister,
+    reset: handleReset,
+  };
+
+  const isDisabled =
+    loading ||
+    !username ||
+    !password ||
+    (mode === "register" && !confirmPassword) ||
+    (mode === "reset" && (!newPassword || !confirmPassword));
 
   return (
     <div
@@ -101,7 +168,7 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
       }}
     >
       <form
-        onSubmit={mode === "login" ? handleLogin : handleReset}
+        onSubmit={handlers[mode]}
         style={{
           background: "#1E2235",
           border: "1px solid #2D3154",
@@ -131,9 +198,7 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
             RF
           </div>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#E8ECF4", margin: 0 }}>RenewFlow</h1>
-          <p style={{ fontSize: 12, color: "#8B92A5", margin: "4px 0 0" }}>
-            {mode === "login" ? "Warranty Renewal Platform" : "Reset Your Password"}
-          </p>
+          <p style={{ fontSize: 12, color: "#8B92A5", margin: "4px 0 0" }}>{subtitle[mode]}</p>
         </div>
 
         {error && (
@@ -174,20 +239,33 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={inputStyle}
-          placeholder="admin"
+          placeholder={mode === "register" ? "Choose a username" : "admin"}
           autoFocus
         />
 
         <label style={labelStyle}>
-          {mode === "login" ? "Password" : "Current Password"}
+          {mode === "reset" ? "Current Password" : "Password"}
         </label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={mode === "login" ? { ...inputStyle, marginBottom: 24 } : inputStyle}
-          placeholder={mode === "login" ? "admin" : "Enter current password"}
+          placeholder={mode === "register" ? "Choose a password" : mode === "reset" ? "Enter current password" : "admin"}
         />
+
+        {mode === "register" && (
+          <>
+            <label style={labelStyle}>Confirm Password</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={{ ...inputStyle, marginBottom: 24 }}
+              placeholder="Confirm your password"
+            />
+          </>
+        )}
 
         {mode === "reset" && (
           <>
@@ -213,12 +291,7 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
 
         <button
           type="submit"
-          disabled={
-            loading ||
-            !username ||
-            !password ||
-            (mode === "reset" && (!newPassword || !confirmPassword))
-          }
+          disabled={isDisabled}
           style={{
             width: "100%",
             padding: "11px 0",
@@ -233,28 +306,26 @@ export const LoginPage: FC<LoginPageProps> = ({ onLogin }) => {
             boxShadow: "0 4px 12px rgba(0,184,148,0.25)",
           }}
         >
-          {loading
-            ? mode === "login" ? "Signing in..." : "Resetting..."
-            : mode === "login" ? "Sign In" : "Reset Password"}
+          {loading ? submitLabel[mode][1] : submitLabel[mode][0]}
         </button>
 
-        <p style={{ textAlign: "center", fontSize: 11, color: "#8B92A5", marginTop: 16, margin: "16px 0 0" }}>
-          <button
-            type="button"
-            onClick={switchMode}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#00B894",
-              fontSize: 11,
-              cursor: "pointer",
-              fontFamily: FONT,
-              textDecoration: "underline",
-            }}
-          >
-            {mode === "login" ? "Reset password" : "Back to sign in"}
-          </button>
-        </p>
+        <div style={{ textAlign: "center", marginTop: 16, display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
+          {mode === "login" && (
+            <>
+              <button type="button" onClick={() => switchTo("register")} style={linkBtnStyle}>
+                Create an account
+              </button>
+              <button type="button" onClick={() => switchTo("reset")} style={linkBtnStyle}>
+                Reset password
+              </button>
+            </>
+          )}
+          {mode !== "login" && (
+            <button type="button" onClick={() => switchTo("login")} style={linkBtnStyle}>
+              Back to sign in
+            </button>
+          )}
+        </div>
 
         {mode === "login" && (
           <p style={{ textAlign: "center", fontSize: 11, color: "#555", margin: "8px 0 0" }}>
