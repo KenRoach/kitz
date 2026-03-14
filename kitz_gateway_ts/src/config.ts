@@ -38,7 +38,7 @@ export function loadConfig(): Config {
       port: parseInt(env("SMTP_PORT", "587"), 10),
       user: env("SMTP_USER"),
       pass: env("SMTP_PASS"),
-      from: env("SMTP_FROM", "noreply@renewflow.io"),
+      from: env("SMTP_FROM", "RenewFlow <noreply@renewflow.io>"),
     },
     staticDir: env("STATIC_DIR") || null,
   };

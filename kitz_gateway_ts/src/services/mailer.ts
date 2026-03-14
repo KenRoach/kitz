@@ -6,7 +6,7 @@ import type { Transporter } from "nodemailer";
 
 let _resend: Resend | null = null;
 let _transport: Transporter | null = null;
-let _from = "onboarding@resend.dev";
+let _from = "RenewFlow <noreply@renewflow.io>";
 
 export function configure(host: string, port: number, user: string, pass: string, from: string): void {
   _from = from;
