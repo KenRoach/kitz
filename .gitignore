@@ -4,3 +4,10 @@ __pycache__/
 data/
 *.db
 .env
+node_modules/
+dist/
+*.tsbuildinfo
+*.d.ts.map
+
+# Old RenewFlow frontend (moved to KenRoach/renewflow.io)
+renewflo/
