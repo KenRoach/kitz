@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createAdminClient } from "@/lib/supabase";
 import { withErrorHandler } from "@/lib/api-response";
 import { BadRequestError } from "@/lib/errors";
 
@@ -12,6 +11,14 @@ const loginSchema = z.object({
 export const POST = withErrorHandler(async (request: unknown) => {
   const req = request as NextRequest;
   const body = loginSchema.parse(await req.json());
+
+  // When Supabase is not configured, return a clear error so the client-side
+  // local-auth fallback in the auth store activates
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    throw new BadRequestError("Authentication service is starting up. Please try again.");
+  }
+
+  const { createAdminClient } = await import("@/lib/supabase");
   const admin = createAdminClient();
 
   const { data, error } = await admin.auth.signInWithPassword({

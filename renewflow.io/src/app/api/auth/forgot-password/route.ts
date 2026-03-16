@@ -1,31 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createAdminClient } from "@/lib/supabase";
-import { withErrorHandler } from "@/lib/api-response";
-import { BadRequestError } from "@/lib/errors";
 
 const schema = z.object({ email: z.string().email() });
 
-export const POST = withErrorHandler(async (request: unknown) => {
-  const req = request as NextRequest;
-  const { email } = schema.parse(await req.json());
+// Always returns success — never reveal whether an email exists (security best practice)
+export async function POST(request: NextRequest) {
+  try {
+    const { email } = schema.parse(await request.json());
 
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-    throw new BadRequestError("Email service is not configured. Please contact support.");
-  }
-
-  const admin = createAdminClient();
-
-  const { error } = await admin.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || "https://www.renewflow.io"}/login?reset-token=`,
-  });
-  if (error) {
-    // Map Supabase errors to user-friendly messages
-    if (error.message.includes("session") || error.message.includes("expired")) {
-      throw new BadRequestError("Service temporarily unavailable. Please try again in a moment.");
+    // Attempt Supabase password reset if configured
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+      try {
+        const { createAdminClient } = await import("@/lib/supabase");
+        const admin = createAdminClient();
+        await admin.auth.resetPasswordForEmail(email, {
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || "https://www.renewflow.io"}/login?reset-token=`,
+        });
+      } catch (err) {
+        // Log but don't expose Supabase errors to the client
+        console.error("[forgot-password] Supabase error:", err);
+      }
     }
-    throw new BadRequestError(error.message);
-  }
 
-  return NextResponse.json({ message: "Password reset email sent" });
-});
+    // Always return success
+    return NextResponse.json({ message: "If an account exists with that email, a reset link has been sent." });
+  } catch {
+    return NextResponse.json(
+      { error: "BAD_REQUEST", message: "Please enter a valid email address." },
+      { status: 400 },
+    );
+  }
+}
