@@ -132,15 +132,7 @@ export async function resetPasswordWithToken(
 ): Promise<{ email: string }> {
   if (newPassword.length < 8) throw new Error("Password must be at least 8 characters");
 
-  const { createClient } = await import("@supabase/supabase-js");
   const db = getSupabase();
-
-  // Create a client authenticated with the user's access token
-  const userClient = createClient(
-    (db as unknown as { supabaseUrl: string }).supabaseUrl || process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "",
-    { global: { headers: { Authorization: `Bearer ${accessToken}` } } }
-  );
 
   // Use admin API to decode the JWT and get the user ID
   const { data: userData, error: userError } = await db.auth.getUser(accessToken);
