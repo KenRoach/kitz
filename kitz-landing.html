@@ -316,6 +316,237 @@
     }
 
     /* =========================================================
+   Surface Sections
+========================================================= */
+.surface { padding: 6rem 5%; }
+.surface-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.surface-layout.flip { direction: rtl; }
+.surface-layout.flip > * { direction: ltr; }
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+.section-body {
+  color: var(--text-mid);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.link-arrow {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.link-arrow:hover { opacity: 0.8; }
+
+/* =========================================================
+   WhatsApp Chat Mockup
+========================================================= */
+.chat-window {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  max-width: 380px;
+}
+.chat-header {
+  background: var(--bg-card-hover);
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.chat-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #00B894, #00A88A);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: white;
+  flex-shrink: 0;
+}
+.chat-name { font-weight: 700; font-size: 0.85rem; }
+.chat-status { font-size: 0.7rem; color: var(--accent); }
+.chat-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.msg {
+  max-width: 85%;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  border-radius: var(--radius);
+}
+.msg-user {
+  background: rgba(0,184,148,0.1);
+  border: 1px solid rgba(0,184,148,0.15);
+  align-self: flex-end;
+}
+.msg-bot {
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+}
+.msg-bot strong { color: var(--accent); }
+.msg-time {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+  text-align: right;
+}
+
+/* =========================================================
+   Workspace Dashboard Mockup
+========================================================= */
+.dash-window {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  max-width: 480px;
+  display: flex;
+}
+.dash-sidebar {
+  width: 48px;
+  background: var(--bg-main);
+  border-right: 1px solid var(--border);
+  padding: 0.8rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+.dash-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+.dash-dot.active {
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(0,212,170,0.4);
+}
+.dash-main { padding: 1rem; flex: 1; }
+.dash-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-dim);
+  margin-bottom: 0.8rem;
+}
+.dash-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.metric-card {
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem;
+}
+.metric-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.metric-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.metric-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-mid);
+}
+.metric-trend {
+  font-size: 0.6rem;
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+.metric-trend.up { color: var(--accent); }
+.metric-trend.down { color: var(--accent); }
+
+/* =========================================================
+   Terminal Mockup
+========================================================= */
+.term-window {
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  max-width: 420px;
+}
+.term-bar {
+  background: var(--bg-card);
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.term-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.term-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+.term-body {
+  padding: 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre;
+}
+.term-body .cmd { color: var(--accent); }
+.term-body .dim { color: var(--text-mid); }
+.term-body .ok { color: var(--accent); }
+
+    /* =========================================================
        Mobile Responsive
     ========================================================= */
     @media (max-width: 768px) {
@@ -349,10 +580,18 @@
         align-items: center;
         justify-content: center;
       }
+      .surface-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .surface-layout.flip { direction: ltr; }
+      .chat-window { max-width: 100%; }
+      .dash-window { max-width: 100%; }
+      .term-window { max-width: 100%; }
+      .dash-metrics { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 480px) {
       .hero h1 { font-size: 1.8rem; }
+      .dash-metrics { grid-template-columns: 1fr; }
+      .metric-value { font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -414,6 +653,153 @@
           <span class="es">Instalar el Brain</span>
           <span class="pt">Instalar o Brain</span>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WhatsApp Surface -->
+  <section class="surface" id="whatsapp">
+    <div class="surface-layout">
+      <div class="surface-text">
+        <div class="section-label">// whatsapp</div>
+        <h2 class="section-title">
+          <span class="en">Your business in your pocket</span>
+          <span class="es">Tu negocio en tu bolsillo</span>
+          <span class="pt">Seu negócio no bolso</span>
+        </h2>
+        <p class="section-body">
+          <span class="en">Send Kitz a message like you'd talk to an employee. "Vendí 5 empanadas a $1.50" — and it's tracked. Sales, expenses, inventory, customer follow-ups. All from the chat you already use every day.</span>
+          <span class="es">Envíale un mensaje a Kitz como le hablarías a un empleado. "Vendí 5 empanadas a $1.50" — y queda registrado. Ventas, gastos, inventario, seguimiento de clientes. Todo desde el chat que ya usas todos los días.</span>
+          <span class="pt">Mande uma mensagem pro Kitz como falaria com um funcionário. "Vendi 5 empanadas a $1.50" — e fica registrado. Vendas, despesas, estoque, acompanhamento de clientes. Tudo pelo chat que você já usa todo dia.</span>
+        </p>
+        <a class="link-arrow" href="https://wa.me/50760001234?text=Hola%20Kitz" target="_blank" rel="noopener">
+          <span class="en">Try on WhatsApp →</span>
+          <span class="es">Probar en WhatsApp →</span>
+          <span class="pt">Testar no WhatsApp →</span>
+        </a>
+      </div>
+      <div class="surface-mockup">
+        <div class="chat-window" role="img" aria-label="WhatsApp chat demo with Kitz">
+          <div class="chat-header">
+            <div class="chat-avatar">K</div>
+            <div>
+              <div class="chat-name">Kitz</div>
+              <div class="chat-status">online</div>
+            </div>
+          </div>
+          <div class="chat-body">
+            <div class="msg msg-user">Hola<div class="msg-time">10:30 AM</div></div>
+            <div class="msg msg-bot">¡Hola! 👋 Soy <strong>Kitz</strong>, tu asistente personal de negocios.<br><br>¿Qué tipo de negocio tienes?<div class="msg-time">10:30 AM</div></div>
+            <div class="msg msg-user">Panadería<div class="msg-time">10:31 AM</div></div>
+            <div class="msg msg-bot">¡Genial! 🏪 Un negocio de tipo <strong>panadería</strong>.<br><br>¿Cómo se llama tu negocio?<div class="msg-time">10:31 AM</div></div>
+            <div class="msg msg-user">La Panadería Rosa<div class="msg-time">10:32 AM</div></div>
+            <div class="msg msg-bot"><strong>✓ La Panadería Rosa</strong> queda registrado. ✅<br><br>Dime tu primera venta para empezar.<div class="msg-time">10:32 AM</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Workspace Surface -->
+  <section class="surface" id="workspace" style="background: var(--bg-main);">
+    <div class="surface-layout flip">
+      <div class="surface-text">
+        <div class="section-label">// workspace</div>
+        <h2 class="section-title">
+          <span class="en">The full picture, in your browser</span>
+          <span class="es">La imagen completa, en tu navegador</span>
+          <span class="pt">A visão completa, no seu navegador</span>
+        </h2>
+        <p class="section-body">
+          <span class="en">Dashboard with real-time metrics. Weekly reports. Inventory alerts. Customer management. Invoice generation. Everything Kitz tracks on WhatsApp, visualized and organized in one place.</span>
+          <span class="es">Dashboard con métricas en tiempo real. Reportes semanales. Alertas de inventario. Gestión de clientes. Generación de facturas. Todo lo que Kitz rastrea en WhatsApp, visualizado y organizado en un solo lugar.</span>
+          <span class="pt">Painel com métricas em tempo real. Relatórios semanais. Alertas de estoque. Gestão de clientes. Geração de faturas. Tudo que o Kitz rastreia no WhatsApp, visualizado e organizado em um só lugar.</span>
+        </p>
+        <a class="link-arrow" href="https://workspace.kitz.services" target="_blank" rel="noopener">
+          <span class="en">Open Workspace →</span>
+          <span class="es">Abrir Workspace →</span>
+          <span class="pt">Abrir Workspace →</span>
+        </a>
+      </div>
+      <div class="surface-mockup">
+        <div class="dash-window" role="img" aria-label="KitZ Workspace dashboard">
+          <div class="dash-sidebar">
+            <div class="dash-dot active"></div>
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
+          </div>
+          <div class="dash-main">
+            <div class="dash-title">Portfolio Overview</div>
+            <div class="dash-metrics">
+              <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(0,212,170,0.09);">📦</div>
+                <div class="metric-value">$580</div>
+                <div class="metric-label">Sales</div>
+                <div class="metric-trend up">▲ 12%</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(167,139,250,0.09);">💰</div>
+                <div class="metric-value">$320</div>
+                <div class="metric-label">Expenses</div>
+                <div class="metric-trend down">▼ 8%</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(0,212,170,0.09);">📊</div>
+                <div class="metric-value">$260</div>
+                <div class="metric-label">Profit</div>
+                <div class="metric-trend up">▲ 23%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Brain / Terminal Surface -->
+  <section class="surface" id="brain">
+    <div class="surface-layout">
+      <div class="surface-text">
+        <div class="section-label">// kitz brain</div>
+        <h2 class="section-title">
+          <span class="en">AI in your terminal</span>
+          <span class="es">IA en tu terminal</span>
+          <span class="pt">IA no seu terminal</span>
+        </h2>
+        <p class="section-body">
+          <span class="en">Install the Kitz brain locally. Query your business data, generate reports, run insights — all from the command line. Built for power users who live in the terminal.</span>
+          <span class="es">Instala el cerebro de Kitz localmente. Consulta datos de tu negocio, genera reportes, ejecuta análisis — todo desde la línea de comandos. Hecho para usuarios avanzados que viven en la terminal.</span>
+          <span class="pt">Instale o cérebro do Kitz localmente. Consulte dados do seu negócio, gere relatórios, execute análises — tudo pela linha de comando. Feito para usuários avançados que vivem no terminal.</span>
+        </p>
+        <a class="link-arrow" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">
+          <span class="en">Install →</span>
+          <span class="es">Instalar →</span>
+          <span class="pt">Instalar →</span>
+        </a>
+      </div>
+      <div class="surface-mockup">
+        <div class="term-window" role="img" aria-label="Kitz Brain terminal demo">
+          <div class="term-bar">
+            <div class="term-dot" style="background: var(--danger);"></div>
+            <div class="term-dot" style="background: var(--warn);"></div>
+            <div class="term-dot" style="background: var(--accent);"></div>
+            <div class="term-title">kitz-brain</div>
+          </div>
+          <div class="term-body"><span class="cmd">$</span> npm install -g kitz
+<span class="ok">✓</span> kitz brain installed
+
+<span class="cmd">$</span> kitz insights
+<span class="dim">📊 Weekly Report — La Panadería Rosa</span>
+<span class="dim">─────────────────────────────</span>
+Sales:    $580.00  <span class="ok">▲ 12%</span>
+Expenses: $320.00  <span class="ok">▼  8%</span>
+Profit:   $260.00  <span class="ok">▲ 23%</span>
+
+<span class="dim">💡 Tip: Your flour costs dropped — lock in
+   this supplier price with a bulk order.</span></div>
+        </div>
       </div>
     </div>
   </section>
