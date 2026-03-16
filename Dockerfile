@@ -1,15 +1,5 @@
-# Stage 1: Build frontend SPA
-FROM node:20-alpine AS frontend
-WORKDIR /app
-COPY renewflo/package.json renewflo/package-lock.json ./
-RUN npm ci --legacy-peer-deps
-COPY renewflo/ ./
-ARG VITE_API_URL=https://api-production-dcc6.up.railway.app/api/v1
-ENV VITE_API_URL=$VITE_API_URL
-RUN npx vite build
-
-# Stage 2: Compile gateway TypeScript
-FROM node:20-alpine AS gateway
+# Stage 1: Compile gateway TypeScript
+FROM node:20-alpine AS build
 WORKDIR /app
 COPY kitz_gateway_ts/package.json kitz_gateway_ts/package-lock.json ./
 RUN npm ci
@@ -17,13 +7,15 @@ COPY kitz_gateway_ts/src ./src
 COPY kitz_gateway_ts/tsconfig.json ./
 RUN npx tsc
 
-# Stage 3: Production runtime
+# Stage 2: Production runtime
 FROM node:20-alpine
 WORKDIR /app
 COPY kitz_gateway_ts/package.json kitz_gateway_ts/package-lock.json ./
 RUN npm ci --omit=dev
-COPY --from=gateway /app/dist ./dist/
-COPY --from=frontend /app/dist ./static/
+COPY --from=build /app/dist ./dist/
+
+# Pre-built frontend SPA
+COPY static_dist ./static/
 
 ENV PORT=8787
 ENV HOST=0.0.0.0
