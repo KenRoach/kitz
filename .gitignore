@@ -3,3 +3,10 @@ __pycache__/
 .pytest_cache/
 data/
 *.db
+
+# Environment files — NEVER commit secrets
+.env
+.env.local
+.env.production
+*/.env
+*/.env.local
