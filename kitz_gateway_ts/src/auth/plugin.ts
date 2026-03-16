@@ -15,13 +15,18 @@ async function authPlugin(app: FastifyInstance): Promise<void> {
 
   app.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply) => {
     // Skip auth for health, tool listing, auth routes, static files, and OPTIONS
-    const path = request.url;
+    const path = request.url.split("?")[0];
     if (
       request.method === "OPTIONS" ||
       path === "/v0.1/health" ||
       path === "/v0.1/tools" ||
       path.startsWith("/v0.1/auth/") ||
-      path.startsWith("/api/v1/auth/")
+      path.startsWith("/api/v1/auth/") ||
+      // Skip auth for static assets and SPA routes (non-API paths)
+      path.startsWith("/assets/") ||
+      path === "/" ||
+      path === "/favicon.svg" ||
+      (!path.startsWith("/v0.1/") && !path.startsWith("/api/"))
     ) {
       return;
     }
