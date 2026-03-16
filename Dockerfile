@@ -4,7 +4,7 @@
 FROM node:20-alpine AS frontend
 WORKDIR /app/renewflo
 COPY renewflo/package.json renewflo/package-lock.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 COPY renewflo/ ./
 RUN npm run build
 
