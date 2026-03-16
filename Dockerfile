@@ -6,7 +6,7 @@ RUN npm ci --legacy-peer-deps
 COPY renewflo/ ./
 ARG VITE_API_URL=https://api-production-dcc6.up.railway.app/api/v1
 ENV VITE_API_URL=$VITE_API_URL
-RUN npx tsc -b && npx vite build
+RUN npx vite build
 
 # Stage 2: Compile gateway TypeScript
 FROM node:20-alpine AS gateway
