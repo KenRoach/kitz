@@ -3,7 +3,7 @@
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcrypt";
 import { getSupabase } from "../db/client.js";
-import { sendEmail, buildPasswordResetEmail, isConfigured } from "../services/mailer.js";
+import { sendEmail, buildPasswordResetEmail } from "../services/mailer.js";
 
 const SALT_ROUNDS = 10;
 
@@ -63,7 +63,8 @@ export async function validateToken(token: string): Promise<AuthUser | null> {
 export async function registerUser(
   username: string,
   password: string,
-  role = "user"
+  role = "user",
+  email?: string
 ): Promise<{ username: string; role: string }> {
   if (username.length < 3) throw new Error("Username must be at least 3 characters");
   if (password.length < 8) throw new Error("Password must be at least 8 characters");
@@ -74,7 +75,9 @@ export async function registerUser(
   if (existing) throw new Error("Username already taken");
 
   const hash = await bcrypt.hash(password, SALT_ROUNDS);
-  const { error } = await db.from("users").insert({ username, password_hash: hash, role });
+  const record: Record<string, string> = { username, password_hash: hash, role };
+  if (email) record.email = email;
+  const { error } = await db.from("users").insert(record);
   if (error) throw new Error("Registration failed");
 
   return { username, role };
@@ -114,8 +117,6 @@ export async function forgotPassword(
   identifier: string,
   baseUrl: string
 ): Promise<{ sent: boolean }> {
-  if (!isConfigured()) throw new Error("Email service not configured");
-
   const db = getSupabase();
 
   // Look up user by email or username
