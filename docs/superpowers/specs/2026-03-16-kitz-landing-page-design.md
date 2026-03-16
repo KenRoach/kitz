@@ -60,6 +60,15 @@ The workspace app (RenewFlow at workspace.kitz.services) defines the visual lang
 - Rounded corners throughout (8px-16px)
 - Subtle shadows, not sharp edges
 - No film grain overlay (that's Academy, not workspace)
+- Note: Landing page is branded "KitZ" (the product), not "RenewFlow" (the workspace app name). Logo badge shows "K", not "RF".
+
+### Interactions
+
+- All interactive elements: `transition: all 0.2s ease`
+- Button hover: green filled buttons darken to `#00A88A`, outline buttons get green border
+- Focus-visible: 2px green outline ring offset 2px for keyboard accessibility
+- Smooth scroll: `scroll-behavior: smooth` on html
+- Mobile menu: slide-down with `0.2s ease` transition
 
 ## Page Structure
 
@@ -81,7 +90,7 @@ The workspace app (RenewFlow at workspace.kitz.services) defines the visual lang
 - **Subheadline:** "Manage sales, expenses, inventory, and clients — from WhatsApp, your browser, or your terminal." — 1.1rem, `#8B95AD`
 - **CTAs (3 buttons, row, centered):**
   1. "Try on WhatsApp" — green filled `#00B894`, white text, 8px radius
-  2. "Open Workspace" — outline, border `#2D3154`, white text, 8px radius
+  2. "Open Workspace" — outline, border `#1E2745`, white text, 8px radius
   3. "Install the Brain" — outline, same style, small terminal icon
 - **Background effect:** Subtle radial green glow behind headline (`radial-gradient(circle, rgba(0,184,148,0.06), transparent 70%)`)
 - **Mobile:** Buttons stack vertically, full width, 48px min height
@@ -120,7 +129,10 @@ The workspace app (RenewFlow at workspace.kitz.services) defines the visual lang
     - "Sales" — $580.00 — ▲ 12% (green)
     - "Expenses" — $320.00 — ▼ 8% (green, as decrease is good)
     - "Profit" — $260.00 — ▲ 23% (green)
-  - MetricCard style: 28px bold value, 11px uppercase label, icon container 34x34 with `${color}12` bg, 9px radius
+  - MetricCard style: 28px bold value, 11px uppercase label, icon container 34x34 with colored bg at 7% alpha, 9px radius
+    - Sales icon: `#00D4AA12` bg, green icon
+    - Expenses icon: `#A78BFA12` bg, purple icon
+    - Profit icon: `#00D4AA12` bg, green icon
   - Below metrics: small pipeline/alert bar indicator
   - Colors: `#00D4AA` accent, `#A78BFA` purple for secondary elements
 - **Mobile:** Stacks vertically, text first, mockup below
@@ -218,6 +230,7 @@ The workspace app (RenewFlow at workspace.kitz.services) defines the visual lang
 - Toggle switches all visible text to Spanish or Portuguese
 - Implemented via minimal vanilla JS: a `data-lang` attribute on `<html>`, with `[data-lang="es"] .en { display:none } [data-lang="es"] .es { display:inline }` pattern
 - Each translatable text element has three spans: `.en`, `.es`, `.pt` — only the active language shows
+- Block-level elements (headings, paragraphs) use `display: block` for visible span, not `display: inline`
 - Toggle is a simple 3-button pill group in the nav and footer
 
 ## Responsive Behavior
@@ -240,6 +253,25 @@ The workspace app (RenewFlow at workspace.kitz.services) defines the visual lang
 - Headlines scale down via clamp()
 - Card padding reduces to 16px
 - Mockup font sizes reduce slightly
+
+## Head / Meta
+
+- `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
+- `<title>` — "KitZ — Your AI Business Assistant" (en), "KitZ — Tu Asistente de Negocios con IA" (es), "KitZ — Seu Assistente de Neg&oacute;cios com IA" (pt)
+- `<meta name="description">` — matching tagline per language
+- Open Graph: og:title, og:description, og:url (`https://kenroach.github.io/kitz/`), og:type website, og:locale en_US
+- Twitter card: summary_large_image
+- Favicon: inline SVG data URI — green rounded square with "K" in white (matching nav badge)
+- `<html lang="en">` — updated by JS when language changes
+
+## Accessibility
+
+- All interactive elements keyboard-navigable
+- `aria-label` on hamburger button, language toggle, icon-only elements
+- Skip-to-content link (visually hidden, visible on focus)
+- Color contrast: green `#00D4AA` on `#0B0F1A` = ~7.5:1 (AAA pass)
+- Footer links use `#8B95AD` (textMid, ~4.8:1 AA pass) instead of `#4A5578` (textDim, fails AA)
+- Timestamps and purely decorative text may use textDim
 
 ## Technical Constraints
 
