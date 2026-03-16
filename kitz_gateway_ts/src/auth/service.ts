@@ -3,7 +3,6 @@
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcrypt";
 import { getSupabase } from "../db/client.js";
-import { sendEmail, buildPasswordResetEmail, isConfigured } from "../services/mailer.js";
 
 const SALT_ROUNDS = 10;
 
@@ -108,62 +107,22 @@ export async function resetPassword(
   return { username: user.username, role: user.role };
 }
 
-const RESET_TOKEN_EXPIRY_HOURS = 1;
-
 export async function forgotPassword(
   identifier: string,
   baseUrl: string
 ): Promise<{ sent: boolean }> {
-  if (!isConfigured()) throw new Error("Email service not configured");
-
   const db = getSupabase();
 
-  // Look up user by email or username
-  let user: { id: string; email: string | null; username: string } | null = null;
-  const { data: byEmail } = await db
-    .from("users")
-    .select("id, email, username")
-    .eq("email", identifier)
-    .single();
+  // Use Supabase Auth's built-in password reset (handles email delivery)
+  const redirectTo = `${baseUrl}/reset-password`;
+  const { error } = await db.auth.resetPasswordForEmail(identifier, { redirectTo });
 
-  if (byEmail) {
-    user = byEmail;
-  } else {
-    const { data: byUsername } = await db
-      .from("users")
-      .select("id, email, username")
-      .eq("username", identifier)
-      .single();
-    if (byUsername) user = byUsername;
+  if (error) {
+    // Log but don't expose to client (prevent user enumeration)
+    console.error("[auth] resetPasswordForEmail error:", error.message);
   }
 
   // Always return success to prevent user enumeration
-  if (!user || !user.email) return { sent: true };
-
-  // Invalidate any existing reset tokens for this user
-  await db
-    .from("password_reset_tokens")
-    .update({ used: true })
-    .eq("user_id", user.id)
-    .eq("used", false);
-
-  // Generate a secure token
-  const token = randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000).toISOString();
-
-  await db.from("password_reset_tokens").insert({
-    token,
-    user_id: user.id,
-    expires_at: expiresAt,
-  });
-
-  // Build reset URL
-  const resetUrl = `${baseUrl}/reset-password?token=${token}`;
-
-  // Send branded email
-  const { subject, body, html } = buildPasswordResetEmail(resetUrl);
-  await sendEmail(user.email, subject, body, html);
-
   return { sent: true };
 }
 
