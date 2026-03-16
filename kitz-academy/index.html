@@ -531,7 +531,7 @@ footer {
     <a class="btn-outline" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;">GitHub &rarr;</a>
   </div>
   <div class="hero-counters">
-    <div><div class="counter-val" data-target="12">0</div><div class="counter-lbl">Tools en el Gateway</div></div>
+    <div><div class="counter-val" data-target="124">0</div><div class="counter-lbl">Tools en KitZ OS</div></div>
     <div><div class="counter-val" data-target="0" data-suffix=" deps">0</div><div class="counter-lbl">Dependencias</div></div>
     <div><div class="counter-val" data-target="100" data-suffix="%">0</div><div class="counter-lbl">Open Source</div></div>
     <div><div class="counter-val" data-target="7">0</div><div class="counter-lbl">Cursos Libres</div></div>
@@ -557,7 +557,7 @@ footer {
     <a href="curso.html?id=intro-kitz" class="course-card" data-color="lime" data-level="basico" role="article" aria-label="Curso: Introducci&oacute;n a KitZ OS">
       <span class="course-icon">&#x1F30D;</span>
       <h4>Introducci&oacute;n a KitZ OS</h4>
-      <p>Qu&eacute; es KitZ, c&oacute;mo funciona el gateway de herramientas, y por qu&eacute; open-source importa. Sin requisitos previos.</p>
+      <p>Qu&eacute; es KitZ OS, c&oacute;mo funciona su gateway de 124+ herramientas, y la arquitectura de agentes de IA. Sin requisitos previos.</p>
       <div class="course-meta">
         <span>6 lecciones</span><span class="dot"></span><span>1h 30m</span><span class="dot"></span><span>B&aacute;sico</span>
       </div>
@@ -566,7 +566,7 @@ footer {
     <a href="curso.html?id=primer-tool" class="course-card" data-color="cyan" data-level="basico" role="article" aria-label="Curso: Tu Primer Tool con Python">
       <span class="course-icon">&#x1F40D;</span>
       <h4>Tu Primer Tool con Python</h4>
-      <p>Construye tu primera herramienta para el KitZ Gateway usando solo la biblioteca est&aacute;ndar de Python. Cero dependencias.</p>
+      <p>Construye tu primera herramienta para el KitZ OS tool registry usando TypeScript y Fastify.</p>
       <div class="course-meta">
         <span>8 lecciones</span><span class="dot"></span><span>2h 45m</span><span class="dot"></span><span>B&aacute;sico</span>
       </div>
@@ -575,7 +575,7 @@ footer {
     <a href="curso.html?id=api-rest" class="course-card" data-color="orange" data-level="intermedio" role="article" aria-label="Curso: API REST y el Gateway">
       <span class="course-icon">&#x1F310;</span>
       <h4>API REST y el Gateway</h4>
-      <p>Endpoints HTTP, registro de tools, protocolo JSON y c&oacute;mo consumir el gateway desde cualquier frontend o servicio.</p>
+      <p>Endpoints del KitZ Gateway: /tool-calls, /api/kitz/run, WebSocket y c&oacute;mo consumirlos desde cualquier frontend.</p>
       <div class="course-meta">
         <span>10 lecciones</span><span class="dot"></span><span>3h 20m</span><span class="dot"></span><span>Intermedio</span>
       </div>
@@ -593,7 +593,7 @@ footer {
     <a href="curso.html?id=react-ts" class="course-card" data-color="gold" data-level="intermedio" role="article" aria-label="Curso: Frontend con React y TypeScript">
       <span class="course-icon">&#x26A1;</span>
       <h4>Frontend con React y TypeScript</h4>
-      <p>Construye interfaces modernas que consumen el KitZ Gateway. React 19, Zustand, y dise&ntilde;o de tokens.</p>
+      <p>Construye interfaces modernas que consumen el KitZ OS gateway. React 19, Zustand, y dise&ntilde;o de tokens.</p>
       <div class="course-meta">
         <span>12 lecciones</span><span class="dot"></span><span>4h 30m</span><span class="dot"></span><span>Intermedio</span>
       </div>
@@ -651,8 +651,8 @@ footer {
   <div class="game-cards">
     <div class="game-card" onclick="openChallenge('gateway')" role="button" tabindex="0" aria-label="Reto Gateway">
       <div class="game-card-icon">&#x1F9E0;</div>
-      <h5>Reto Gateway</h5>
-      <p>Construye un tool personalizado para el gateway y comp&aacute;rtelo con la comunidad.</p>
+      <h5>Reto KitZ OS</h5>
+      <p>Registra un tool personalizado en el KitZ OS tool registry y comp&aacute;rtelo con la comunidad.</p>
     </div>
     <div class="game-card" onclick="openChallenge('debug')" role="button" tabindex="0" aria-label="Debug Challenge">
       <div class="game-card-icon">&#x1F41B;</div>
@@ -677,11 +677,11 @@ footer {
 
 <div class="divider"></div>
 
-<!-- HERRAMIENTAS (GATEWAY TOOLS) -->
+<!-- HERRAMIENTAS (KITZ OS TOOLS) -->
 <section id="herramientas">
-  <p class="stag" style="color:var(--orange)">// gateway tools</p>
-  <h2 class="stitle">Herramientas del KitZ Gateway</h2>
-  <p class="sdesc">Ejemplos reales de las herramientas disponibles en el gateway. Copia los ejemplos JSON y prueba localmente.</p>
+  <p class="stag" style="color:var(--orange)">// kitz os tools</p>
+  <h2 class="stitle">Herramientas de KitZ (OS)</h2>
+  <p class="sdesc">124+ herramientas invocables v&iacute;a el gateway de KitZ OS. Autenticaci&oacute;n JWT, headers seguros y respuestas JSON.</p>
 
   <div class="tools-tabs">
     <button class="tool-tab active" data-cat="todos">Todos</button>
@@ -694,139 +694,176 @@ footer {
   <div class="prompts-grid" id="promptsGrid">
     <div class="prompt-card" data-cat="core">
       <div class="prompt-cat core">Core</div>
-      <h4>echo &mdash; Prueba de Conectividad</h4>
-      <div class="prompt-box">POST /v0.1/tools/echo
-Content-Type: application/json
-
-{
-  "message": "hola desde KitZ"
-}
+      <h4>Health Check &mdash; Estado del Sistema</h4>
+      <div class="prompt-box">GET /api/kitz/status
+Authorization: Bearer &lt;JWT&gt;
 
 // Respuesta:
-{ "result": "hola desde KitZ" }</div>
+{
+  "status": "ok",
+  "tools": 124,
+  "agents": 33,
+  "uptime": "72h 14m"
+}</div>
       <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
     <div class="prompt-card" data-cat="core">
       <div class="prompt-cat core">Core</div>
-      <h4>utc_now &mdash; Timestamp UTC</h4>
-      <div class="prompt-box">POST /v0.1/tools/utc_now
-Content-Type: application/json
-
-{}
-
-// Respuesta:
-{ "result": "2026-03-14T10:30:00Z" }</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
-    </div>
-    <div class="prompt-card" data-cat="core">
-      <div class="prompt-cat core">Core</div>
-      <h4>sum &mdash; Sumar Valores</h4>
-      <div class="prompt-box">POST /v0.1/tools/sum
+      <h4>tool-calls &mdash; Invocar Herramienta</h4>
+      <div class="prompt-box">POST /tool-calls
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
 Content-Type: application/json
 
 {
-  "values": [10, 25, 37, 8]
-}
-
-// Respuesta:
-{ "result": 80 }</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
-    </div>
-    <div class="prompt-card" data-cat="data">
-      <div class="prompt-cat data">Datos</div>
-      <h4>list_assets &mdash; Consultar Activos</h4>
-      <div class="prompt-box">POST /v0.1/tools/list_assets
-Content-Type: application/json
-
-{
-  "client": "Acme Corp",
-  "status": "active"
-}
-
-// Filtra por cliente, tier, status,
-// marca o fecha de vencimiento</div>
-      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
-    </div>
-    <div class="prompt-card" data-cat="data">
-      <div class="prompt-cat data">Datos</div>
-      <h4>get_asset_metrics &mdash; M&eacute;tricas del Portafolio</h4>
-      <div class="prompt-box">POST /v0.1/tools/get_asset_metrics
-Content-Type: application/json
-
-{}
-
-// Respuesta incluye:
-// total_devices, unique_clients,
-// oem_cost, tpm_cost, savings, alerts</div>
+  "name": "gmail_send",
+  "input": {
+    "to": "cliente@ejemplo.com",
+    "subject": "Propuesta comercial",
+    "body": "Adjunto la propuesta..."
+  },
+  "riskLevel": "low",
+  "requiredScopes": ["tools:invoke"]
+}</div>
       <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
     <div class="prompt-card" data-cat="api">
       <div class="prompt-cat api">API</div>
-      <h4>create_order &mdash; Crear Orden de Compra</h4>
-      <div class="prompt-box">POST /v0.1/tools/create_order
-Content-Type: application/json
+      <h4>gmail_search &mdash; Buscar Correos</h4>
+      <div class="prompt-box">POST /tool-calls
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
 
 {
-  "client": "TechLatam SA",
-  "items": ["asset_001", "asset_002"],
-  "type": "tpm"
-}
-
-// Crea PO en estado "draft"</div>
+  "name": "gmail_search",
+  "input": {
+    "query": "from:proveedor subject:factura",
+    "maxResults": 10
+  },
+  "riskLevel": "low",
+  "requiredScopes": ["tools:invoke"]
+}</div>
       <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
-    <div class="prompt-card" data-cat="api">
-      <div class="prompt-cat api">API</div>
-      <h4>list_orders &mdash; Consultar &Oacute;rdenes</h4>
-      <div class="prompt-box">POST /v0.1/tools/list_orders
-Content-Type: application/json
+    <div class="prompt-card" data-cat="data">
+      <div class="prompt-cat data">Datos</div>
+      <h4>sheets_read &mdash; Leer Google Sheets</h4>
+      <div class="prompt-box">POST /tool-calls
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
 
 {
-  "status": "pending-approval"
-}
+  "name": "sheets_read",
+  "input": {
+    "spreadsheetId": "1abc...xyz",
+    "range": "Ventas!A1:D50"
+  },
+  "riskLevel": "low",
+  "requiredScopes": ["tools:invoke"]
+}</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="data">
+      <div class="prompt-cat data">Datos</div>
+      <h4>calendar_create &mdash; Crear Evento</h4>
+      <div class="prompt-box">POST /tool-calls
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
 
-// Filtra por estado del flujo:
-// draft, pending-approval, approved,
-// submitted, fulfilled</div>
+{
+  "name": "calendar_create",
+  "input": {
+    "summary": "Llamada con cliente",
+    "start": "2026-03-20T10:00:00",
+    "duration": 30,
+    "attendees": ["cliente@mail.com"]
+  },
+  "riskLevel": "medium",
+  "requiredScopes": ["tools:invoke"]
+}</div>
       <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
     <div class="prompt-card" data-cat="ai">
       <div class="prompt-cat ai">IA</div>
-      <h4>generate_insights &mdash; An&aacute;lisis con IA</h4>
-      <div class="prompt-box">POST /v0.1/tools/generate_insights
-Content-Type: application/json
+      <h4>ai_chat &mdash; Conversaci&oacute;n con Agente</h4>
+      <div class="prompt-box">POST /api/kitz/run
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
 
-{}
+{
+  "goal": "Analiza las ventas del mes
+  y genera un resumen ejecutivo",
+  "context": {
+    "userId": "user-456",
+    "channel": "dashboard"
+  }
+}
 
-// Genera autom&aacute;ticamente:
-// - Concentraci&oacute;n de clientes
-// - Heatmap de vencimientos
-// - Comparativa de costos
-// - Revenue at risk</div>
+// Streaming via WebSocket en /ws</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="ai">
+      <div class="prompt-cat ai">IA</div>
+      <h4>ai_battery &mdash; Cr&eacute;ditos de IA</h4>
+      <div class="prompt-box">GET /api/kitz/battery
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
+
+// Respuesta:
+{
+  "balance": 4250,
+  "used_today": 180,
+  "plan": "pro",
+  "recharge_at": 500
+}</div>
       <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
     <div class="prompt-card" data-cat="api">
       <div class="prompt-cat api">API</div>
-      <h4>Listar Tools Disponibles (GET)</h4>
-      <div class="prompt-box">GET /v0.1/tools
+      <h4>whatsapp_send &mdash; Enviar Mensaje</h4>
+      <div class="prompt-box">POST /proxy/whatsapp/send
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
 
-// Respuesta: lista de todas las
-// herramientas registradas en el
-// gateway con sus nombres y
-// descripciones.
-// No requiere body.</div>
+{
+  "to": "+507XXXXXXXX",
+  "message": "Tu pedido est&aacute; listo",
+  "type": "text"
+}
+
+// Requiere scope: messages:write
+// Draft-first por defecto</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="api">
+      <div class="prompt-cat api">API</div>
+      <h4>email_send &mdash; Enviar Correo</h4>
+      <div class="prompt-box">POST /proxy/email/send
+Authorization: Bearer &lt;JWT&gt;
+x-org-id: org-123
+
+{
+  "to": "cliente@empresa.com",
+  "subject": "Seguimiento",
+  "html": "&lt;p&gt;Hola...&lt;/p&gt;"
+}
+
+// Requiere scope: messages:write
+// Draft-first por defecto</div>
       <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
     <div class="prompt-card" data-cat="core">
       <div class="prompt-cat core">Core</div>
-      <h4>Health Check</h4>
-      <div class="prompt-box">GET /v0.1/health
+      <h4>WebSocket &mdash; Eventos en Tiempo Real</h4>
+      <div class="prompt-box">// Conectar al stream de eventos:
+ws://localhost:3012/ws
 
-// Respuesta:
-{ "status": "ok", "version": "0.1" }
-
-// Verifica que el gateway
-// esta corriendo correctamente</div>
+// Eventos NDJSON:
+{"type":"agent.thinking","agent":"cmo"}
+{"type":"tool.call","name":"gmail_search"}
+{"type":"tool.result","data":{...}}
+{"type":"text.delta","chunk":"Analizando"}
+{"type":"text.done","text":"Listo..."}</div>
       <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
     </div>
   </div>
@@ -844,10 +881,10 @@ Content-Type: application/json
     <div class="story-card">
       <div class="story-visual bg-lime">&#x1F527;</div>
       <div class="story-body">
-        <div class="story-tag">Backend &bull; Python</div>
-        <h4>KitZ Gateway &mdash; Servidor de Herramientas</h4>
-        <p>Servidor HTTP ligero con registro de tools invocables v&iacute;a REST. Construido con la stdlib de Python, cero dependencias externas.</p>
-        <div class="story-metric">Python stdlib &bull; Puerto 8787</div>
+        <div class="story-tag">Backend &bull; TypeScript</div>
+        <h4>KitZ Gateway &mdash; Zero-Trust API Proxy</h4>
+        <p>Gateway Fastify con autenticaci&oacute;n JWT, RBAC por scopes, rate limiting y enrutamiento de 124+ herramientas hacia KitZ OS.</p>
+        <div class="story-metric">Fastify &bull; Puerto 4000</div>
       </div>
     </div>
     <div class="story-card">
@@ -862,10 +899,10 @@ Content-Type: application/json
     <div class="story-card">
       <div class="story-visual bg-orange">&#x1F4BE;</div>
       <div class="story-body">
-        <div class="story-tag">Base de Datos &bull; SQLite</div>
-        <h4>Capa de Persistencia con WAL</h4>
-        <p>Almacenamiento ligero con SQLite y Write-Ahead Logging para datos empresariales: activos, &oacute;rdenes, tickets y m&aacute;s.</p>
-        <div class="story-metric">SQLite WAL &bull; Sin servidor DB</div>
+        <div class="story-tag">Infraestructura &bull; Multi-Provider</div>
+        <h4>LLM Hub &mdash; IA Multi-Modelo</h4>
+        <p>Soporte para Claude, OpenAI, Gemini, Perplexity y DeepSeek. Selecci&oacute;n autom&aacute;tica de modelo seg&uacute;n tarea y presupuesto.</p>
+        <div class="story-metric">5 providers &bull; AI Battery credits</div>
       </div>
     </div>
   </div>
@@ -883,26 +920,26 @@ Content-Type: application/json
     <div class="platform-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')">
       <div class="platform-icon">&#x1F680;</div>
       <h5>Getting Started</h5>
-      <p>Clona el repo, levanta el gateway y haz tu primera llamada API en minutos.</p>
-      <div class="platform-stat">python -m kitz_gateway</div>
+      <p>Clona el repo, configura las variables de entorno y levanta el gateway en minutos.</p>
+      <div class="platform-stat">npm run dev &bull; Puerto 4000</div>
     </div>
     <div class="platform-card">
       <div class="platform-icon">&#x1F4D6;</div>
       <h5>API Reference</h5>
-      <p>Documentaci&oacute;n completa de endpoints, par&aacute;metros y respuestas del gateway v0.1.</p>
-      <div class="platform-stat">REST &bull; JSON</div>
+      <p>Documentaci&oacute;n completa de endpoints, par&aacute;metros, scopes y respuestas del KitZ OS gateway.</p>
+      <div class="platform-stat">REST &bull; JSON &bull; WebSocket</div>
     </div>
     <div class="platform-card">
       <div class="platform-icon">&#x1F6E0;&#xFE0F;</div>
       <h5>Crear un Tool</h5>
-      <p>Gu&iacute;a paso a paso para registrar tu propia herramienta en el gateway.</p>
-      <div class="platform-stat">tools.py &bull; Python</div>
+      <p>Gu&iacute;a paso a paso para registrar tu propia herramienta en el KitZ OS tool registry.</p>
+      <div class="platform-stat">TypeScript &bull; Fastify</div>
     </div>
     <div class="platform-card">
       <div class="platform-icon">&#x1F4BE;</div>
       <h5>Base de Datos</h5>
-      <p>C&oacute;mo funciona la capa de persistencia SQLite con WAL y el esquema de datos.</p>
-      <div class="platform-stat">db.py &bull; SQLite</div>
+      <p>Supabase, NDJSON y c&oacute;mo KitZ OS persiste datos por organizaci&oacute;n con aislamiento multi-tenant.</p>
+      <div class="platform-stat">Supabase &bull; NDJSON</div>
     </div>
     <div class="platform-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')">
       <div class="platform-icon">&#x1F91D;</div>
@@ -917,8 +954,8 @@ Content-Type: application/json
   <div class="social-tips">
     <div class="tip-card">
       <div class="tip-number">01</div>
-      <h5>Zero dependencias</h5>
-      <p>El gateway usa exclusivamente la biblioteca est&aacute;ndar de Python. Sin pip install, sin node_modules, sin sorpresas.</p>
+      <h5>Zero-Trust Security</h5>
+      <p>JWT + RBAC + scopes en cada request. Rate limiting, headers seguros y aislamiento multi-tenant por defecto.</p>
     </div>
     <div class="tip-card">
       <div class="tip-number">02</div>
@@ -932,8 +969,8 @@ Content-Type: application/json
     </div>
     <div class="tip-card">
       <div class="tip-number">04</div>
-      <h5>AI-native</h5>
-      <p>Dise&ntilde;ado para integrarse con modelos de lenguaje como Claude. Los tools son invocables por agentes de IA.</p>
+      <h5>AI-native &mdash; 33 Agentes</h5>
+      <p>33 agentes de IA (C-suite, Board, Governance) con 124+ tools. Claude, OpenAI, Gemini, Perplexity y DeepSeek integrados.</p>
     </div>
     <div class="tip-card">
       <div class="tip-number">05</div>
@@ -942,8 +979,8 @@ Content-Type: application/json
     </div>
     <div class="tip-card">
       <div class="tip-number">06</div>
-      <h5>Ligero y portable</h5>
-      <p>Corre en cualquier m&aacute;quina con Python 3. Un solo archivo, un solo comando para iniciar.</p>
+      <h5>Draft-first</h5>
+      <p>Todos los mensajes salientes (email, WhatsApp, SMS) pasan por revisi&oacute;n antes de enviarse. Seguridad ante todo.</p>
     </div>
   </div>
 </section>
@@ -1088,29 +1125,29 @@ function copyPrompt(btn) {
 // ── Quiz ──
 const quizData = [
   {
-    q: "¿Cuántas dependencias externas necesita el KitZ Gateway?",
-    opts: ["Depende del proyecto", "Al menos 3 (Flask, requests, dotenv)", "Zero — usa solo la stdlib de Python", "Solo necesita pip install kitz"],
+    q: "¿Cuántos tools tiene registrados KitZ OS?",
+    opts: ["12 herramientas", "50 herramientas", "124+ herramientas", "Solo las de Google"],
     correct: 2
   },
   {
-    q: "¿Qué protocolo usa el KitZ Gateway para comunicarse?",
-    opts: ["GraphQL", "gRPC", "REST/HTTP con JSON", "WebSockets únicamente"],
+    q: "¿Qué protocolos usa KitZ OS para comunicarse?",
+    opts: ["Solo GraphQL", "Solo gRPC", "REST/HTTP + WebSocket con JSON", "SOAP únicamente"],
     correct: 2
   },
   {
-    q: "¿Qué base de datos usa KitZ por defecto para persistencia?",
-    opts: ["PostgreSQL", "MongoDB", "SQLite con WAL", "No tiene persistencia"],
-    correct: 2
-  },
-  {
-    q: "¿Qué modelo de IA se puede integrar con el ecosistema KitZ?",
-    opts: ["Solo modelos locales", "Claude de Anthropic", "Solo GPT-4", "No soporta IA"],
+    q: "¿Qué tipo de autenticación usa el KitZ Gateway?",
+    opts: ["API Key simple", "JWT con RBAC y scopes", "Sin autenticación", "Solo OAuth"],
     correct: 1
   },
   {
-    q: "¿En qué puerto corre el KitZ Gateway por defecto?",
-    opts: ["3000", "8080", "8787", "5000"],
+    q: "¿Cuántos proveedores de IA soporta KitZ OS?",
+    opts: ["Solo Claude", "Solo OpenAI", "5: Claude, OpenAI, Gemini, Perplexity, DeepSeek", "No soporta IA"],
     correct: 2
+  },
+  {
+    q: "¿En qué puertos corren el Gateway y KitZ OS respectivamente?",
+    opts: ["3000 y 8080", "4000 y 3012", "8787 y 5000", "80 y 443"],
+    correct: 1
   }
 ];
 
@@ -1175,9 +1212,9 @@ function showResult() {
   document.getElementById('quizScore').textContent = score + '/' + quizData.length;
   const pct = (score / quizData.length) * 100;
   let msg = '';
-  if (pct === 100) msg = '¡Perfecto! Conoces KitZ a fondo. ¡Hora de contribuir!';
-  else if (pct >= 60) msg = '¡Muy bien! Sigue explorando el código y la documentación.';
-  else msg = '¡No te rindas! Revisa los cursos y la documentación del gateway.';
+  if (pct === 100) msg = '¡Perfecto! Conoces KitZ OS a fondo. ¡Hora de construir!';
+  else if (pct >= 60) msg = '¡Muy bien! Sigue explorando la arquitectura de KitZ OS.';
+  else msg = '¡No te rindas! Revisa los cursos y la documentación de KitZ OS.';
   document.getElementById('quizMsg').textContent = msg;
 }
 
@@ -1187,66 +1224,72 @@ startQuiz();
 // ── Challenges ──
 const challenges = {
   gateway: {
-    title: 'Reto: Crea tu propio Tool',
-    desc: 'Completa la funci&oacute;n de un tool personalizado para el KitZ Gateway. El tool debe recibir un nombre y devolver un saludo.',
-    code: `def register(registry):
-    """Registra el tool 'greet' en el gateway."""
-    def greet(params):
-        name = params.get("name", "mundo")
-        # TODO: retorna un diccionario con
-        # la llave "greeting" y el valor
-        # "Hola, {name}! Bienvenido a KitZ"
-        return _______________
+    title: 'Reto: Registra un Tool en KitZ OS',
+    desc: 'Completa la funci&oacute;n TypeScript para registrar un tool personalizado en el KitZ OS tool registry.',
+    code: `// src/tools/greet.ts
+import { ToolDefinition } from '../types';
 
-    registry["greet"] = greet`,
+export const greetTool: ToolDefinition = {
+  name: 'greet',
+  description: 'Saluda al usuario por nombre',
+  riskLevel: 'low',
+  requiredScopes: ['tools:invoke'],
+  handler: async (input) => {
+    const name = input.name || 'mundo';
+    // TODO: retorna un objeto con
+    // "greeting": "Hola, {name}! Bienvenido a KitZ"
+    return _______________;
+  }
+};`,
     placeholder: 'Escribe el return statement correcto...',
     check: function(answer) {
       const clean = answer.replace(/\s+/g,' ').trim().toLowerCase();
       return clean.includes('greeting') && clean.includes('hola') && clean.includes('name');
     },
-    successMsg: 'Correcto! Tu tool devuelve el saludo esperado. As&iacute; se registran tools en el gateway.',
-    errorMsg: 'Intenta de nuevo. El return debe ser un diccionario con la llave "greeting" y un saludo con el nombre.'
+    successMsg: '¡Correcto! Tu tool devuelve el saludo esperado. As&iacute; se registran tools en KitZ OS.',
+    errorMsg: 'Intenta de nuevo. El return debe ser un objeto con la llave "greeting" y un saludo con el nombre.'
   },
   debug: {
     title: 'Debug Challenge: Encuentra el Bug',
-    desc: 'Este c&oacute;digo del gateway tiene un bug que hace que falle al procesar requests. Encuentra y describe el error.',
-    code: `import json
-from http.server import BaseHTTPRequestHandler
+    desc: 'Este middleware del KitZ Gateway tiene un bug de seguridad. Encuentra y describe el error.',
+    code: `// middleware/auth.ts
+async function validateRequest(req, reply) {
+  const token = req.headers.authorization;
+  const orgId = req.headers['x-org-id'];
 
-class Handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        length = self.headers["Content-Length"]
-        body = self.rfile.read(length)
-        data = json.loads(body)
-        tool = self.path.split("/")[-1]
-        result = registry[tool](data)
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(json.dumps(result))`,
-    placeholder: 'Describe el bug que encuentras...',
+  if (!token) {
+    return reply.code(401).send({ error: 'No token' });
+  }
+
+  const decoded = jwt.verify(token, SECRET);
+  req.userId = decoded.sub;
+  req.scopes = decoded.scopes;
+  // Continuar al handler...
+}`,
+    placeholder: 'Describe el bug de seguridad...',
     check: function(answer) {
       const clean = answer.toLowerCase();
-      return (clean.includes('int') && clean.includes('content-length')) ||
-             clean.includes('encode') || clean.includes('bytes') ||
-             (clean.includes('length') && clean.includes('string'));
+      return (clean.includes('bearer') && clean.includes('split')) ||
+             clean.includes('orgid') || clean.includes('org_id') ||
+             (clean.includes('x-org-id') && clean.includes('valid'));
     },
-    successMsg: 'Correcto! Content-Length llega como string y read() necesita un int. Adem&aacute;s, wfile.write() necesita bytes, no str. Bugs cl&aacute;sicos del HTTP handler de Python.',
-    errorMsg: 'Pista: revisa los tipos de datos. Content-Length es un string, y wfile.write necesita bytes.'
+    successMsg: '¡Correcto! Falta extraer "Bearer " del token (split), y no se valida que x-org-id exista ni que el usuario tenga acceso a esa org. Bugs cl&aacute;sicos de auth.',
+    errorMsg: 'Pista: el header Authorization llega como "Bearer <token>" — hay que extraer solo el token. Adem&aacute;s, ¿se valida x-org-id?'
   },
   apiquiz: {
-    title: 'API Quiz: Pon a Prueba tu Conocimiento',
-    desc: 'Responde: &iquest;Cu&aacute;l es la diferencia entre un c&oacute;digo de respuesta HTTP 200, 201, 400 y 404? Describe cu&aacute;ndo usar cada uno.',
-    code: `GET  /v0.1/tools        → ???
-POST /v0.1/tools/echo   → ???
-POST /v0.1/tools/noexist → ???
-POST /v0.1/tools/echo   → ??? (body inv&aacute;lido)`,
+    title: 'API Quiz: KitZ OS Endpoints',
+    desc: 'Responde: ¿Cu&aacute;l es el c&oacute;digo HTTP correcto para cada escenario del KitZ Gateway?',
+    code: `GET  /api/kitz/status           → ???
+POST /tool-calls (gmail_send)  → ???
+POST /tool-calls (no_existe)   → ???
+POST /tool-calls (sin JWT)     → ???`,
     placeholder: 'Escribe los c&oacute;digos HTTP correctos para cada caso...',
     check: function(answer) {
       const clean = answer.replace(/\s+/g,'');
-      return clean.includes('200') && clean.includes('404') && clean.includes('400');
+      return clean.includes('200') && (clean.includes('401') || clean.includes('403')) && clean.includes('404');
     },
-    successMsg: 'Correcto! GET tools → 200 (OK), POST echo → 200/201, POST noexist → 404 (Not Found), body inv&aacute;lido → 400 (Bad Request).',
-    errorMsg: 'Pista: 200=OK, 201=Created, 400=Bad Request, 404=Not Found. Piensa en qu&eacute; pasa en cada escenario.'
+    successMsg: '¡Correcto! Status → 200, gmail_send → 200, no_existe → 404, sin JWT → 401 (Unauthorized).',
+    errorMsg: 'Pista: 200=OK, 401=Unauthorized (sin token), 404=Not Found (tool no existe). Piensa en qu&eacute; pasa en cada escenario.'
   }
 };
 

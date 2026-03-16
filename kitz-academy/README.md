@@ -8,7 +8,7 @@ KitZ Academy es la plataforma educativa del ecosistema [KitZ](https://github.com
 
 - 7 cursos completos (basico a avanzado)
 - Quizzes interactivos y retos de codigo
-- Documentacion del KitZ Gateway
+- Documentacion de KitZ (OS) — gateway, agentes, tools
 - 100% gratis, en espanol, open-source
 
 ## Cursos disponibles

@@ -188,27 +188,27 @@ const courses = {
       {
         title: "\u00bfQu\u00e9 es KitZ?",
         duration: "15 min",
-        content: '<p>KitZ es un ecosistema open-source de herramientas de inteligencia artificial dise\u00f1ado para la comunidad latinoamericana de desarrolladores. En su n\u00facleo, es un <strong>gateway de herramientas</strong>: un servidor HTTP ligero que expone funciones invocables a trav\u00e9s de una API REST.</p><p>A diferencia de otros frameworks, KitZ tiene <strong>cero dependencias externas</strong>. Usa exclusivamente la biblioteca est\u00e1ndar de Python, lo que significa que no necesitas pip install, no hay node_modules, y no hay sorpresas de compatibilidad.</p><div class="tip">KitZ es software libre bajo licencia open-source. Puedes usar, modificar y distribuir el c\u00f3digo sin restricciones.</div>'
+        content: '<p>KitZ (OS) es un sistema operativo de IA para negocios dise\u00f1ado para la comunidad latinoamericana. En su n\u00facleo tiene un <strong>gateway zero-trust</strong> (Fastify, puerto 4000) que enruta requests hacia el <strong>KitZ OS engine</strong> (puerto 3012) con 124+ herramientas y 33 agentes de IA.</p><p>La arquitectura incluye autenticaci\u00f3n JWT con RBAC, soporte multi-proveedor de IA (Claude, OpenAI, Gemini, Perplexity, DeepSeek), y un sistema de cr\u00e9ditos llamado AI Battery.</p><div class="tip">KitZ OS es construido por y para la comunidad LATAM. Toda comunicaci\u00f3n saliente usa pol\u00edtica draft-first por seguridad.</div>'
       },
       {
         title: "Arquitectura del Gateway",
         duration: "20 min",
-        content: '<p>El KitZ Gateway se compone de tres capas principales:</p><ul><li><strong>HTTP Server</strong> \u2014 Basado en http.server de Python, escucha en el puerto 8787</li><li><strong>Tool Registry</strong> \u2014 Un diccionario que mapea nombres de tools a funciones Python</li><li><strong>Persistence Layer</strong> \u2014 SQLite con WAL para almacenamiento de datos</li></ul><div class="code-block">Cliente \u2192 HTTP Request \u2192 Gateway \u2192 Tool Registry \u2192 Tool Function\n                                              \u2193\n                                    SQLite DB (opcional)</div><p>Cada tool es una funci\u00f3n pura que recibe par\u00e1metros y devuelve un resultado. No hay estado compartido entre invocaciones.</p>'
+        content: '<p>KitZ OS se compone de capas principales:</p><ul><li><strong>KitZ Gateway</strong> \u2014 Fastify en puerto 4000, zero-trust proxy con JWT + RBAC + scopes</li><li><strong>KitZ OS Engine</strong> \u2014 Fastify en puerto 3012, 124+ tools, 33 agentes, WebSocket gateway</li><li><strong>Tool Registry</strong> \u2014 90 brain skills + 34 core tools invocables v\u00eda REST</li><li><strong>LLM Hub</strong> \u2014 Multi-proveedor: Claude, OpenAI, Gemini, Perplexity, DeepSeek</li></ul><div class="code-block">Cliente \u2192 Gateway (:4000) \u2192 JWT Auth \u2192 KitZ OS (:3012) \u2192 Tool Registry\n                                                    \u2193\n                                         Agentes IA + LLM Hub + WebSocket</div><p>Cada tool tiene un riskLevel y requiredScopes. El gateway valida permisos antes de ejecutar.</p>'
       },
       {
         title: "Instalaci\u00f3n y primer inicio",
         duration: "15 min",
-        content: '<p>Iniciar el gateway es tan simple como clonar el repositorio y ejecutar un comando:</p><div class="code-block">git clone https://github.com/KenRoach/kitz.git\ncd kitz\npython -m kitz_gateway</div><p>El servidor se levanta en <code>http://localhost:8787</code>. Puedes verificar que est\u00e1 corriendo con:</p><div class="code-block">curl http://localhost:8787/v0.1/health\n# Respuesta: {"status": "ok", "version": "0.1"}</div><div class="tip">No necesitas instalar nada con pip. Solo Python 3.7+ es requerido.</div>'
+        content: '<p>Iniciar KitZ OS requiere clonar el repositorio y configurar variables de entorno:</p><div class="code-block">git clone https://github.com/KenRoach/kitzV1.git\ncd kitzV1/kitz-gateway\nnpm install\ncp .env.example .env  # Configurar JWT_SECRET, etc.\nnpm run dev</div><p>El gateway se levanta en <code>http://localhost:4000</code>. Verifica con:</p><div class="code-block">curl http://localhost:4000/health\n# Respuesta: {"status": "ok"}</div><div class="tip">Necesitas Node.js 18+ y las variables de entorno configuradas (JWT_SECRET, SUPABASE_URL, etc.).</div>'
       },
       {
         title: "Tu primera llamada al Gateway",
         duration: "15 min",
-        content: '<p>Hagamos nuestra primera llamada a un tool del gateway. Usaremos <code>echo</code>, el tool m\u00e1s simple:</p><div class="code-block">curl -X POST http://localhost:8787/v0.1/tools/echo \\\n  -H "Content-Type: application/json" \\\n  -d \'{"message": "Hola desde KitZ!"}\'\n\n# Respuesta:\n# {"result": "Hola desde KitZ!"}</div><p>El patr\u00f3n es siempre el mismo: <code>POST /v0.1/tools/{nombre_del_tool}</code> con un body JSON.</p>'
+        content: '<p>Hagamos nuestra primera llamada al gateway. Primero obtenemos un token JWT y luego invocamos un tool:</p><div class="code-block">curl -X POST http://localhost:4000/tool-calls \\\n  -H "Authorization: Bearer $JWT_TOKEN" \\\n  -H "x-org-id: org-123" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"name": "gmail_search", "input": {"query": "is:unread"}, "riskLevel": "low", "requiredScopes": ["tools:invoke"]}\'\n\n# Respuesta:\n# {"result": {...}}</div><p>El patr\u00f3n es siempre: <code>POST /tool-calls</code> con JWT, x-org-id y el nombre del tool en el body.</p>'
       },
       {
         title: "Explorando los tools incluidos",
         duration: "15 min",
-        content: '<p>El gateway incluye herramientas built-in que puedes usar inmediatamente:</p><ul><li><strong>echo</strong> \u2014 Devuelve el mensaje que le env\u00edas (prueba de conectividad)</li><li><strong>utc_now</strong> \u2014 Retorna el timestamp UTC actual</li><li><strong>sum</strong> \u2014 Suma un array de valores num\u00e9ricos</li><li><strong>list_assets</strong> \u2014 Consulta activos con filtros</li><li><strong>get_asset_metrics</strong> \u2014 M\u00e9tricas del portafolio de activos</li></ul><p>Para ver todas las herramientas disponibles:</p><div class="code-block">curl http://localhost:8787/v0.1/tools\n# Retorna lista de tools con nombres y descripciones</div>'
+        content: '<p>KitZ OS incluye 124+ herramientas organizadas en categor\u00edas:</p><ul><li><strong>Gmail</strong> \u2014 gmail_send, gmail_search, gmail_read (correos)</li><li><strong>Calendar</strong> \u2014 calendar_create, calendar_list (eventos)</li><li><strong>Sheets</strong> \u2014 sheets_read, sheets_write (datos)</li><li><strong>WhatsApp</strong> \u2014 whatsapp_send, whatsapp_status (mensajes)</li><li><strong>AI</strong> \u2014 ai_chat, generate_insights, knowledge_search</li></ul><p>El gateway expone endpoints para autenticaci\u00f3n, tool-calls y streaming:</p><div class="code-block">GET  /health              \u2192 Estado del gateway\nPOST /tool-calls          \u2192 Invocar una herramienta\nPOST /api/kitz/run        \u2192 Ejecutar un goal con agentes\nGET  /api/kitz/battery     \u2192 Cr\u00e9ditos de IA disponibles</div>'
       },
       {
         title: "Por qu\u00e9 Open Source importa",
@@ -247,7 +247,7 @@ const courses = {
       {
         title: "Probando tu Tool localmente",
         duration: "20 min",
-        content: '<p>Puedes probar tu tool directamente con Python antes de integrarlo al gateway:</p><div class="code-block"># test_mi_tool.py\nfrom kitz_gateway.tools import temp_convert\n\n# Test b\u00e1sico\nresult = temp_convert.register.__wrapped__({"value": 100, "from": "C"})\nprint(result)\n# {"original": "100\u00b0C", "converted": "212.0\u00b0F"}\n\n# Test con el gateway corriendo\nimport json\nfrom urllib.request import urlopen, Request\n\nreq = Request(\n    "http://localhost:8787/v0.1/tools/temp_convert",\n    data=json.dumps({"value": 0, "from": "C"}).encode(),\n    headers={"Content-Type": "application/json"},\n    method="POST"\n)\nresp = json.loads(urlopen(req).read())\nprint(resp)</div>'
+        content: '<p>Puedes probar tu tool directamente con Python antes de integrarlo al gateway:</p><div class="code-block"># test_mi_tool.py\nfrom kitz_gateway.tools import temp_convert\n\n# Test b\u00e1sico\nresult = temp_convert.register.__wrapped__({"value": 100, "from": "C"})\nprint(result)\n# {"original": "100\u00b0C", "converted": "212.0\u00b0F"}\n\n# Test con el gateway corriendo\nimport json\nfrom urllib.request import urlopen, Request\n\nreq = Request(\n    "http://localhost:4000/tool-calls/temp_convert",\n    data=json.dumps({"value": 0, "from": "C"}).encode(),\n    headers={"Content-Type": "application/json"},\n    method="POST"\n)\nresp = json.loads(urlopen(req).read())\nprint(resp)</div>'
       },
       {
         title: "Tools con fecha y hora",
@@ -270,7 +270,7 @@ const courses = {
     icon: "\u{1F310}",
     level: "Intermedio",
     title: "API REST y el Gateway",
-    desc: "Endpoints HTTP, registro de tools, protocolo JSON y c\u00f3mo consumir el gateway desde cualquier frontend o servicio.",
+    desc: "Endpoints del KitZ Gateway: /tool-calls, /api/kitz/run, WebSocket y c\u00f3mo consumirlos desde cualquier frontend.",
     duration: "3h 20m",
     lessons: [
       {
@@ -281,12 +281,12 @@ const courses = {
       {
         title: "Endpoints del Gateway",
         duration: "20 min",
-        content: '<p>El gateway expone estos endpoints bajo el prefijo <code>/v0.1</code>:</p><div class="code-block">GET  /v0.1/health          \u2192 Estado del servidor\nGET  /v0.1/tools            \u2192 Lista de tools disponibles\nPOST /v0.1/tools/{name}     \u2192 Invocar un tool espec\u00edfico</div><p>El versionado <code>/v0.1</code> permite evolucionar la API sin romper clientes existentes. Cuando haya cambios incompatibles, se crea <code>/v0.2</code>.</p>'
+        content: '<p>El KitZ Gateway expone estos endpoints principales:</p><div class="code-block">GET  /health                    \u2192 Estado del gateway\nPOST /auth/token                \u2192 Obtener JWT\nPOST /tool-calls                \u2192 Invocar herramienta (requiere JWT + x-org-id)\nPOST /api/kitz/run              \u2192 Ejecutar goal con agentes\nGET  /api/kitz/battery          \u2192 Cr\u00e9ditos de IA\nGET  /ws                        \u2192 WebSocket para eventos en tiempo real</div><p>Toda llamada protegida requiere headers <code>Authorization: Bearer &lt;JWT&gt;</code> y <code>x-org-id</code>.</p>'
       },
       {
         title: "Request y Response en detalle",
         duration: "20 min",
-        content: '<p>Anatom\u00eda de una llamada al gateway:</p><div class="code-block"># REQUEST\nPOST /v0.1/tools/sum HTTP/1.1\nHost: localhost:8787\nContent-Type: application/json\nContent-Length: 25\n\n{"values": [10, 20, 30]}\n\n# RESPONSE\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{"result": 60}</div><p>Siempre env\u00eda <code>Content-Type: application/json</code>. El gateway rechaza requests sin este header.</p>'
+        content: '<p>Anatom\u00eda de una llamada al KitZ Gateway:</p><div class="code-block"># REQUEST\nPOST /tool-calls HTTP/1.1\nHost: localhost:4000\nAuthorization: Bearer eyJhbGciOi...\nx-org-id: org-123\nContent-Type: application/json\n\n{"name":"gmail_send","input":{"to":"test@mail.com","subject":"Hola"},"riskLevel":"low","requiredScopes":["tools:invoke"]}\n\n# RESPONSE\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{"result":{"messageId":"msg-abc","status":"sent"}}</div><p>Siempre env\u00eda JWT, x-org-id y Content-Type. El gateway valida scopes antes de ejecutar el tool.</p>'
       },
       {
         title: "C\u00f3digos de estado HTTP",
@@ -296,12 +296,12 @@ const courses = {
       {
         title: "Consumir desde JavaScript",
         duration: "25 min",
-        content: '<p>Llamar al gateway desde un frontend es simple con fetch:</p><div class="code-block">async function callTool(toolName, params) {\n  const response = await fetch(\n    `http://localhost:8787/v0.1/tools/${toolName}`,\n    {\n      method: "POST",\n      headers: { "Content-Type": "application/json" },\n      body: JSON.stringify(params)\n    }\n  );\n\n  if (!response.ok) {\n    throw new Error(`Error ${response.status}`);\n  }\n\n  return response.json();\n}\n\n// Uso:\nconst result = await callTool("echo", { message: "Hola!" });\nconsole.log(result); // { result: "Hola!" }</div>'
+        content: '<p>Llamar al KitZ Gateway desde un frontend con fetch y autenticaci\u00f3n:</p><div class="code-block">async function callKitzTool(name, input, token, orgId) {\n  const response = await fetch(\n    "http://localhost:4000/tool-calls",\n    {\n      method: "POST",\n      headers: {\n        "Content-Type": "application/json",\n        "Authorization": `Bearer ${token}`,\n        "x-org-id": orgId\n      },\n      body: JSON.stringify({\n        name,\n        input,\n        riskLevel: "low",\n        requiredScopes: ["tools:invoke"]\n      })\n    }\n  );\n\n  if (!response.ok) throw new Error(`Error ${response.status}`);\n  return response.json();\n}\n\n// Uso:\nconst result = await callKitzTool("gmail_search",\n  { query: "is:unread" }, jwtToken, "org-123");</div>'
       },
       {
         title: "Consumir desde Python",
         duration: "20 min",
-        content: '<p>Desde otro script Python usando solo la stdlib:</p><div class="code-block">import json\nfrom urllib.request import urlopen, Request\n\ndef call_gateway(tool, params=None):\n    url = f"http://localhost:8787/v0.1/tools/{tool}"\n    data = json.dumps(params or {}).encode("utf-8")\n    req = Request(\n        url,\n        data=data,\n        headers={"Content-Type": "application/json"},\n        method="POST"\n    )\n    with urlopen(req) as resp:\n        return json.loads(resp.read())\n\n# Uso:\nresult = call_gateway("sum", {"values": [1, 2, 3]})\nprint(result)  # {"result": 6}</div>'
+        content: '<p>Desde otro script Python usando solo la stdlib:</p><div class="code-block">import json\nfrom urllib.request import urlopen, Request\n\ndef call_gateway(tool, params=None):\n    url = f"http://localhost:4000/tool-calls/{tool}"\n    data = json.dumps(params or {}).encode("utf-8")\n    req = Request(\n        url,\n        data=data,\n        headers={"Content-Type": "application/json"},\n        method="POST"\n    )\n    with urlopen(req) as resp:\n        return json.loads(resp.read())\n\n# Uso:\nresult = call_gateway("sum", {"values": [1, 2, 3]})\nprint(result)  # {"result": 6}</div>'
       },
       {
         title: "CORS y acceso desde el navegador",
@@ -321,7 +321,7 @@ const courses = {
       {
         title: "Construyendo un cliente completo",
         duration: "30 min",
-        content: '<p>Combinemos todo en un cliente reusable:</p><div class="code-block">class KitzClient {\n  constructor(baseUrl = "http://localhost:8787") {\n    this.baseUrl = baseUrl;\n    this.version = "v0.1";\n  }\n\n  async health() {\n    const r = await fetch(`${this.baseUrl}/${this.version}/health`);\n    return r.json();\n  }\n\n  async listTools() {\n    const r = await fetch(`${this.baseUrl}/${this.version}/tools`);\n    return r.json();\n  }\n\n  async call(tool, params = {}) {\n    const r = await fetch(\n      `${this.baseUrl}/${this.version}/tools/${tool}`,\n      {\n        method: "POST",\n        headers: { "Content-Type": "application/json" },\n        body: JSON.stringify(params)\n      }\n    );\n    const data = await r.json();\n    if (data.error) throw new Error(data.error);\n    return data;\n  }\n}\n\n// Uso:\nconst kitz = new KitzClient();\nawait kitz.call("echo", { message: "Hola!" });</div>'
+        content: '<p>Combinemos todo en un cliente reusable:</p><div class="code-block">class KitzClient {\n  constructor(baseUrl = "http://localhost:4000") {\n    this.baseUrl = baseUrl;\n    this.version = "v0.1";\n  }\n\n  async health() {\n    const r = await fetch(`${this.baseUrl}/${this.version}/health`);\n    return r.json();\n  }\n\n  async listTools() {\n    const r = await fetch(`${this.baseUrl}/${this.version}/tools`);\n    return r.json();\n  }\n\n  async call(tool, params = {}) {\n    const r = await fetch(\n      `${this.baseUrl}/${this.version}/tools/${tool}`,\n      {\n        method: "POST",\n        headers: { "Content-Type": "application/json" },\n        body: JSON.stringify(params)\n      }\n    );\n    const data = await r.json();\n    if (data.error) throw new Error(data.error);\n    return data;\n  }\n}\n\n// Uso:\nconst kitz = new KitzClient();\nawait kitz.call("echo", { message: "Hola!" });</div>'
       }
     ]
   },
@@ -355,7 +355,7 @@ const courses = {
       {
         title: "M\u00e9tricas y agregaciones",
         duration: "25 min",
-        content: '<p>SQL es poderoso para calcular m\u00e9tricas:</p><div class="code-block">def get_metrics(conn):\n    stats = {}\n\n    stats["total"] = conn.execute(\n        "SELECT COUNT(*) FROM assets"\n    ).fetchone()[0]\n\n    stats["by_client"] = dict(conn.execute(\n        "SELECT client, COUNT(*) FROM assets GROUP BY client"\n    ).fetchall())\n\n    stats["by_status"] = dict(conn.execute(\n        "SELECT status, COUNT(*) FROM assets GROUP BY status"\n    ).fetchall())\n\n    return stats</div><p>Estas m\u00e9tricas son exactamente lo que el tool <code>get_asset_metrics</code> del gateway retorna.</p>'
+        content: '<p>SQL es poderoso para calcular m\u00e9tricas:</p><div class="code-block">def get_metrics(conn):\n    stats = {}\n\n    stats["total"] = conn.execute(\n        "SELECT COUNT(*) FROM assets"\n    ).fetchone()[0]\n\n    stats["by_client"] = dict(conn.execute(\n        "SELECT client, COUNT(*) FROM assets GROUP BY client"\n    ).fetchall())\n\n    stats["by_status"] = dict(conn.execute(\n        "SELECT status, COUNT(*) FROM assets GROUP BY status"\n    ).fetchall())\n\n    return stats</div><p>Estas m\u00e9tricas son un ejemplo de c\u00f3mo los tools de KitZ OS calculan datos agregados.</p>'
       },
       {
         title: "Integrar SQLite con Tools",
@@ -404,7 +404,7 @@ const courses = {
       {
         title: "Cliente HTTP tipado",
         duration: "25 min",
-        content: '<p>Un cliente para consumir el gateway con tipos seguros:</p><div class="code-block">// lib/kitz-client.ts\nconst BASE = "http://localhost:8787/v0.1";\n\nexport async function callTool\u003CT\u003E(\n  tool: string,\n  params: Record\u003Cstring, unknown\u003E = {}\n): Promise\u003CT\u003E {\n  const res = await fetch(`${BASE}/tools/${tool}`, {\n    method: "POST",\n    headers: { "Content-Type": "application/json" },\n    body: JSON.stringify(params),\n  });\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  const data = await res.json();\n  if (data.error) throw new Error(data.error);\n  return data.result ?? data;\n}</div>'
+        content: '<p>Un cliente para consumir el gateway con tipos seguros:</p><div class="code-block">// lib/kitz-client.ts\nconst BASE = "http://localhost:4000/v0.1";\n\nexport async function callTool\u003CT\u003E(\n  tool: string,\n  params: Record\u003Cstring, unknown\u003E = {}\n): Promise\u003CT\u003E {\n  const res = await fetch(`${BASE}/tools/${tool}`, {\n    method: "POST",\n    headers: { "Content-Type": "application/json" },\n    body: JSON.stringify(params),\n  });\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  const data = await res.json();\n  if (data.error) throw new Error(data.error);\n  return data.result ?? data;\n}</div>'
       },
       {
         title: "Componente: Dashboard de M\u00e9tricas",
@@ -449,7 +449,7 @@ const courses = {
       {
         title: "Pr\u00f3ximos pasos",
         duration: "10 min",
-        content: '<p>Has construido un frontend completo. Ideas para seguir:</p><ul><li>Agregar autenticaci\u00f3n con tokens</li><li>Implementar WebSocket para datos en tiempo real</li><li>A\u00f1adir tests con Vitest</li><li>Crear un modo oscuro/claro con toggle</li><li>Conectar con el curso de Claude API para features de IA</li></ul><div class="tip">El c\u00f3digo fuente del frontend de RenewFlow en este mismo repo es un ejemplo real de estas t\u00e9cnicas aplicadas.</div>'
+        content: '<p>Has construido un frontend completo. Ideas para seguir:</p><ul><li>Agregar autenticaci\u00f3n con JWT y scopes</li><li>Implementar WebSocket para streaming de agentes en tiempo real</li><li>A\u00f1adir tests con Vitest</li><li>Crear un modo oscuro/claro con toggle</li><li>Conectar con el curso de Claude API para features de IA</li></ul><div class="tip">Explora el repositorio de KitZ OS para ver estas t\u00e9cnicas aplicadas en producci\u00f3n con 124+ herramientas.</div>'
       }
     ]
   },
@@ -473,7 +473,7 @@ const courses = {
       {
         title: "El loop de tool use",
         duration: "25 min",
-        content: '<p>Cuando Claude decide usar un tool, debes ejecutarlo y devolver el resultado:</p><div class="code-block">import json\nfrom urllib.request import urlopen, Request\n\ndef execute_tool(name, params):\n    """Llama al KitZ Gateway."""\n    req = Request(\n        f"http://localhost:8787/v0.1/tools/{name}",\n        data=json.dumps(params).encode(),\n        headers={"Content-Type": "application/json"},\n        method="POST"\n    )\n    return json.loads(urlopen(req).read())\n\n# Loop: Claude \u2192 Tool \u2192 Claude\nmessages = [{"role": "user", "content": query}]\n\nwhile True:\n    resp = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        tools=tools,\n        messages=messages,\n        max_tokens=1024\n    )\n\n    if resp.stop_reason == "tool_use":\n        tool_block = next(b for b in resp.content\n                         if b.type == "tool_use")\n        result = execute_tool(tool_block.name, tool_block.input)\n\n        messages.append({"role": "assistant", "content": resp.content})\n        messages.append({"role": "user", "content": [{\n            "type": "tool_result",\n            "tool_use_id": tool_block.id,\n            "content": json.dumps(result)\n        }]})\n    else:\n        print(resp.content[0].text)\n        break</div>'
+        content: '<p>Cuando Claude decide usar un tool, debes ejecutarlo y devolver el resultado:</p><div class="code-block">import json\nfrom urllib.request import urlopen, Request\n\ndef execute_tool(name, params):\n    """Llama al KitZ Gateway."""\n    req = Request(\n        f"http://localhost:4000/tool-calls/{name}",\n        data=json.dumps(params).encode(),\n        headers={"Content-Type": "application/json"},\n        method="POST"\n    )\n    return json.loads(urlopen(req).read())\n\n# Loop: Claude \u2192 Tool \u2192 Claude\nmessages = [{"role": "user", "content": query}]\n\nwhile True:\n    resp = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        tools=tools,\n        messages=messages,\n        max_tokens=1024\n    )\n\n    if resp.stop_reason == "tool_use":\n        tool_block = next(b for b in resp.content\n                         if b.type == "tool_use")\n        result = execute_tool(tool_block.name, tool_block.input)\n\n        messages.append({"role": "assistant", "content": resp.content})\n        messages.append({"role": "user", "content": [{\n            "type": "tool_result",\n            "tool_use_id": tool_block.id,\n            "content": json.dumps(result)\n        }]})\n    else:\n        print(resp.content[0].text)\n        break</div>'
       },
       {
         title: "Salida estructurada con JSON",
@@ -542,7 +542,7 @@ const courses = {
       {
         title: "Pull Requests efectivos",
         duration: "20 min",
-        content: '<p>C\u00f3mo crear un PR que sea f\u00e1cil de revisar y aprobar:</p><div class="code-block"># T\u00edtulo:\nfeat: add temperature converter tool\n\n# Descripci\u00f3n:\n## Qu\u00e9 hace\nAgrega un tool `temp_convert` que convierte\ntemperaturas entre Celsius y Fahrenheit.\n\n## C\u00f3mo probarlo\n```\ncurl -X POST http://localhost:8787/v0.1/tools/temp_convert \\\n  -H "Content-Type: application/json" \\\n  -d \'{"value": 100, "from": "C"}\'\n```\n\n## Checklist\n- [x] Zero dependencias externas\n- [x] Tests incluidos\n- [x] Documentaci\u00f3n actualizada</div><div class="tip">PRs peque\u00f1os se revisan m\u00e1s r\u00e1pido. Si tu cambio es grande, div\u00eddelo en varios PRs.</div>'
+        content: '<p>C\u00f3mo crear un PR que sea f\u00e1cil de revisar y aprobar:</p><div class="code-block"># T\u00edtulo:\nfeat: add temperature converter tool\n\n# Descripci\u00f3n:\n## Qu\u00e9 hace\nAgrega un tool `temp_convert` que convierte\ntemperaturas entre Celsius y Fahrenheit.\n\n## C\u00f3mo probarlo\n```\ncurl -X POST http://localhost:4000/tool-calls/temp_convert \\\n  -H "Content-Type: application/json" \\\n  -d \'{"value": 100, "from": "C"}\'\n```\n\n## Checklist\n- [x] Zero dependencias externas\n- [x] Tests incluidos\n- [x] Documentaci\u00f3n actualizada</div><div class="tip">PRs peque\u00f1os se revisan m\u00e1s r\u00e1pido. Si tu cambio es grande, div\u00eddelo en varios PRs.</div>'
       },
       {
         title: "Code review: dar y recibir feedback",
@@ -552,7 +552,7 @@ const courses = {
       {
         title: "Reportar bugs e issues",
         duration: "15 min",
-        content: '<p>Contribuir no es solo c\u00f3digo. Reportar bugs es igual de valioso:</p><div class="code-block"># T\u00edtulo del issue:\nBug: Gateway returns 500 when body is empty\n\n# Descripci\u00f3n:\n## Pasos para reproducir\n1. Iniciar el gateway\n2. Enviar POST sin body:\n   `curl -X POST http://localhost:8787/v0.1/tools/echo`\n3. Recibir error 500\n\n## Comportamiento esperado\nDeber\u00eda retornar 400 Bad Request con mensaje\n"JSON body required"\n\n## Comportamiento actual\nRetorna 500 Internal Server Error\n\n## Entorno\n- Python 3.11\n- macOS 14.2</div>'
+        content: '<p>Contribuir no es solo c\u00f3digo. Reportar bugs es igual de valioso:</p><div class="code-block"># T\u00edtulo del issue:\nBug: Gateway returns 500 when body is empty\n\n# Descripci\u00f3n:\n## Pasos para reproducir\n1. Iniciar el gateway\n2. Enviar POST sin body:\n   `curl -X POST http://localhost:4000/tool-calls/echo`\n3. Recibir error 500\n\n## Comportamiento esperado\nDeber\u00eda retornar 400 Bad Request con mensaje\n"JSON body required"\n\n## Comportamiento actual\nRetorna 500 Internal Server Error\n\n## Entorno\n- Python 3.11\n- macOS 14.2</div>'
       },
       {
         title: "Tu primera contribuci\u00f3n a KitZ",
