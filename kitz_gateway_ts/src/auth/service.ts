@@ -109,12 +109,13 @@ export async function resetPassword(
 
 export async function forgotPassword(
   identifier: string,
-  baseUrl: string
+  _baseUrl: string
 ): Promise<{ sent: boolean }> {
   const db = getSupabase();
 
   // Use Supabase Auth's built-in password reset (handles email delivery)
-  const redirectTo = `${baseUrl}/reset-password`;
+  // Use API service URL directly since it has the updated SPA with hash parsing
+  const redirectTo = `https://api-production-dcc6.up.railway.app/reset-password`;
   const { error } = await db.auth.resetPasswordForEmail(identifier, { redirectTo });
 
   if (error) {
