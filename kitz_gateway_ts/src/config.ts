@@ -1,4 +1,12 @@
-/** Environment configuration for RenewFlow gateway. */
+/** Environment configuration for KitZ(OS) gateway. */
+
+export interface SmtpConfig {
+  host: string;
+  port: number;
+  user: string;
+  pass: string;
+  from: string;
+}
 
 export interface Config {
   port: number;
@@ -8,9 +16,14 @@ export interface Config {
   supabaseServiceKey: string;
   authEnabled: boolean;
   anthropicApiKey: string;
+  openaiApiKey: string;
+  geminiApiKey: string;
+  defaultLlmProvider: string;
   resendApiKey: string;
   emailFrom: string;
   staticDir: string | null;
+  whatsappSessionDir: string;
+  smtp: SmtpConfig;
 }
 
 function env(key: string, fallback = ""): string {
@@ -26,9 +39,20 @@ export function loadConfig(): Config {
     supabaseServiceKey: env("SUPABASE_SERVICE_ROLE_KEY") || env("SUPABASE_SERVICE_KEY"),
     authEnabled: env("AUTH_ENABLED", "false") === "true",
     anthropicApiKey: env("ANTHROPIC_API_KEY"),
+    openaiApiKey: env("OPENAI_API_KEY"),
+    geminiApiKey: env("GEMINI_API_KEY"),
+    defaultLlmProvider: env("DEFAULT_LLM_PROVIDER", "claude"),
     resendApiKey: env("RESEND_API_KEY"),
     emailFrom: env("EMAIL_FROM", "RenewFlow <noreply@renewflow.io>"),
     staticDir: env("STATIC_DIR") || null,
+    whatsappSessionDir: env("WHATSAPP_SESSION_DIR", "./wa_sessions"),
+    smtp: {
+      host: env("SMTP_HOST"),
+      port: parseInt(env("SMTP_PORT", "587"), 10),
+      user: env("SMTP_USER"),
+      pass: env("SMTP_PASS"),
+      from: env("SMTP_FROM"),
+    },
   };
 
   if (!config.supabaseUrl) throw new Error("SUPABASE_URL environment variable is required");

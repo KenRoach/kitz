@@ -19,16 +19,21 @@
     "@fastify/helmet": "^13.0.2",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^8.0.0",
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.49.0",
+    "@whiskeysockets/baileys": "^7.0.0-rc.9",
     "bcrypt": "^5.1.1",
     "fastify": "^5.2.0",
     "fastify-plugin": "^5.1.0",
-    "nodemailer": "^6.9.0"
+    "nodemailer": "^6.9.0",
+    "openai": "^6.29.0",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.0.0",
     "@types/nodemailer": "^6.4.17",
+    "@types/qrcode": "^1.5.6",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0"

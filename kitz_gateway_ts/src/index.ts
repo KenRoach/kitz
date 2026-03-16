@@ -1,4 +1,4 @@
-/** RenewFlow Gateway — powered by AI orchestration. */
+/** KitZ(OS) Gateway — AI Business OS powered by multi-LLM orchestration. */
 
 import Fastify from "fastify";
 import cors from "@fastify/cors";
@@ -23,8 +23,11 @@ import { rewardTools } from "./tools/rewards.js";
 import { emailTools } from "./tools/email.js";
 import { quoterTools, initAnthropic } from "./tools/quoter.js";
 import { partnerTools } from "./tools/partners.js";
+import { businessTools } from "./tools/business/index.js";
 import { toolRoutes } from "./routes/tools.js";
 import { configure as configureMail } from "./services/mailer.js";
+import { initLlmRouter } from "./llm/router.js";
+import { messagingRoutes } from "./messaging/routes.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -32,10 +35,18 @@ async function main(): Promise<void> {
   // Initialize Supabase
   initSupabase(config.supabaseUrl, config.supabaseServiceKey);
 
-  // Configure AI engine
+  // Configure AI engine (legacy Anthropic singleton for quoter)
   if (config.anthropicApiKey) {
     initAnthropic(config.anthropicApiKey);
   }
+
+  // Initialize multi-LLM router
+  const llmRouter = initLlmRouter({
+    anthropicApiKey: config.anthropicApiKey,
+    openaiApiKey: config.openaiApiKey,
+    geminiApiKey: config.geminiApiKey,
+    defaultLlmProvider: config.defaultLlmProvider,
+  });
 
   // Configure SMTP if available
   if (config.smtp.host) {
@@ -58,6 +69,7 @@ async function main(): Promise<void> {
     ...emailTools,
     ...quoterTools,
     ...partnerTools,
+    ...businessTools,
   ];
   for (const tool of allTools) {
     registry.register(tool);
@@ -95,6 +107,14 @@ async function main(): Promise<void> {
   // Tool routes (health, list, invoke)
   await app.register(async (instance) => toolRoutes(instance, registry));
 
+  // Messaging routes (WhatsApp, outbound, drafts)
+  await app.register(async (instance) =>
+    messagingRoutes(instance, {
+      sessionDir: config.whatsappSessionDir,
+      tools: allTools,
+    }),
+  );
+
   // Static file serving (SPA fallback)
   if (config.staticDir) {
     const root = path.resolve(config.staticDir);
@@ -123,13 +143,15 @@ async function main(): Promise<void> {
   const features = [
     config.authEnabled ? "auth" : null,
     config.anthropicApiKey ? "ai" : null,
+    `llm:${llmRouter.getAvailableProviders().join("+")}`,
     config.smtp.host ? "smtp" : null,
     config.staticDir ? "static" : null,
+    "whatsapp",
   ].filter(Boolean);
 
   await app.listen({ port: config.port, host: config.host });
   app.log.info(
-    `RenewFlow Gateway v0.1 ready on port ${config.port} [${features.join(", ")}]`
+    `KitZ(OS) Gateway v0.1 ready on port ${config.port} [${features.join(", ")}]`
   );
 }
 

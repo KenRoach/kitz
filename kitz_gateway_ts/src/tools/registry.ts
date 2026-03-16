@@ -1,8 +1,15 @@
 /** Tool registry — name → handler mapping. */
 
+export interface ToolParamSchema {
+  type: string;
+  properties: Record<string, { type: string; description?: string }>;
+  required?: string[];
+}
+
 export interface ToolDef {
   name: string;
   description: string;
+  parameters?: ToolParamSchema;
   handler: (args: Record<string, unknown>) => Promise<unknown>;
 }
 
