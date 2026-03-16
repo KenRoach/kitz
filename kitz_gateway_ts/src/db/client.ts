@@ -5,7 +5,9 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 let _client: SupabaseClient | null = null;
 
 export function initSupabase(url: string, serviceKey: string): SupabaseClient {
-  _client = createClient(url, serviceKey);
+  _client = createClient(url, serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
   return _client;
 }
 

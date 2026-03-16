@@ -101,7 +101,8 @@ Provide recommendations optimizing for the best balance of cost savings and risk
       // Store quote in database
       const db = getSupabase();
       const quoteId = `Q-${Math.floor(5000 + Math.random() * 5000)}`;
-      await db.from("quotes").insert({
+      // NOTE: quote_request column names may differ — verify schema matches these fields
+      await db.from("quote_request").insert({
         id: quoteId,
         client: clientName,
         assets: assets,

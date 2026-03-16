@@ -25,11 +25,14 @@ export const emailTools: ToolDef[] = [
 
       const db = getSupabase();
       const maxDays = (args.max_days as number) ?? 30;
+      // NOTE: asset_item doesn't have days_left column — filtering by warranty_end instead
+      const cutoffDate = new Date(Date.now() + maxDays * 86400000).toISOString().slice(0, 10);
+      const today = new Date().toISOString().slice(0, 10);
       const { data, error } = await db
-        .from("assets")
+        .from("asset_item")
         .select("*")
-        .gte("days_left", 0)
-        .lte("days_left", maxDays);
+        .gte("warranty_end", today)
+        .lte("warranty_end", cutoffDate);
 
       if (error) throw new Error(error.message);
 
@@ -55,12 +58,15 @@ export const emailTools: ToolDef[] = [
     handler: async (args) => {
       const db = getSupabase();
       const maxDays = (args.max_days as number) ?? 30;
+      // NOTE: asset_item doesn't have days_left or client columns — filtering by warranty_end
+      const cutoffDate = new Date(Date.now() + maxDays * 86400000).toISOString().slice(0, 10);
+      const today = new Date().toISOString().slice(0, 10);
       const { data, error } = await db
-        .from("assets")
-        .select("id, brand, model, serial, client, days_left, status")
-        .gte("days_left", 0)
-        .lte("days_left", maxDays)
-        .order("days_left", { ascending: true });
+        .from("asset_item")
+        .select("id, brand, model, serial, org_id, warranty_end, status")
+        .gte("warranty_end", today)
+        .lte("warranty_end", cutoffDate)
+        .order("warranty_end", { ascending: true });
 
       if (error) throw new Error(error.message);
 

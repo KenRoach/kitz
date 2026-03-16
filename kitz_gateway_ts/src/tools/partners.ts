@@ -31,7 +31,7 @@ export const partnerTools: ToolDef[] = [
 
       // Fetch order
       const { data: order, error: orderErr } = await db
-        .from("orders")
+        .from("order_po")
         .select("*")
         .eq("id", orderId)
         .single();
@@ -54,7 +54,7 @@ export const partnerTools: ToolDef[] = [
       if (subErr) throw new Error(subErr.message);
 
       // Update order status
-      await db.from("orders").update({
+      await db.from("order_po").update({
         status: "submitted",
         delivery_partner: partner.name,
         updated: new Date().toISOString().slice(0, 10),
@@ -108,7 +108,7 @@ export const partnerTools: ToolDef[] = [
       // Update order status
       const { data: sub } = await db.from("po_submissions").select("order_id").eq("id", submissionId).single();
       if (sub) {
-        await db.from("orders").update({
+        await db.from("order_po").update({
           status: "acknowledged",
           updated: new Date().toISOString().slice(0, 10),
         }).eq("id", sub.order_id);
@@ -136,7 +136,7 @@ export const partnerTools: ToolDef[] = [
       // Update order status
       const { data: sub } = await db.from("po_submissions").select("order_id").eq("id", submissionId).single();
       if (sub) {
-        await db.from("orders").update({
+        await db.from("order_po").update({
           status: "fulfilled",
           updated: new Date().toISOString().slice(0, 10),
         }).eq("id", sub.order_id);

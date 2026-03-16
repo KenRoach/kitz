@@ -12,6 +12,7 @@ export interface Config {
   port: number;
   host: string;
   appUrl: string;
+  databaseUrl: string;
   supabaseUrl: string;
   supabaseServiceKey: string;
   authEnabled: boolean;
@@ -23,6 +24,7 @@ export interface Config {
   emailFrom: string;
   staticDir: string | null;
   whatsappSessionDir: string;
+  elevenlabsApiKey: string;
   smtp: SmtpConfig;
 }
 
@@ -35,6 +37,7 @@ export function loadConfig(): Config {
     port: parseInt(env("PORT", "8787"), 10),
     host: env("HOST", "0.0.0.0"),
     appUrl: env("APP_URL", "https://www.renewflow.io"),
+    databaseUrl: env("DATABASE_URL"),
     supabaseUrl: env("SUPABASE_URL"),
     supabaseServiceKey: env("SUPABASE_SERVICE_ROLE_KEY") || env("SUPABASE_SERVICE_KEY"),
     authEnabled: env("AUTH_ENABLED", "false") === "true",
@@ -46,6 +49,7 @@ export function loadConfig(): Config {
     emailFrom: env("EMAIL_FROM", "RenewFlow <noreply@renewflow.io>"),
     staticDir: env("STATIC_DIR") || null,
     whatsappSessionDir: env("WHATSAPP_SESSION_DIR", "./wa_sessions"),
+    elevenlabsApiKey: env("ELEVENLABS_API_KEY"),
     smtp: {
       host: env("SMTP_HOST"),
       port: parseInt(env("SMTP_PORT", "587"), 10),

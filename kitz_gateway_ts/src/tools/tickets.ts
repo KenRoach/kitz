@@ -9,7 +9,7 @@ export const ticketTools: ToolDef[] = [
     description: "Query support tickets with optional status filter",
     handler: async (args) => {
       const db = getSupabase();
-      let query = db.from("tickets").select("*");
+      let query = db.from("support_ticket").select("*");
       if (args.status) query = query.eq("status", args.status as string);
 
       const { data, error } = await query;

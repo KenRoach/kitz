@@ -28,10 +28,13 @@ export async function login(
     .eq("id", data.user.id)
     .single();
 
+  // Fallback to user_metadata from Supabase Auth
+  const meta = data.user.user_metadata as Record<string, string> | undefined;
+
   return {
     token: data.session.access_token,
-    username: coreUser?.full_name || data.user.email || email,
-    role: coreUser?.role || "member",
+    username: coreUser?.full_name || meta?.full_name || data.user.email || email,
+    role: coreUser?.role || meta?.role || "member",
   };
 }
 
@@ -101,9 +104,14 @@ export async function resetPassword(
   const { error } = await db.auth.admin.updateUserById(user.id, { password: newPassword });
   if (error) throw new Error("Failed to update password");
 
-  const { data: coreUser } = await db.from("core_user").select("role").eq("id", user.id).single();
+  const { data: coreUser } = await db.from("core_user").select("role, full_name").eq("id", user.id).single();
 
-  return { username: user.email || email, role: coreUser?.role || "member" };
+  const meta = user.user_metadata as Record<string, string> | undefined;
+
+  return {
+    username: coreUser?.full_name || meta?.full_name || user.email || email,
+    role: coreUser?.role || meta?.role || "member",
+  };
 }
 
 export async function forgotPassword(

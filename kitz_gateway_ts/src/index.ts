@@ -27,7 +27,10 @@ import { businessTools } from "./tools/business/index.js";
 import { toolRoutes } from "./routes/tools.js";
 import { configure as configureMail } from "./services/mailer.js";
 import { initLlmRouter } from "./llm/router.js";
-import { messagingRoutes } from "./messaging/routes.js";
+import { messagingRoutes, getWhatsAppAdapter } from "./messaging/routes.js";
+import { runMigrations } from "./db/migrate.js";
+import { initTranscriber } from "./voice/transcriber.js";
+import { initScheduler } from "./scheduler/index.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -48,10 +51,18 @@ async function main(): Promise<void> {
     defaultLlmProvider: config.defaultLlmProvider,
   });
 
+  // Initialize voice transcriber
+  if (config.elevenlabsApiKey) {
+    initTranscriber(config.elevenlabsApiKey);
+  }
+
   // Configure SMTP if available
   if (config.smtp.host) {
     configureMail(config.smtp.host, config.smtp.port, config.smtp.user, config.smtp.pass, config.smtp.from);
   }
+
+  // Run database migrations if DATABASE_URL is configured
+  await runMigrations(config.databaseUrl);
 
   // Seed default admin user
   await initDefaultAdmin();
@@ -144,12 +155,21 @@ async function main(): Promise<void> {
     config.authEnabled ? "auth" : null,
     config.anthropicApiKey ? "ai" : null,
     `llm:${llmRouter.getAvailableProviders().join("+")}`,
+    config.elevenlabsApiKey ? "voice" : null,
     config.smtp.host ? "smtp" : null,
     config.staticDir ? "static" : null,
     "whatsapp",
+    "scheduler",
   ].filter(Boolean);
 
   await app.listen({ port: config.port, host: config.host });
+
+  // Start scheduler after server is listening (needs WhatsApp adapter)
+  const adapter = getWhatsAppAdapter();
+  if (adapter) {
+    initScheduler(adapter);
+  }
+
   app.log.info(
     `KitZ(OS) Gateway v0.1 ready on port ${config.port} [${features.join(", ")}]`
   );

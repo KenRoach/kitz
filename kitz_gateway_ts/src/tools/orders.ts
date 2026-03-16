@@ -22,7 +22,7 @@ export const orderTools: ToolDef[] = [
     description: "Query purchase orders with optional status filter",
     handler: async (args) => {
       const db = getSupabase();
-      let query = db.from("orders").select("*");
+      let query = db.from("order_po").select("*");
       if (args.status) query = query.eq("status", args.status as string);
 
       const { data, error } = await query;
@@ -52,7 +52,8 @@ export const orderTools: ToolDef[] = [
         items: args.items ?? [],
       };
 
-      const { data, error } = await db.from("orders").insert(row).select().single();
+      // NOTE: order_po column names may differ — verify schema matches these fields
+      const { data, error } = await db.from("order_po").insert(row).select().single();
       if (error) throw new Error(error.message);
 
       return { order: toCamel(data) };
