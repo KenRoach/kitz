@@ -20,7 +20,8 @@ async function authPlugin(app: FastifyInstance): Promise<void> {
       request.method === "OPTIONS" ||
       path === "/v0.1/health" ||
       path === "/v0.1/tools" ||
-      path.startsWith("/v0.1/auth/")
+      path.startsWith("/v0.1/auth/") ||
+      path.startsWith("/api/v1/auth/")
     ) {
       return;
     }

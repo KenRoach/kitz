@@ -4,11 +4,13 @@ import type { FastifyInstance } from "fastify";
 import { login, registerUser, resetPassword, forgotPassword, resetPasswordWithToken } from "./service.js";
 import { loadConfig } from "../config.js";
 
-export async function authRoutes(app: FastifyInstance): Promise<void> {
-  app.post("/v0.1/auth/login", async (request, reply) => {
-    const { username, password } = request.body as { username: string; password: string };
+function registerAuthHandlers(app: FastifyInstance, prefix: string): void {
+  app.post(`${prefix}/login`, async (request, reply) => {
+    const body = request.body as { username?: string; email?: string; password: string };
+    const username = body.username || body.email;
+    const { password } = body;
     if (!username || !password) {
-      return reply.status(400).send({ error: "username and password required" });
+      return reply.status(400).send({ error: "username/email and password required" });
     }
     try {
       const result = await login(username, password);
@@ -18,7 +20,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     }
   });
 
-  app.post("/v0.1/auth/register", async (request, reply) => {
+  app.post(`${prefix}/register`, async (request, reply) => {
     const { username, password } = request.body as { username: string; password: string };
     if (!username || !password) {
       return reply.status(400).send({ error: "username and password required" });
@@ -30,7 +32,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     }
   });
 
-  app.post("/v0.1/auth/reset-password", async (request, reply) => {
+  app.post(`${prefix}/reset-password`, async (request, reply) => {
     const { username, currentPassword, newPassword } = request.body as {
       username: string;
       currentPassword: string;
@@ -46,7 +48,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     }
   });
 
-  app.post("/v0.1/auth/forgot-password", async (request, reply) => {
+  app.post(`${prefix}/forgot-password`, async (request, reply) => {
     const { email } = request.body as { email: string };
     if (!email) {
       return reply.status(400).send({ error: "email is required" });
@@ -62,7 +64,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     }
   });
 
-  app.post("/v0.1/auth/reset-password-with-token", async (request, reply) => {
+  app.post(`${prefix}/reset-password-with-token`, async (request, reply) => {
     const { token, newPassword } = request.body as { token: string; newPassword: string };
     if (!token || !newPassword) {
       return reply.status(400).send({ error: "token and newPassword are required" });
@@ -73,4 +75,9 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       return reply.status(400).send({ error: (err as Error).message });
     }
   });
+}
+
+export async function authRoutes(app: FastifyInstance): Promise<void> {
+  registerAuthHandlers(app, "/v0.1/auth");
+  registerAuthHandlers(app, "/api/v1/auth");
 }
