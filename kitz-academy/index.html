@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KitZ Academy — Conocimiento Abierto de IA para Latinoam&eacute;rica</title>
+<meta name="description" content="Cursos libres de inteligencia artificial, Python, APIs y open-source para desarrolladores latinoamericanos. 100% gratis, pr&aacute;ctico y en espa&ntilde;ol.">
+<meta name="keywords" content="KitZ, Academy, IA, inteligencia artificial, Python, API, open source, LATAM, cursos gratis, desarrolladores">
+<meta name="author" content="KitZ Community">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://kenroach.github.io/kitz/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="KitZ Academy — Conocimiento Abierto de IA para LATAM">
+<meta property="og:description" content="Cursos libres de inteligencia artificial, Python, APIs y open-source. 100% gratis, pr&aacute;ctico y en espa&ntilde;ol.">
+<meta property="og:url" content="https://kenroach.github.io/kitz/">
+<meta property="og:site_name" content="KitZ Academy">
+<meta property="og:locale" content="es_419">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KitZ Academy — Conocimiento Abierto de IA para LATAM">
+<meta name="twitter:description" content="Cursos libres de IA, Python, APIs y open-source para desarrolladores latinoamericanos.">
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "KitZ Academy",
+  "description": "Conocimiento abierto de inteligencia artificial para Latinoam\u00e9rica",
+  "url": "https://kenroach.github.io/kitz/",
+  "sameAs": ["https://github.com/KenRoach/kitz"],
+  "inLanguage": "es",
+  "areaServed": "Latin America",
+  "isAccessibleForFree": true
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #06080c;
+  --bg-main: #0b0e14;
+  --bg-card: #111620;
+  --bg-card-alt: #151b27;
+  --bg-elevated: #1a2233;
+  --lime: #b5ff3b;
+  --lime-dim: rgba(181,255,59,0.12);
+  --cyan: #22d3ee;
+  --orange: #ff7a3d;
+  --magenta: #f43f8e;
+  --blue: #3b82f6;
+  --gold: #fbbf24;
+  --text-white: #eef1f6;
+  --text-gray: #8892a4;
+  --text-muted: #4a5568;
+  --border-dim: rgba(255,255,255,0.06);
+  --border-med: rgba(255,255,255,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-deep);
+  color: var(--text-white);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+/* --- GRAIN --- */
+body::after {
+  content:'';position:fixed;inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;
+}
+::selection { background: var(--lime); color: var(--bg-deep); }
+a { color: inherit; text-decoration: none; }
+.mono { font-family:'IBM Plex Mono',monospace; }
+/* --- NAV --- */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 3%;
+  background:rgba(6,8,12,0.8);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border-dim);
+}
+.logo {
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:1.5rem;
+  letter-spacing:-0.03em;display:flex;align-items:center;gap:0.4rem;
+}
+.logo em { font-style:normal;color:var(--lime); }
+.nav-menu { display:flex;gap:2rem;list-style:none; }
+.nav-menu a {
+  font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-gray);transition:color 0.3s;cursor:pointer;
+}
+.nav-menu a:hover { color:var(--lime); }
+.btn-glow {
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;
+  padding:0.65rem 1.6rem;background:var(--lime);color:var(--bg-deep);
+  border:none;cursor:pointer;letter-spacing:0.04em;
+  transition:all 0.3s;
+}
+.btn-glow:hover { box-shadow:0 0 30px rgba(181,255,59,0.25);transform:translateY(-1px); }
+/* --- MOBILE NAV --- */
+.nav-toggle {
+  display:none;background:none;border:none;cursor:pointer;
+  flex-direction:column;gap:5px;padding:4px;
+}
+.nav-toggle span {
+  display:block;width:24px;height:2px;background:var(--text-white);
+  transition:all 0.3s;
+}
+@media(max-width:768px) {
+  .nav-toggle { display:flex; }
+  .nav-menu {
+    position:fixed;top:60px;left:0;right:0;bottom:0;
+    flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+    background:rgba(6,8,12,0.97);backdrop-filter:blur(24px);
+    transform:translateX(100%);transition:transform 0.3s;
+  }
+  .nav-menu.open { transform:translateX(0); }
+  .nav-cta { display:none; }
+}
+/* --- HERO --- */
+.hero {
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:8rem 5% 5rem;position:relative;
+}
+.hero::before {
+  content:'';position:absolute;top:-20%;right:-10%;width:50vw;height:50vw;
+  background:radial-gradient(circle,rgba(181,255,59,0.05) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero::after {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border-med),transparent);
+}
+.hero-eyebrow {
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:500;
+  color:var(--lime);letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:1.2rem;
+  opacity:0;animation:rise 0.5s ease forwards 0.15s;
+}
+.hero h1 {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(2.6rem,5.5vw,5rem);line-height:1.02;letter-spacing:-0.035em;
+  max-width:850px;margin-bottom:1.4rem;
+  opacity:0;animation:rise 0.5s ease forwards 0.3s;
+}
+.hero h1 .grad {
+  background:linear-gradient(135deg,var(--lime),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-p {
+  font-size:1.15rem;color:var(--text-gray);max-width:540px;margin-bottom:2.4rem;
+  opacity:0;animation:rise 0.5s ease forwards 0.45s;
+}
+.hero-btns {
+  display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;animation:rise 0.5s ease forwards 0.6s;
+}
+.btn-outline {
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;
+  padding:0.85rem 2rem;background:transparent;color:var(--text-white);
+  border:1px solid var(--border-med);cursor:pointer;transition:all 0.3s;
+}
+.btn-outline:hover { border-color:var(--lime);color:var(--lime); }
+.btn-solid {
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;
+  padding:0.85rem 2rem;background:var(--lime);color:var(--bg-deep);
+  border:none;cursor:pointer;transition:all 0.3s;
+}
+.btn-solid:hover { box-shadow:0 0 30px rgba(181,255,59,0.2);transform:translateY(-1px); }
+.hero-counters {
+  display:flex;gap:3rem;margin-top:4rem;padding-top:2rem;
+  border-top:1px solid var(--border-dim);
+  opacity:0;animation:rise 0.5s ease forwards 0.8s;
+}
+.counter-val { font-family:'Outfit',sans-serif;font-weight:800;font-size:2.2rem;color:var(--lime); }
+.counter-lbl { font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em; }
+@keyframes rise {
+  from { opacity:0;transform:translateY(24px); }
+  to { opacity:1;transform:translateY(0); }
+}
+/* --- SECTION UTILITY --- */
+section { padding:6rem 5%; }
+.stag { font-family:'IBM Plex Mono',monospace;font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.6rem; }
+.stitle { font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(1.8rem,3.5vw,2.8rem);letter-spacing:-0.025em;line-height:1.1;margin-bottom:0.6rem; }
+.sdesc { color:var(--text-gray);font-size:1rem;max-width:560px;margin-bottom:2.5rem; }
+.divider {
+  height:1px;margin:0 5%;
+  background:linear-gradient(90deg,transparent,var(--border-med),transparent);
+}
+/* --- APRENDE (LEARN) --- */
+#aprende { background:var(--bg-main); }
+.level-tabs {
+  display:flex;gap:0;margin-bottom:2.5rem;border:1px solid var(--border-dim);
+  width:fit-content;
+}
+.level-tab {
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;padding:0.75rem 1.8rem;
+  background:transparent;color:var(--text-muted);border:none;cursor:pointer;
+  transition:all 0.3s;border-right:1px solid var(--border-dim);
+}
+.level-tab:last-child { border-right:none; }
+.level-tab.active { background:var(--lime);color:var(--bg-deep); }
+.level-tab:hover:not(.active) { color:var(--text-white);background:var(--bg-elevated); }
+.courses-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;
+}
+.course-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:2rem 1.6rem;position:relative;overflow:hidden;
+  transition:all 0.35s;cursor:pointer;
+}
+.course-card::after {
+  content:'';position:absolute;top:0;left:0;width:0;height:2px;
+  transition:width 0.4s;
+}
+.course-card[data-color="lime"]::after { background:var(--lime); }
+.course-card[data-color="cyan"]::after { background:var(--cyan); }
+.course-card[data-color="orange"]::after { background:var(--orange); }
+.course-card[data-color="blue"]::after { background:var(--blue); }
+.course-card[data-color="magenta"]::after { background:var(--magenta); }
+.course-card[data-color="gold"]::after { background:var(--gold); }
+.course-card:hover { background:var(--bg-card-alt);transform:translateY(-3px); }
+.course-card:hover::after { width:100%; }
+.course-icon { font-size:2rem;margin-bottom:1rem;display:block; }
+.course-card h4 { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.5rem; }
+.course-card p { color:var(--text-gray);font-size:0.85rem;line-height:1.5;margin-bottom:1rem; }
+.course-meta {
+  display:flex;align-items:center;gap:1rem;
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--text-muted);
+  letter-spacing:0.05em;
+}
+.course-meta .dot { width:3px;height:3px;border-radius:50%;background:var(--text-muted); }
+.progress-bar {
+  margin-top:1rem;height:3px;background:var(--border-dim);position:relative;
+}
+.progress-fill { height:100%;background:var(--lime);transition:width 0.6s ease; }
+/* --- JUEGA (PLAY) --- */
+#juega { background:var(--bg-deep); }
+.game-zone {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:3rem;max-width:800px;position:relative;overflow:hidden;
+}
+.game-zone::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--lime),var(--cyan),var(--orange));
+}
+.quiz-header {
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border-dim);
+}
+.quiz-title { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem; }
+.quiz-progress { font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--lime); }
+.quiz-question {
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:1.4rem;
+  line-height:1.3;margin-bottom:2rem;
+}
+.quiz-options { display:flex;flex-direction:column;gap:0.8rem; }
+.quiz-option {
+  display:flex;align-items:center;gap:1rem;
+  padding:1.1rem 1.4rem;background:var(--bg-elevated);border:1px solid var(--border-dim);
+  cursor:pointer;transition:all 0.25s;font-size:0.95rem;
+}
+.quiz-option:hover { border-color:var(--lime);background:rgba(181,255,59,0.04); }
+.quiz-option.selected { border-color:var(--lime);background:rgba(181,255,59,0.08); }
+.quiz-option.correct { border-color:#22c55e;background:rgba(34,197,94,0.08); }
+.quiz-option.wrong { border-color:var(--magenta);background:rgba(244,63,142,0.08); }
+.option-letter {
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:0.75rem;
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border-med);color:var(--text-muted);flex-shrink:0;
+  transition:all 0.25s;
+}
+.quiz-option.selected .option-letter { border-color:var(--lime);color:var(--lime); }
+.quiz-option.correct .option-letter { border-color:#22c55e;color:#22c55e; }
+.quiz-footer {
+  display:flex;justify-content:space-between;align-items:center;margin-top:2rem;
+}
+.quiz-btn {
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;
+  padding:0.8rem 2rem;border:none;cursor:pointer;transition:all 0.3s;
+}
+.quiz-btn-primary { background:var(--lime);color:var(--bg-deep); }
+.quiz-btn-primary:hover { box-shadow:0 0 20px rgba(181,255,59,0.2); }
+.quiz-btn-secondary { background:var(--bg-elevated);color:var(--text-gray);border:1px solid var(--border-dim); }
+.quiz-btn-secondary:hover { color:var(--text-white); }
+.quiz-result {
+  text-align:center;padding:2rem 0;display:none;
+}
+.quiz-score {
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:4rem;color:var(--lime);
+}
+.quiz-result-msg { font-size:1.1rem;color:var(--text-gray);margin:1rem 0 2rem; }
+.game-cards {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;
+  margin-top:2.5rem;
+}
+.game-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);padding:1.8rem 1.4rem;
+  cursor:pointer;transition:all 0.3s;
+}
+.game-card:hover { transform:translateY(-3px);border-color:var(--cyan); }
+.game-card-icon { font-size:2rem;margin-bottom:0.8rem; }
+.game-card h5 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.4rem; }
+.game-card p { font-size:0.8rem;color:var(--text-gray); }
+/* --- HERRAMIENTAS (TOOLS) --- */
+#herramientas { background:var(--bg-main); }
+.tools-tabs {
+  display:flex;gap:0.8rem;margin-bottom:2rem;flex-wrap:wrap;
+}
+.tool-tab {
+  font-family:'IBM Plex Mono',monospace;font-size:0.7rem;font-weight:500;
+  padding:0.5rem 1.2rem;background:var(--bg-card);border:1px solid var(--border-dim);
+  color:var(--text-muted);cursor:pointer;transition:all 0.3s;text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.tool-tab.active { background:var(--lime-dim);border-color:var(--lime);color:var(--lime); }
+.tool-tab:hover:not(.active) { color:var(--text-white); }
+.prompts-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.2rem;
+}
+.prompt-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:1.6rem;transition:all 0.3s;position:relative;
+}
+.prompt-card:hover { border-color:var(--border-med);background:var(--bg-card-alt); }
+.prompt-cat {
+  font-family:'IBM Plex Mono',monospace;font-size:0.62rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;
+}
+.prompt-cat.ventas, .prompt-cat.core { color:var(--lime); }
+.prompt-cat.marketing, .prompt-cat.data { color:var(--cyan); }
+.prompt-cat.operaciones, .prompt-cat.api { color:var(--orange); }
+.prompt-cat.ecommerce, .prompt-cat.ai { color:var(--magenta); }
+.prompt-cat.ia { color:var(--blue); }
+.prompt-cat.social, .prompt-cat.tools { color:var(--gold); }
+/* --- SOCIAL MEDIA MARKETING --- */
+#social-media { background:var(--bg-deep); }
+.social-platforms {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem;
+  margin-bottom:2.5rem;
+}
+.platform-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:1.8rem 1.4rem;text-align:center;transition:all 0.3s;cursor:pointer;
+}
+.platform-card:hover { transform:translateY(-3px);border-color:var(--gold); }
+.platform-icon { font-size:2.5rem;margin-bottom:0.8rem; }
+.platform-card h5 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.3rem; }
+.platform-card p { font-size:0.78rem;color:var(--text-gray); }
+.platform-stat { font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--gold);margin-top:0.6rem;font-weight:600; }
+.social-tips {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;
+}
+.tip-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:1.6rem;transition:all 0.3s;
+}
+.tip-card:hover { background:var(--bg-card-alt);border-color:var(--border-med); }
+.tip-number {
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:2rem;color:var(--gold);
+  opacity:0.3;margin-bottom:0.5rem;
+}
+.tip-card h5 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.4rem; }
+.tip-card p { font-size:0.85rem;color:var(--text-gray);line-height:1.5; }
+.prompt-card h4 { font-weight:700;font-size:0.95rem;margin-bottom:0.6rem; }
+.prompt-box {
+  background:var(--bg-deep);padding:1rem 1.2rem;font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;line-height:1.6;color:var(--text-gray);
+  border-left:2px solid var(--border-dim);margin-bottom:1rem;
+  white-space:pre-wrap;
+}
+.copy-btn {
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;
+  padding:0.45rem 1rem;background:transparent;border:1px solid var(--border-dim);
+  color:var(--text-muted);cursor:pointer;transition:all 0.3s;
+  letter-spacing:0.05em;
+}
+.copy-btn:hover { border-color:var(--lime);color:var(--lime); }
+.copy-btn.copied { border-color:var(--lime);color:var(--lime);background:var(--lime-dim); }
+/* --- HISTORIAS (STORIES) --- */
+#historias { background:var(--bg-deep); }
+.stories-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;
+}
+.story-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  overflow:hidden;transition:all 0.35s;cursor:pointer;
+}
+.story-card:hover { transform:translateY(-4px);border-color:var(--border-med); }
+.story-visual {
+  height:180px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-size:4rem;
+}
+.story-visual.bg-lime { background:linear-gradient(135deg,rgba(181,255,59,0.08),rgba(34,211,238,0.05)); }
+.story-visual.bg-cyan { background:linear-gradient(135deg,rgba(34,211,238,0.08),rgba(59,130,246,0.05)); }
+.story-visual.bg-orange { background:linear-gradient(135deg,rgba(255,122,61,0.08),rgba(251,191,36,0.05)); }
+.story-body { padding:1.6rem; }
+.story-tag {
+  font-family:'IBM Plex Mono',monospace;font-size:0.62rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--lime);margin-bottom:0.6rem;
+}
+.story-card h4 { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:0.5rem; }
+.story-card p { font-size:0.85rem;color:var(--text-gray);line-height:1.5; }
+.story-metric {
+  display:flex;align-items:center;gap:0.6rem;margin-top:1rem;
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--lime);font-weight:600;
+}
+/* --- COMUNIDAD (COMMUNITY) --- */
+#comunidad { background:var(--bg-main); }
+.community-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;
+}
+.community-card {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  padding:2rem 1.6rem;text-align:center;transition:all 0.3s;
+}
+.community-card:hover { transform:translateY(-3px);border-color:var(--border-med); }
+.community-icon { font-size:2.5rem;margin-bottom:1rem; }
+.community-card h4 { font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:0.5rem; }
+.community-card p { font-size:0.85rem;color:var(--text-gray);line-height:1.5; }
+/* --- FOOTER --- */
+footer {
+  background:var(--bg-deep);padding:4rem 5% 2rem;
+  border-top:1px solid var(--border-dim);
+}
+.footer-grid {
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;
+}
+.footer-brand p { font-size:0.85rem;color:var(--text-gray);margin-top:0.8rem;max-width:300px; }
+.footer-col h5 {
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem;
+}
+.footer-col a {
+  display:block;font-size:0.85rem;color:var(--text-gray);margin-bottom:0.6rem;
+  transition:color 0.3s;
+}
+.footer-col a:hover { color:var(--lime); }
+.footer-bottom {
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:2rem;border-top:1px solid var(--border-dim);
+  font-size:0.75rem;color:var(--text-muted);
+}
+/* --- MODAL --- */
+.modal-overlay {
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(6,8,12,0.85);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem;
+}
+.modal-content {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  max-width:700px;width:100%;max-height:85vh;overflow-y:auto;
+  padding:2.5rem;position:relative;
+}
+.modal-close {
+  position:absolute;top:1rem;right:1.2rem;background:none;border:none;
+  color:var(--text-muted);font-size:1.8rem;cursor:pointer;transition:color 0.3s;
+  line-height:1;
+}
+.modal-close:hover { color:var(--text-white); }
+.modal-content h3 {
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:1rem;
+}
+.modal-content .challenge-desc { color:var(--text-gray);margin-bottom:1.5rem;line-height:1.6; }
+.challenge-code {
+  background:var(--bg-deep);padding:1.2rem 1.4rem;font-family:'IBM Plex Mono',monospace;
+  font-size:0.82rem;line-height:1.7;color:var(--cyan);border-left:3px solid var(--lime);
+  margin-bottom:1.5rem;white-space:pre-wrap;overflow-x:auto;
+}
+.challenge-input {
+  width:100%;background:var(--bg-deep);border:1px solid var(--border-dim);
+  color:var(--text-white);font-family:'IBM Plex Mono',monospace;font-size:0.85rem;
+  padding:1rem;margin-bottom:1rem;resize:vertical;min-height:80px;
+}
+.challenge-input:focus { outline:none;border-color:var(--lime); }
+.challenge-feedback {
+  padding:1rem;margin-top:1rem;font-size:0.9rem;line-height:1.5;display:none;
+}
+.challenge-feedback.success { background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#22c55e; }
+.challenge-feedback.error { background:rgba(244,63,142,0.1);border:1px solid rgba(244,63,142,0.3);color:var(--magenta); }
+/* --- SKIP LINK --- */
+.skip-link {
+  position:absolute;top:-100%;left:1rem;background:var(--lime);color:var(--bg-deep);
+  padding:0.5rem 1rem;font-weight:700;z-index:10001;
+}
+.skip-link:focus { top:0.5rem; }
+@media(max-width:768px) {
+  .hero-counters { flex-wrap:wrap;gap:1.5rem; }
+  .footer-grid { grid-template-columns:1fr;gap:2rem; }
+  .game-zone { padding:1.5rem; }
+  .prompts-grid { grid-template-columns:1fr; }
+  .stories-grid { grid-template-columns:1fr; }
+  .modal-content { padding:1.5rem; }
+}
+</style>
+</head>
+<body>
+<a href="#aprende" class="skip-link">Saltar al contenido</a>
+
+<!-- NAV -->
+<nav role="navigation" aria-label="Navegaci&oacute;n principal">
+  <a href="#" class="logo" aria-label="KitZ Academy - Inicio">Kit<em>Z</em> Academy</a>
+  <ul class="nav-menu" id="navMenu">
+    <li><a href="#aprende">Aprende</a></li>
+    <li><a href="#juega">Juega</a></li>
+    <li><a href="#herramientas">Gateway</a></li>
+    <li><a href="#historias">Showcase</a></li>
+    <li><a href="#docs">Docs</a></li>
+    <li><a href="#comunidad">Comunidad</a></li>
+  </ul>
+  <a class="btn-glow nav-cta" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<main>
+<section class="hero" aria-label="Bienvenida">
+  <p class="hero-eyebrow">// open-source &middot; libre &middot; LATAM</p>
+  <h1>Conocimiento abierto de <span class="grad">inteligencia artificial</span> para Latinoam&eacute;rica</h1>
+  <p class="hero-p">Cursos libres, herramientas open-source y una comunidad que construye junta. En espa&ntilde;ol, pr&aacute;ctico y 100% gratis.</p>
+  <div class="hero-btns">
+    <button class="btn-solid" onclick="document.getElementById('aprende').scrollIntoView({behavior:'smooth'})">Explorar Cursos</button>
+    <a class="btn-outline" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;">GitHub &rarr;</a>
+  </div>
+  <div class="hero-counters">
+    <div><div class="counter-val" data-target="12">0</div><div class="counter-lbl">Tools en el Gateway</div></div>
+    <div><div class="counter-val" data-target="0" data-suffix=" deps">0</div><div class="counter-lbl">Dependencias</div></div>
+    <div><div class="counter-val" data-target="100" data-suffix="%">0</div><div class="counter-lbl">Open Source</div></div>
+    <div><div class="counter-val" data-target="7">0</div><div class="counter-lbl">Cursos Libres</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- APRENDE -->
+<section id="aprende">
+  <p class="stag" style="color:var(--lime)">// aprende</p>
+  <h2 class="stitle">Aprende a construir con KitZ</h2>
+  <p class="sdesc">Desde los fundamentos de Python y APIs hasta integraci&oacute;n con IA. Rutas de aprendizaje abiertas, a tu ritmo.</p>
+
+  <div class="level-tabs">
+    <button class="level-tab active" data-level="todos">Todos</button>
+    <button class="level-tab" data-level="basico">B&aacute;sico</button>
+    <button class="level-tab" data-level="intermedio">Intermedio</button>
+    <button class="level-tab" data-level="avanzado">Avanzado</button>
+  </div>
+
+  <div class="courses-grid" id="coursesGrid">
+    <a href="curso.html?id=intro-kitz" class="course-card" data-color="lime" data-level="basico" role="article" aria-label="Curso: Introducci&oacute;n a KitZ OS">
+      <span class="course-icon">&#x1F30D;</span>
+      <h4>Introducci&oacute;n a KitZ OS</h4>
+      <p>Qu&eacute; es KitZ, c&oacute;mo funciona el gateway de herramientas, y por qu&eacute; open-source importa. Sin requisitos previos.</p>
+      <div class="course-meta">
+        <span>6 lecciones</span><span class="dot"></span><span>1h 30m</span><span class="dot"></span><span>B&aacute;sico</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </a>
+    <a href="curso.html?id=primer-tool" class="course-card" data-color="cyan" data-level="basico" role="article" aria-label="Curso: Tu Primer Tool con Python">
+      <span class="course-icon">&#x1F40D;</span>
+      <h4>Tu Primer Tool con Python</h4>
+      <p>Construye tu primera herramienta para el KitZ Gateway usando solo la biblioteca est&aacute;ndar de Python. Cero dependencias.</p>
+      <div class="course-meta">
+        <span>8 lecciones</span><span class="dot"></span><span>2h 45m</span><span class="dot"></span><span>B&aacute;sico</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </a>
+    <a href="curso.html?id=api-rest" class="course-card" data-color="orange" data-level="intermedio" role="article" aria-label="Curso: API REST y el Gateway">
+      <span class="course-icon">&#x1F310;</span>
+      <h4>API REST y el Gateway</h4>
+      <p>Endpoints HTTP, registro de tools, protocolo JSON y c&oacute;mo consumir el gateway desde cualquier frontend o servicio.</p>
+      <div class="course-meta">
+        <span>10 lecciones</span><span class="dot"></span><span>3h 20m</span><span class="dot"></span><span>Intermedio</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </a>
+    <a href="curso.html?id=sqlite-ia" class="course-card" data-color="blue" data-level="intermedio" role="article" aria-label="Curso: Datos con SQLite e IA">
+      <span class="course-icon">&#x1F4CA;</span>
+      <h4>Datos con SQLite e IA</h4>
+      <p>Persistencia con SQLite, consultas de datos, m&eacute;tricas y an&aacute;lisis automatizado con modelos de lenguaje.</p>
+      <div class="course-meta">
+        <span>10 lecciones</span><span class="dot"></span><span>3h 40m</span><span class="dot"></span><span>Intermedio</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </a>
+    <a href="curso.html?id=react-ts" class="course-card" data-color="gold" data-level="intermedio" role="article" aria-label="Curso: Frontend con React y TypeScript">
+      <span class="course-icon">&#x26A1;</span>
+      <h4>Frontend con React y TypeScript</h4>
+      <p>Construye interfaces modernas que consumen el KitZ Gateway. React 19, Zustand, y dise&ntilde;o de tokens.</p>
+      <div class="course-meta">
+        <span>12 lecciones</span><span class="dot"></span><span>4h 30m</span><span class="dot"></span><span>Intermedio</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </a>
+    <a href="curso.html?id=claude-api" class="course-card" data-color="magenta" data-level="avanzado" role="article" aria-label="Curso: Integraci&oacute;n con Claude API">
+      <span class="course-icon">&#x1F916;</span>
+      <h4>Integraci&oacute;n con Claude API</h4>
+      <p>Conecta modelos de IA a tus tools: salida estructurada, chat inteligente y asistentes con contexto de negocio.</p>
+      <div class="course-meta">
+        <span>10 lecciones</span><span class="dot"></span><span>4h 15m</span><span class="dot"></span><span>Avanzado</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </a>
+    <a href="curso.html?id=open-source" class="course-card" data-color="gold" data-level="avanzado" role="article" aria-label="Curso: Contribuir a Open Source">
+      <span class="course-icon">&#x1F680;</span>
+      <h4>Contribuir a Open Source</h4>
+      <p>Git workflow, pull requests, c&oacute;digo de conducta y c&oacute;mo contribuir al ecosistema KitZ y otros proyectos libres.</p>
+      <div class="course-meta">
+        <span>8 lecciones</span><span class="dot"></span><span>2h 30m</span><span class="dot"></span><span>Avanzado</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- JUEGA -->
+<section id="juega">
+  <p class="stag" style="color:var(--cyan)">// juega &amp; aprende</p>
+  <h2 class="stitle">Pon a prueba tu conocimiento</h2>
+  <p class="sdesc">Quizzes interactivos sobre open-source, Python, APIs y el ecosistema KitZ.</p>
+
+  <div class="game-zone" id="quizZone">
+    <div class="quiz-header">
+      <span class="quiz-title">Quiz: KitZ &amp; Open Source</span>
+      <span class="quiz-progress" id="quizProgress">1 / 5</span>
+    </div>
+    <div id="quizBody">
+      <p class="quiz-question" id="quizQuestion"></p>
+      <div class="quiz-options" id="quizOptions"></div>
+    </div>
+    <div class="quiz-result" id="quizResult">
+      <div class="quiz-score" id="quizScore">0/5</div>
+      <p class="quiz-result-msg" id="quizMsg"></p>
+      <button class="quiz-btn quiz-btn-primary" onclick="startQuiz()">Intentar de nuevo</button>
+    </div>
+    <div class="quiz-footer" id="quizFooter">
+      <button class="quiz-btn quiz-btn-secondary" onclick="skipQuestion()">Saltar</button>
+      <button class="quiz-btn quiz-btn-primary" id="quizSubmit" onclick="submitAnswer()" disabled>Verificar</button>
+    </div>
+  </div>
+
+  <div class="game-cards">
+    <div class="game-card" onclick="openChallenge('gateway')" role="button" tabindex="0" aria-label="Reto Gateway">
+      <div class="game-card-icon">&#x1F9E0;</div>
+      <h5>Reto Gateway</h5>
+      <p>Construye un tool personalizado para el gateway y comp&aacute;rtelo con la comunidad.</p>
+    </div>
+    <div class="game-card" onclick="openChallenge('debug')" role="button" tabindex="0" aria-label="Debug Challenge">
+      <div class="game-card-icon">&#x1F41B;</div>
+      <h5>Debug Challenge</h5>
+      <p>Encuentra y corrige bugs en c&oacute;digo real. Aprende depuraci&oacute;n con casos pr&aacute;cticos.</p>
+    </div>
+    <div class="game-card" onclick="openChallenge('apiquiz')" role="button" tabindex="0" aria-label="API Quiz">
+      <div class="game-card-icon">&#x1F4A1;</div>
+      <h5>API Quiz</h5>
+      <p>Pon a prueba tu conocimiento de REST APIs, HTTP y protocolos JSON.</p>
+    </div>
+  </div>
+
+  <!-- Challenge Modal -->
+  <div id="challengeModal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeChallenge()" aria-label="Cerrar">&times;</button>
+      <div id="challengeBody"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HERRAMIENTAS (GATEWAY TOOLS) -->
+<section id="herramientas">
+  <p class="stag" style="color:var(--orange)">// gateway tools</p>
+  <h2 class="stitle">Herramientas del KitZ Gateway</h2>
+  <p class="sdesc">Ejemplos reales de las herramientas disponibles en el gateway. Copia los ejemplos JSON y prueba localmente.</p>
+
+  <div class="tools-tabs">
+    <button class="tool-tab active" data-cat="todos">Todos</button>
+    <button class="tool-tab" data-cat="core">Core</button>
+    <button class="tool-tab" data-cat="data">Datos</button>
+    <button class="tool-tab" data-cat="api">API</button>
+    <button class="tool-tab" data-cat="ai">IA</button>
+  </div>
+
+  <div class="prompts-grid" id="promptsGrid">
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>echo &mdash; Prueba de Conectividad</h4>
+      <div class="prompt-box">POST /v0.1/tools/echo
+Content-Type: application/json
+
+{
+  "message": "hola desde KitZ"
+}
+
+// Respuesta:
+{ "result": "hola desde KitZ" }</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>utc_now &mdash; Timestamp UTC</h4>
+      <div class="prompt-box">POST /v0.1/tools/utc_now
+Content-Type: application/json
+
+{}
+
+// Respuesta:
+{ "result": "2026-03-14T10:30:00Z" }</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>sum &mdash; Sumar Valores</h4>
+      <div class="prompt-box">POST /v0.1/tools/sum
+Content-Type: application/json
+
+{
+  "values": [10, 25, 37, 8]
+}
+
+// Respuesta:
+{ "result": 80 }</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="data">
+      <div class="prompt-cat data">Datos</div>
+      <h4>list_assets &mdash; Consultar Activos</h4>
+      <div class="prompt-box">POST /v0.1/tools/list_assets
+Content-Type: application/json
+
+{
+  "client": "Acme Corp",
+  "status": "active"
+}
+
+// Filtra por cliente, tier, status,
+// marca o fecha de vencimiento</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="data">
+      <div class="prompt-cat data">Datos</div>
+      <h4>get_asset_metrics &mdash; M&eacute;tricas del Portafolio</h4>
+      <div class="prompt-box">POST /v0.1/tools/get_asset_metrics
+Content-Type: application/json
+
+{}
+
+// Respuesta incluye:
+// total_devices, unique_clients,
+// oem_cost, tpm_cost, savings, alerts</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="api">
+      <div class="prompt-cat api">API</div>
+      <h4>create_order &mdash; Crear Orden de Compra</h4>
+      <div class="prompt-box">POST /v0.1/tools/create_order
+Content-Type: application/json
+
+{
+  "client": "TechLatam SA",
+  "items": ["asset_001", "asset_002"],
+  "type": "tpm"
+}
+
+// Crea PO en estado "draft"</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="api">
+      <div class="prompt-cat api">API</div>
+      <h4>list_orders &mdash; Consultar &Oacute;rdenes</h4>
+      <div class="prompt-box">POST /v0.1/tools/list_orders
+Content-Type: application/json
+
+{
+  "status": "pending-approval"
+}
+
+// Filtra por estado del flujo:
+// draft, pending-approval, approved,
+// submitted, fulfilled</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="ai">
+      <div class="prompt-cat ai">IA</div>
+      <h4>generate_insights &mdash; An&aacute;lisis con IA</h4>
+      <div class="prompt-box">POST /v0.1/tools/generate_insights
+Content-Type: application/json
+
+{}
+
+// Genera autom&aacute;ticamente:
+// - Concentraci&oacute;n de clientes
+// - Heatmap de vencimientos
+// - Comparativa de costos
+// - Revenue at risk</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="api">
+      <div class="prompt-cat api">API</div>
+      <h4>Listar Tools Disponibles (GET)</h4>
+      <div class="prompt-box">GET /v0.1/tools
+
+// Respuesta: lista de todas las
+// herramientas registradas en el
+// gateway con sus nombres y
+// descripciones.
+// No requiere body.</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+    <div class="prompt-card" data-cat="core">
+      <div class="prompt-cat core">Core</div>
+      <h4>Health Check</h4>
+      <div class="prompt-box">GET /v0.1/health
+
+// Respuesta:
+{ "status": "ok", "version": "0.1" }
+
+// Verifica que el gateway
+// esta corriendo correctamente</div>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copiar ejemplo</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SHOWCASE (ex-HISTORIAS) -->
+<section id="historias">
+  <p class="stag" style="color:var(--magenta)">// showcase</p>
+  <h2 class="stitle">Construido con KitZ</h2>
+  <p class="sdesc">Proyectos reales que demuestran el poder del ecosistema open-source KitZ.</p>
+
+  <div class="stories-grid">
+    <div class="story-card">
+      <div class="story-visual bg-lime">&#x1F527;</div>
+      <div class="story-body">
+        <div class="story-tag">Backend &bull; Python</div>
+        <h4>KitZ Gateway &mdash; Servidor de Herramientas</h4>
+        <p>Servidor HTTP ligero con registro de tools invocables v&iacute;a REST. Construido con la stdlib de Python, cero dependencias externas.</p>
+        <div class="story-metric">Python stdlib &bull; Puerto 8787</div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-visual bg-cyan">&#x1F4DA;</div>
+      <div class="story-body">
+        <div class="story-tag">Educaci&oacute;n &bull; Open Source</div>
+        <h4>KitZ Academy &mdash; Conocimiento Libre</h4>
+        <p>Esta plataforma educativa: cursos, quizzes y documentaci&oacute;n abierta para la comunidad de desarrolladores LATAM.</p>
+        <div class="story-metric">HTML/CSS/JS &bull; Sin frameworks</div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-visual bg-orange">&#x1F4BE;</div>
+      <div class="story-body">
+        <div class="story-tag">Base de Datos &bull; SQLite</div>
+        <h4>Capa de Persistencia con WAL</h4>
+        <p>Almacenamiento ligero con SQLite y Write-Ahead Logging para datos empresariales: activos, &oacute;rdenes, tickets y m&aacute;s.</p>
+        <div class="story-metric">SQLite WAL &bull; Sin servidor DB</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DOCS (ex-SOCIAL MEDIA) -->
+<section id="docs">
+  <p class="stag" style="color:var(--gold)">// documentaci&oacute;n</p>
+  <h2 class="stitle">Gu&iacute;as y documentaci&oacute;n abierta</h2>
+  <p class="sdesc">Todo lo que necesitas para empezar a construir, contribuir y aprender con KitZ.</p>
+
+  <div class="social-platforms">
+    <div class="platform-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')">
+      <div class="platform-icon">&#x1F680;</div>
+      <h5>Getting Started</h5>
+      <p>Clona el repo, levanta el gateway y haz tu primera llamada API en minutos.</p>
+      <div class="platform-stat">python -m kitz_gateway</div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F4D6;</div>
+      <h5>API Reference</h5>
+      <p>Documentaci&oacute;n completa de endpoints, par&aacute;metros y respuestas del gateway v0.1.</p>
+      <div class="platform-stat">REST &bull; JSON</div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F6E0;&#xFE0F;</div>
+      <h5>Crear un Tool</h5>
+      <p>Gu&iacute;a paso a paso para registrar tu propia herramienta en el gateway.</p>
+      <div class="platform-stat">tools.py &bull; Python</div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-icon">&#x1F4BE;</div>
+      <h5>Base de Datos</h5>
+      <p>C&oacute;mo funciona la capa de persistencia SQLite con WAL y el esquema de datos.</p>
+      <div class="platform-stat">db.py &bull; SQLite</div>
+    </div>
+    <div class="platform-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')">
+      <div class="platform-icon">&#x1F91D;</div>
+      <h5>Contribuir</h5>
+      <p>C&oacute;mo hacer fork, crear branches, enviar PRs y seguir el flujo de contribuci&oacute;n.</p>
+      <div class="platform-stat">git &bull; GitHub</div>
+    </div>
+  </div>
+
+  <h3 class="stitle" style="font-size:1.4rem;margin-bottom:1.5rem;">Principios del proyecto</h3>
+
+  <div class="social-tips">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <h5>Zero dependencias</h5>
+      <p>El gateway usa exclusivamente la biblioteca est&aacute;ndar de Python. Sin pip install, sin node_modules, sin sorpresas.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <h5>Modular por dise&ntilde;o</h5>
+      <p>Cada tool es independiente. Agrega, modifica o elimina herramientas sin afectar el resto del sistema.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <h5>LATAM first</h5>
+      <p>Construido para y por la comunidad latinoamericana. Documentaci&oacute;n en espa&ntilde;ol, ejemplos regionales.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <h5>AI-native</h5>
+      <p>Dise&ntilde;ado para integrarse con modelos de lenguaje como Claude. Los tools son invocables por agentes de IA.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">05</div>
+      <h5>C&oacute;digo abierto, siempre</h5>
+      <p>El conocimiento y las herramientas deben ser accesibles para todos. Sin muros de pago, sin restricciones.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">06</div>
+      <h5>Ligero y portable</h5>
+      <p>Corre en cualquier m&aacute;quina con Python 3. Un solo archivo, un solo comando para iniciar.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMUNIDAD -->
+<section id="comunidad">
+  <p class="stag" style="color:var(--blue)">// comunidad</p>
+  <h2 class="stitle">Construye con nosotros</h2>
+  <p class="sdesc">KitZ es un proyecto abierto. Contribuye c&oacute;digo, reporta bugs, mejora la documentaci&oacute;n o simplemente aprende.</p>
+
+  <div class="community-grid">
+    <div class="community-card" onclick="window.open('https://github.com/KenRoach/kitz','_blank')" style="cursor:pointer">
+      <div class="community-icon">&#x1F4BB;</div>
+      <h4>GitHub</h4>
+      <p>Explora el c&oacute;digo, abre issues, env&iacute;a pull requests y dale estrella al repo.</p>
+    </div>
+    <div class="community-card">
+      <div class="community-icon">&#x1F4AC;</div>
+      <h4>Discussions</h4>
+      <p>Conversaciones abiertas, RFCs, ideas de nuevos tools y preguntas de la comunidad.</p>
+    </div>
+    <div class="community-card">
+      <div class="community-icon">&#x1F4DD;</div>
+      <h4>Documentaci&oacute;n</h4>
+      <p>Ayuda a escribir y traducir gu&iacute;as. El conocimiento es mejor cuando se comparte.</p>
+    </div>
+    <div class="community-card">
+      <div class="community-icon">&#x1F30E;</div>
+      <h4>LATAM Devs</h4>
+      <p>Una comunidad de desarrolladores latinoamericanos construyendo herramientas abiertas con IA.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">Kit<em>Z</em> Academy</div>
+      <p>Conocimiento abierto de inteligencia artificial para la comunidad de desarrolladores latinoamericanos. Libre, pr&aacute;ctico y open-source.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Plataforma</h5>
+      <a href="#aprende">Cursos</a>
+      <a href="#juega">Quizzes</a>
+      <a href="#herramientas">Gateway Tools</a>
+      <a href="#historias">Showcase</a>
+    </div>
+    <div class="footer-col">
+      <h5>Comunidad</h5>
+      <a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a>
+      <a href="#comunidad">Discussions</a>
+      <a href="#docs">Documentaci&oacute;n</a>
+      <a href="#comunidad">LATAM Devs</a>
+    </div>
+    <div class="footer-col">
+      <h5>Proyecto</h5>
+      <a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">C&oacute;digo Fuente</a>
+      <a href="https://github.com/KenRoach/kitz/issues" target="_blank" rel="noopener">Reportar Bug</a>
+      <a href="#">Licencia Open Source</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 KitZ Academy &mdash; Open Source &middot; Conocimiento Libre</span>
+    <span class="mono">v0.1.0</span>
+  </div>
+</footer>
+
+<script>
+// ── Mobile Nav Toggle ──
+document.getElementById('navToggle').addEventListener('click', function() {
+  document.getElementById('navMenu').classList.toggle('open');
+});
+
+// ── Close mobile nav on link click ──
+document.querySelectorAll('#navMenu a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('navMenu').classList.remove('open');
+  });
+});
+
+// ── Counter Animation ──
+function animateCounters() {
+  document.querySelectorAll('.counter-val').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    let current = 0;
+    if (target === 0) { el.textContent = '0' + suffix; return; }
+    const step = Math.ceil(target / 60);
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = current.toLocaleString() + suffix;
+    }, 25);
+  });
+}
+
+// ── Intersection Observer for counters ──
+const heroObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); heroObs.disconnect(); } });
+}, { threshold: 0.3 });
+document.querySelectorAll('.hero-counters').forEach(el => heroObs.observe(el));
+
+// ── Level Tabs ──
+document.querySelectorAll('.level-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const level = tab.dataset.level;
+    document.querySelectorAll('.course-card').forEach(card => {
+      card.style.display = (level === 'todos' || card.dataset.level === level) ? '' : 'none';
+    });
+  });
+});
+
+// ── Tool Tabs ──
+document.querySelectorAll('.tool-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const cat = tab.dataset.cat;
+    document.querySelectorAll('.prompt-card').forEach(card => {
+      card.style.display = (cat === 'todos' || card.dataset.cat === cat) ? '' : 'none';
+    });
+  });
+});
+
+// ── Copy Example ──
+function copyPrompt(btn) {
+  const text = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar ejemplo'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── Quiz ──
+const quizData = [
+  {
+    q: "¿Cuántas dependencias externas necesita el KitZ Gateway?",
+    opts: ["Depende del proyecto", "Al menos 3 (Flask, requests, dotenv)", "Zero — usa solo la stdlib de Python", "Solo necesita pip install kitz"],
+    correct: 2
+  },
+  {
+    q: "¿Qué protocolo usa el KitZ Gateway para comunicarse?",
+    opts: ["GraphQL", "gRPC", "REST/HTTP con JSON", "WebSockets únicamente"],
+    correct: 2
+  },
+  {
+    q: "¿Qué base de datos usa KitZ por defecto para persistencia?",
+    opts: ["PostgreSQL", "MongoDB", "SQLite con WAL", "No tiene persistencia"],
+    correct: 2
+  },
+  {
+    q: "¿Qué modelo de IA se puede integrar con el ecosistema KitZ?",
+    opts: ["Solo modelos locales", "Claude de Anthropic", "Solo GPT-4", "No soporta IA"],
+    correct: 1
+  },
+  {
+    q: "¿En qué puerto corre el KitZ Gateway por defecto?",
+    opts: ["3000", "8080", "8787", "5000"],
+    correct: 2
+  }
+];
+
+let currentQ = 0, score = 0, selectedOpt = -1;
+
+function startQuiz() {
+  currentQ = 0; score = 0; selectedOpt = -1;
+  document.getElementById('quizBody').style.display = '';
+  document.getElementById('quizFooter').style.display = 'flex';
+  document.getElementById('quizResult').style.display = 'none';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const data = quizData[currentQ];
+  document.getElementById('quizProgress').textContent = (currentQ + 1) + ' / ' + quizData.length;
+  document.getElementById('quizQuestion').textContent = data.q;
+  const letters = ['A','B','C','D'];
+  document.getElementById('quizOptions').innerHTML = data.opts.map((opt, i) =>
+    '<div class="quiz-option" onclick="selectOption(' + i + ')" data-idx="' + i + '">' +
+    '<span class="option-letter">' + letters[i] + '</span><span>' + opt + '</span></div>'
+  ).join('');
+  document.getElementById('quizSubmit').disabled = true;
+  selectedOpt = -1;
+}
+
+function selectOption(idx) {
+  selectedOpt = idx;
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector('.quiz-option[data-idx="' + idx + '"]').classList.add('selected');
+  document.getElementById('quizSubmit').disabled = false;
+}
+
+function submitAnswer() {
+  if (selectedOpt < 0) return;
+  const correct = quizData[currentQ].correct;
+  document.querySelectorAll('.quiz-option').forEach(o => {
+    const idx = parseInt(o.dataset.idx);
+    if (idx === correct) o.classList.add('correct');
+    else if (idx === selectedOpt && idx !== correct) o.classList.add('wrong');
+    o.style.pointerEvents = 'none';
+  });
+  if (selectedOpt === correct) score++;
+  setTimeout(nextQuestion, 1200);
+}
+
+function skipQuestion() { nextQuestion(); }
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= quizData.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizBody').style.display = 'none';
+  document.getElementById('quizFooter').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  document.getElementById('quizScore').textContent = score + '/' + quizData.length;
+  const pct = (score / quizData.length) * 100;
+  let msg = '';
+  if (pct === 100) msg = '¡Perfecto! Conoces KitZ a fondo. ¡Hora de contribuir!';
+  else if (pct >= 60) msg = '¡Muy bien! Sigue explorando el código y la documentación.';
+  else msg = '¡No te rindas! Revisa los cursos y la documentación del gateway.';
+  document.getElementById('quizMsg').textContent = msg;
+}
+
+// Start quiz on load
+startQuiz();
+
+// ── Challenges ──
+const challenges = {
+  gateway: {
+    title: 'Reto: Crea tu propio Tool',
+    desc: 'Completa la funci&oacute;n de un tool personalizado para el KitZ Gateway. El tool debe recibir un nombre y devolver un saludo.',
+    code: `def register(registry):
+    """Registra el tool 'greet' en el gateway."""
+    def greet(params):
+        name = params.get("name", "mundo")
+        # TODO: retorna un diccionario con
+        # la llave "greeting" y el valor
+        # "Hola, {name}! Bienvenido a KitZ"
+        return _______________
+
+    registry["greet"] = greet`,
+    placeholder: 'Escribe el return statement correcto...',
+    check: function(answer) {
+      const clean = answer.replace(/\s+/g,' ').trim().toLowerCase();
+      return clean.includes('greeting') && clean.includes('hola') && clean.includes('name');
+    },
+    successMsg: 'Correcto! Tu tool devuelve el saludo esperado. As&iacute; se registran tools en el gateway.',
+    errorMsg: 'Intenta de nuevo. El return debe ser un diccionario con la llave "greeting" y un saludo con el nombre.'
+  },
+  debug: {
+    title: 'Debug Challenge: Encuentra el Bug',
+    desc: 'Este c&oacute;digo del gateway tiene un bug que hace que falle al procesar requests. Encuentra y describe el error.',
+    code: `import json
+from http.server import BaseHTTPRequestHandler
+
+class Handler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        length = self.headers["Content-Length"]
+        body = self.rfile.read(length)
+        data = json.loads(body)
+        tool = self.path.split("/")[-1]
+        result = registry[tool](data)
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps(result))`,
+    placeholder: 'Describe el bug que encuentras...',
+    check: function(answer) {
+      const clean = answer.toLowerCase();
+      return (clean.includes('int') && clean.includes('content-length')) ||
+             clean.includes('encode') || clean.includes('bytes') ||
+             (clean.includes('length') && clean.includes('string'));
+    },
+    successMsg: 'Correcto! Content-Length llega como string y read() necesita un int. Adem&aacute;s, wfile.write() necesita bytes, no str. Bugs cl&aacute;sicos del HTTP handler de Python.',
+    errorMsg: 'Pista: revisa los tipos de datos. Content-Length es un string, y wfile.write necesita bytes.'
+  },
+  apiquiz: {
+    title: 'API Quiz: Pon a Prueba tu Conocimiento',
+    desc: 'Responde: &iquest;Cu&aacute;l es la diferencia entre un c&oacute;digo de respuesta HTTP 200, 201, 400 y 404? Describe cu&aacute;ndo usar cada uno.',
+    code: `GET  /v0.1/tools        → ???
+POST /v0.1/tools/echo   → ???
+POST /v0.1/tools/noexist → ???
+POST /v0.1/tools/echo   → ??? (body inv&aacute;lido)`,
+    placeholder: 'Escribe los c&oacute;digos HTTP correctos para cada caso...',
+    check: function(answer) {
+      const clean = answer.replace(/\s+/g,'');
+      return clean.includes('200') && clean.includes('404') && clean.includes('400');
+    },
+    successMsg: 'Correcto! GET tools → 200 (OK), POST echo → 200/201, POST noexist → 404 (Not Found), body inv&aacute;lido → 400 (Bad Request).',
+    errorMsg: 'Pista: 200=OK, 201=Created, 400=Bad Request, 404=Not Found. Piensa en qu&eacute; pasa en cada escenario.'
+  }
+};
+
+function openChallenge(id) {
+  const ch = challenges[id];
+  if (!ch) return;
+  const body = document.getElementById('challengeBody');
+  body.innerHTML =
+    '<h3>' + ch.title + '</h3>' +
+    '<p class="challenge-desc">' + ch.desc + '</p>' +
+    '<div class="challenge-code">' + ch.code + '</div>' +
+    '<textarea class="challenge-input" id="challengeAnswer" placeholder="' + ch.placeholder + '"></textarea>' +
+    '<button class="btn-solid" onclick="checkChallenge(\'' + id + '\')">Verificar Respuesta</button>' +
+    '<div class="challenge-feedback" id="challengeFeedback"></div>';
+  document.getElementById('challengeModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeChallenge() {
+  document.getElementById('challengeModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function checkChallenge(id) {
+  const ch = challenges[id];
+  const answer = document.getElementById('challengeAnswer').value;
+  const fb = document.getElementById('challengeFeedback');
+  if (ch.check(answer)) {
+    fb.className = 'challenge-feedback success';
+    fb.textContent = ch.successMsg;
+  } else {
+    fb.className = 'challenge-feedback error';
+    fb.textContent = ch.errorMsg;
+  }
+  fb.style.display = 'block';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeChallenge();
+});
+
+// ── Scroll animations ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.course-card, .prompt-card, .story-card, .community-card, .game-card, .platform-card, .tip-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
