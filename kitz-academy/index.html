@@ -1022,6 +1022,13 @@ document.getElementById('navToggle').addEventListener('click', function() {
   document.getElementById('navMenu').classList.toggle('open');
 });
 
+// ── Close mobile nav on link click ──
+document.querySelectorAll('#navMenu a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('navMenu').classList.remove('open');
+  });
+});
+
 // ── Counter Animation ──
 function animateCounters() {
   document.querySelectorAll('.counter-val').forEach(el => {
@@ -1081,27 +1088,27 @@ function copyPrompt(btn) {
 // ── Quiz ──
 const quizData = [
   {
-    q: "Cuantas dependencias externas necesita el KitZ Gateway?",
-    opts: ["Depende del proyecto", "Al menos 3 (Flask, requests, dotenv)", "Zero - usa solo la stdlib de Python", "Solo necesita pip install kitz"],
+    q: "¿Cuántas dependencias externas necesita el KitZ Gateway?",
+    opts: ["Depende del proyecto", "Al menos 3 (Flask, requests, dotenv)", "Zero — usa solo la stdlib de Python", "Solo necesita pip install kitz"],
     correct: 2
   },
   {
-    q: "Que protocolo usa el KitZ Gateway para comunicarse?",
-    opts: ["GraphQL", "gRPC", "REST/HTTP con JSON", "WebSockets unicamente"],
+    q: "¿Qué protocolo usa el KitZ Gateway para comunicarse?",
+    opts: ["GraphQL", "gRPC", "REST/HTTP con JSON", "WebSockets únicamente"],
     correct: 2
   },
   {
-    q: "Que base de datos usa KitZ por defecto para persistencia?",
+    q: "¿Qué base de datos usa KitZ por defecto para persistencia?",
     opts: ["PostgreSQL", "MongoDB", "SQLite con WAL", "No tiene persistencia"],
     correct: 2
   },
   {
-    q: "Que modelo de IA se puede integrar con el ecosistema KitZ?",
+    q: "¿Qué modelo de IA se puede integrar con el ecosistema KitZ?",
     opts: ["Solo modelos locales", "Claude de Anthropic", "Solo GPT-4", "No soporta IA"],
     correct: 1
   },
   {
-    q: "En que puerto corre el KitZ Gateway por defecto?",
+    q: "¿En qué puerto corre el KitZ Gateway por defecto?",
     opts: ["3000", "8080", "8787", "5000"],
     correct: 2
   }
@@ -1168,9 +1175,9 @@ function showResult() {
   document.getElementById('quizScore').textContent = score + '/' + quizData.length;
   const pct = (score / quizData.length) * 100;
   let msg = '';
-  if (pct === 100) msg = 'Perfecto! Conoces KitZ a fondo. Hora de contribuir!';
-  else if (pct >= 60) msg = 'Muy bien! Sigue explorando el codigo y la documentacion.';
-  else msg = 'No te rindas! Revisa los cursos y la documentacion del gateway.';
+  if (pct === 100) msg = '¡Perfecto! Conoces KitZ a fondo. ¡Hora de contribuir!';
+  else if (pct >= 60) msg = '¡Muy bien! Sigue explorando el código y la documentación.';
+  else msg = '¡No te rindas! Revisa los cursos y la documentación del gateway.';
   document.getElementById('quizMsg').textContent = msg;
 }
 
