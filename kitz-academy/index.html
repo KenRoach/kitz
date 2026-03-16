@@ -3,7 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KitZ Academy — Conocimiento Abierto para Latinoam&eacute;rica</title>
+<title>KitZ Academy — Conocimiento Abierto de IA para Latinoam&eacute;rica</title>
+<meta name="description" content="Cursos libres de inteligencia artificial, Python, APIs y open-source para desarrolladores latinoamericanos. 100% gratis, pr&aacute;ctico y en espa&ntilde;ol.">
+<meta name="keywords" content="KitZ, Academy, IA, inteligencia artificial, Python, API, open source, LATAM, cursos gratis, desarrolladores">
+<meta name="author" content="KitZ Community">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://kenroach.github.io/kitz/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="KitZ Academy — Conocimiento Abierto de IA para LATAM">
+<meta property="og:description" content="Cursos libres de inteligencia artificial, Python, APIs y open-source. 100% gratis, pr&aacute;ctico y en espa&ntilde;ol.">
+<meta property="og:url" content="https://kenroach.github.io/kitz/">
+<meta property="og:site_name" content="KitZ Academy">
+<meta property="og:locale" content="es_419">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KitZ Academy — Conocimiento Abierto de IA para LATAM">
+<meta name="twitter:description" content="Cursos libres de IA, Python, APIs y open-source para desarrolladores latinoamericanos.">
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "KitZ Academy",
+  "description": "Conocimiento abierto de inteligencia artificial para Latinoam\u00e9rica",
+  "url": "https://kenroach.github.io/kitz/",
+  "sameAs": ["https://github.com/KenRoach/kitz"],
+  "inLanguage": "es",
+  "areaServed": "Latin America",
+  "isAccessibleForFree": true
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -416,20 +446,66 @@ footer {
   padding-top:2rem;border-top:1px solid var(--border-dim);
   font-size:0.75rem;color:var(--text-muted);
 }
+/* --- MODAL --- */
+.modal-overlay {
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(6,8,12,0.85);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem;
+}
+.modal-content {
+  background:var(--bg-card);border:1px solid var(--border-dim);
+  max-width:700px;width:100%;max-height:85vh;overflow-y:auto;
+  padding:2.5rem;position:relative;
+}
+.modal-close {
+  position:absolute;top:1rem;right:1.2rem;background:none;border:none;
+  color:var(--text-muted);font-size:1.8rem;cursor:pointer;transition:color 0.3s;
+  line-height:1;
+}
+.modal-close:hover { color:var(--text-white); }
+.modal-content h3 {
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:1rem;
+}
+.modal-content .challenge-desc { color:var(--text-gray);margin-bottom:1.5rem;line-height:1.6; }
+.challenge-code {
+  background:var(--bg-deep);padding:1.2rem 1.4rem;font-family:'IBM Plex Mono',monospace;
+  font-size:0.82rem;line-height:1.7;color:var(--cyan);border-left:3px solid var(--lime);
+  margin-bottom:1.5rem;white-space:pre-wrap;overflow-x:auto;
+}
+.challenge-input {
+  width:100%;background:var(--bg-deep);border:1px solid var(--border-dim);
+  color:var(--text-white);font-family:'IBM Plex Mono',monospace;font-size:0.85rem;
+  padding:1rem;margin-bottom:1rem;resize:vertical;min-height:80px;
+}
+.challenge-input:focus { outline:none;border-color:var(--lime); }
+.challenge-feedback {
+  padding:1rem;margin-top:1rem;font-size:0.9rem;line-height:1.5;display:none;
+}
+.challenge-feedback.success { background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#22c55e; }
+.challenge-feedback.error { background:rgba(244,63,142,0.1);border:1px solid rgba(244,63,142,0.3);color:var(--magenta); }
+/* --- SKIP LINK --- */
+.skip-link {
+  position:absolute;top:-100%;left:1rem;background:var(--lime);color:var(--bg-deep);
+  padding:0.5rem 1rem;font-weight:700;z-index:10001;
+}
+.skip-link:focus { top:0.5rem; }
 @media(max-width:768px) {
   .hero-counters { flex-wrap:wrap;gap:1.5rem; }
   .footer-grid { grid-template-columns:1fr;gap:2rem; }
   .game-zone { padding:1.5rem; }
   .prompts-grid { grid-template-columns:1fr; }
   .stories-grid { grid-template-columns:1fr; }
+  .modal-content { padding:1.5rem; }
 }
 </style>
 </head>
 <body>
+<a href="#aprende" class="skip-link">Saltar al contenido</a>
 
 <!-- NAV -->
-<nav>
-  <a href="#" class="logo">Kit<em>Z</em> Academy</a>
+<nav role="navigation" aria-label="Navegaci&oacute;n principal">
+  <a href="#" class="logo" aria-label="KitZ Academy - Inicio">Kit<em>Z</em> Academy</a>
   <ul class="nav-menu" id="navMenu">
     <li><a href="#aprende">Aprende</a></li>
     <li><a href="#juega">Juega</a></li>
@@ -445,7 +521,8 @@ footer {
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<main>
+<section class="hero" aria-label="Bienvenida">
   <p class="hero-eyebrow">// open-source &middot; libre &middot; LATAM</p>
   <h1>Conocimiento abierto de <span class="grad">inteligencia artificial</span> para Latinoam&eacute;rica</h1>
   <p class="hero-p">Cursos libres, herramientas open-source y una comunidad que construye junta. En espa&ntilde;ol, pr&aacute;ctico y 100% gratis.</p>
@@ -477,7 +554,7 @@ footer {
   </div>
 
   <div class="courses-grid" id="coursesGrid">
-    <div class="course-card" data-color="lime" data-level="basico">
+    <a href="curso.html?id=intro-kitz" class="course-card" data-color="lime" data-level="basico" role="article" aria-label="Curso: Introducci&oacute;n a KitZ OS">
       <span class="course-icon">&#x1F30D;</span>
       <h4>Introducci&oacute;n a KitZ OS</h4>
       <p>Qu&eacute; es KitZ, c&oacute;mo funciona el gateway de herramientas, y por qu&eacute; open-source importa. Sin requisitos previos.</p>
@@ -485,8 +562,8 @@ footer {
         <span>6 lecciones</span><span class="dot"></span><span>1h 30m</span><span class="dot"></span><span>B&aacute;sico</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="course-card" data-color="cyan" data-level="basico">
+    </a>
+    <a href="curso.html?id=primer-tool" class="course-card" data-color="cyan" data-level="basico" role="article" aria-label="Curso: Tu Primer Tool con Python">
       <span class="course-icon">&#x1F40D;</span>
       <h4>Tu Primer Tool con Python</h4>
       <p>Construye tu primera herramienta para el KitZ Gateway usando solo la biblioteca est&aacute;ndar de Python. Cero dependencias.</p>
@@ -494,8 +571,8 @@ footer {
         <span>8 lecciones</span><span class="dot"></span><span>2h 45m</span><span class="dot"></span><span>B&aacute;sico</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="course-card" data-color="orange" data-level="intermedio">
+    </a>
+    <a href="curso.html?id=api-rest" class="course-card" data-color="orange" data-level="intermedio" role="article" aria-label="Curso: API REST y el Gateway">
       <span class="course-icon">&#x1F310;</span>
       <h4>API REST y el Gateway</h4>
       <p>Endpoints HTTP, registro de tools, protocolo JSON y c&oacute;mo consumir el gateway desde cualquier frontend o servicio.</p>
@@ -503,8 +580,8 @@ footer {
         <span>10 lecciones</span><span class="dot"></span><span>3h 20m</span><span class="dot"></span><span>Intermedio</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="course-card" data-color="blue" data-level="intermedio">
+    </a>
+    <a href="curso.html?id=sqlite-ia" class="course-card" data-color="blue" data-level="intermedio" role="article" aria-label="Curso: Datos con SQLite e IA">
       <span class="course-icon">&#x1F4CA;</span>
       <h4>Datos con SQLite e IA</h4>
       <p>Persistencia con SQLite, consultas de datos, m&eacute;tricas y an&aacute;lisis automatizado con modelos de lenguaje.</p>
@@ -512,8 +589,8 @@ footer {
         <span>10 lecciones</span><span class="dot"></span><span>3h 40m</span><span class="dot"></span><span>Intermedio</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="course-card" data-color="gold" data-level="intermedio">
+    </a>
+    <a href="curso.html?id=react-ts" class="course-card" data-color="gold" data-level="intermedio" role="article" aria-label="Curso: Frontend con React y TypeScript">
       <span class="course-icon">&#x26A1;</span>
       <h4>Frontend con React y TypeScript</h4>
       <p>Construye interfaces modernas que consumen el KitZ Gateway. React 19, Zustand, y dise&ntilde;o de tokens.</p>
@@ -521,8 +598,8 @@ footer {
         <span>12 lecciones</span><span class="dot"></span><span>4h 30m</span><span class="dot"></span><span>Intermedio</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="course-card" data-color="magenta" data-level="avanzado">
+    </a>
+    <a href="curso.html?id=claude-api" class="course-card" data-color="magenta" data-level="avanzado" role="article" aria-label="Curso: Integraci&oacute;n con Claude API">
       <span class="course-icon">&#x1F916;</span>
       <h4>Integraci&oacute;n con Claude API</h4>
       <p>Conecta modelos de IA a tus tools: salida estructurada, chat inteligente y asistentes con contexto de negocio.</p>
@@ -530,8 +607,8 @@ footer {
         <span>10 lecciones</span><span class="dot"></span><span>4h 15m</span><span class="dot"></span><span>Avanzado</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="course-card" data-color="gold" data-level="avanzado">
+    </a>
+    <a href="curso.html?id=open-source" class="course-card" data-color="gold" data-level="avanzado" role="article" aria-label="Curso: Contribuir a Open Source">
       <span class="course-icon">&#x1F680;</span>
       <h4>Contribuir a Open Source</h4>
       <p>Git workflow, pull requests, c&oacute;digo de conducta y c&oacute;mo contribuir al ecosistema KitZ y otros proyectos libres.</p>
@@ -539,7 +616,7 @@ footer {
         <span>8 lecciones</span><span class="dot"></span><span>2h 30m</span><span class="dot"></span><span>Avanzado</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-    </div>
+    </a>
   </div>
 </section>
 
@@ -572,20 +649,28 @@ footer {
   </div>
 
   <div class="game-cards">
-    <div class="game-card">
+    <div class="game-card" onclick="openChallenge('gateway')" role="button" tabindex="0" aria-label="Reto Gateway">
       <div class="game-card-icon">&#x1F9E0;</div>
       <h5>Reto Gateway</h5>
       <p>Construye un tool personalizado para el gateway y comp&aacute;rtelo con la comunidad.</p>
     </div>
-    <div class="game-card">
+    <div class="game-card" onclick="openChallenge('debug')" role="button" tabindex="0" aria-label="Debug Challenge">
       <div class="game-card-icon">&#x1F41B;</div>
       <h5>Debug Challenge</h5>
       <p>Encuentra y corrige bugs en c&oacute;digo real. Aprende depuraci&oacute;n con casos pr&aacute;cticos.</p>
     </div>
-    <div class="game-card">
+    <div class="game-card" onclick="openChallenge('apiquiz')" role="button" tabindex="0" aria-label="API Quiz">
       <div class="game-card-icon">&#x1F4A1;</div>
       <h5>API Quiz</h5>
       <p>Pon a prueba tu conocimiento de REST APIs, HTTP y protocolos JSON.</p>
+    </div>
+  </div>
+
+  <!-- Challenge Modal -->
+  <div id="challengeModal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeChallenge()" aria-label="Cerrar">&times;</button>
+      <div id="challengeBody"></div>
     </div>
   </div>
 </section>
@@ -895,6 +980,8 @@ Content-Type: application/json
   </div>
 </section>
 
+</main>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-grid">
@@ -1089,6 +1176,111 @@ function showResult() {
 
 // Start quiz on load
 startQuiz();
+
+// ── Challenges ──
+const challenges = {
+  gateway: {
+    title: 'Reto: Crea tu propio Tool',
+    desc: 'Completa la funci&oacute;n de un tool personalizado para el KitZ Gateway. El tool debe recibir un nombre y devolver un saludo.',
+    code: `def register(registry):
+    """Registra el tool 'greet' en el gateway."""
+    def greet(params):
+        name = params.get("name", "mundo")
+        # TODO: retorna un diccionario con
+        # la llave "greeting" y el valor
+        # "Hola, {name}! Bienvenido a KitZ"
+        return _______________
+
+    registry["greet"] = greet`,
+    placeholder: 'Escribe el return statement correcto...',
+    check: function(answer) {
+      const clean = answer.replace(/\s+/g,' ').trim().toLowerCase();
+      return clean.includes('greeting') && clean.includes('hola') && clean.includes('name');
+    },
+    successMsg: 'Correcto! Tu tool devuelve el saludo esperado. As&iacute; se registran tools en el gateway.',
+    errorMsg: 'Intenta de nuevo. El return debe ser un diccionario con la llave "greeting" y un saludo con el nombre.'
+  },
+  debug: {
+    title: 'Debug Challenge: Encuentra el Bug',
+    desc: 'Este c&oacute;digo del gateway tiene un bug que hace que falle al procesar requests. Encuentra y describe el error.',
+    code: `import json
+from http.server import BaseHTTPRequestHandler
+
+class Handler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        length = self.headers["Content-Length"]
+        body = self.rfile.read(length)
+        data = json.loads(body)
+        tool = self.path.split("/")[-1]
+        result = registry[tool](data)
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps(result))`,
+    placeholder: 'Describe el bug que encuentras...',
+    check: function(answer) {
+      const clean = answer.toLowerCase();
+      return (clean.includes('int') && clean.includes('content-length')) ||
+             clean.includes('encode') || clean.includes('bytes') ||
+             (clean.includes('length') && clean.includes('string'));
+    },
+    successMsg: 'Correcto! Content-Length llega como string y read() necesita un int. Adem&aacute;s, wfile.write() necesita bytes, no str. Bugs cl&aacute;sicos del HTTP handler de Python.',
+    errorMsg: 'Pista: revisa los tipos de datos. Content-Length es un string, y wfile.write necesita bytes.'
+  },
+  apiquiz: {
+    title: 'API Quiz: Pon a Prueba tu Conocimiento',
+    desc: 'Responde: &iquest;Cu&aacute;l es la diferencia entre un c&oacute;digo de respuesta HTTP 200, 201, 400 y 404? Describe cu&aacute;ndo usar cada uno.',
+    code: `GET  /v0.1/tools        → ???
+POST /v0.1/tools/echo   → ???
+POST /v0.1/tools/noexist → ???
+POST /v0.1/tools/echo   → ??? (body inv&aacute;lido)`,
+    placeholder: 'Escribe los c&oacute;digos HTTP correctos para cada caso...',
+    check: function(answer) {
+      const clean = answer.replace(/\s+/g,'');
+      return clean.includes('200') && clean.includes('404') && clean.includes('400');
+    },
+    successMsg: 'Correcto! GET tools → 200 (OK), POST echo → 200/201, POST noexist → 404 (Not Found), body inv&aacute;lido → 400 (Bad Request).',
+    errorMsg: 'Pista: 200=OK, 201=Created, 400=Bad Request, 404=Not Found. Piensa en qu&eacute; pasa en cada escenario.'
+  }
+};
+
+function openChallenge(id) {
+  const ch = challenges[id];
+  if (!ch) return;
+  const body = document.getElementById('challengeBody');
+  body.innerHTML =
+    '<h3>' + ch.title + '</h3>' +
+    '<p class="challenge-desc">' + ch.desc + '</p>' +
+    '<div class="challenge-code">' + ch.code + '</div>' +
+    '<textarea class="challenge-input" id="challengeAnswer" placeholder="' + ch.placeholder + '"></textarea>' +
+    '<button class="btn-solid" onclick="checkChallenge(\'' + id + '\')">Verificar Respuesta</button>' +
+    '<div class="challenge-feedback" id="challengeFeedback"></div>';
+  document.getElementById('challengeModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeChallenge() {
+  document.getElementById('challengeModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function checkChallenge(id) {
+  const ch = challenges[id];
+  const answer = document.getElementById('challengeAnswer').value;
+  const fb = document.getElementById('challengeFeedback');
+  if (ch.check(answer)) {
+    fb.className = 'challenge-feedback success';
+    fb.textContent = ch.successMsg;
+  } else {
+    fb.className = 'challenge-feedback error';
+    fb.textContent = ch.errorMsg;
+  }
+  fb.style.display = 'block';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeChallenge();
+});
 
 // ── Scroll animations ──
 const observer = new IntersectionObserver((entries) => {

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso — KitZ Academy</title>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #06080c;
+  --bg-main: #0b0e14;
+  --bg-card: #111620;
+  --bg-card-alt: #151b27;
+  --bg-elevated: #1a2233;
+  --lime: #b5ff3b;
+  --lime-dim: rgba(181,255,59,0.12);
+  --cyan: #22d3ee;
+  --orange: #ff7a3d;
+  --magenta: #f43f8e;
+  --blue: #3b82f6;
+  --gold: #fbbf24;
+  --text-white: #eef1f6;
+  --text-gray: #8892a4;
+  --text-muted: #4a5568;
+  --border-dim: rgba(255,255,255,0.06);
+  --border-med: rgba(255,255,255,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-deep);
+  color: var(--text-white);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+}
+body::after {
+  content:'';position:fixed;inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;
+}
+::selection { background: var(--lime); color: var(--bg-deep); }
+a { color: inherit; text-decoration: none; }
+.mono { font-family:'IBM Plex Mono',monospace; }
+
+/* --- NAV --- */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 3%;
+  background:rgba(6,8,12,0.8);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border-dim);
+}
+.logo {
+  font-family:'Outfit',sans-serif;font-weight:900;font-size:1.5rem;
+  letter-spacing:-0.03em;display:flex;align-items:center;gap:0.4rem;
+}
+.logo em { font-style:normal;color:var(--lime); }
+.nav-back {
+  font-family:'IBM Plex Mono',monospace;font-size:0.78rem;font-weight:600;
+  color:var(--text-gray);letter-spacing:0.05em;transition:color 0.3s;
+}
+.nav-back:hover { color:var(--lime); }
+
+/* --- COURSE HEADER --- */
+.course-header {
+  padding:7rem 5% 3rem;
+  border-bottom:1px solid var(--border-dim);
+}
+.course-header .eyebrow {
+  font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--lime);margin-bottom:0.8rem;
+}
+.course-header h1 {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(1.8rem,4vw,3rem);line-height:1.1;letter-spacing:-0.03em;
+  margin-bottom:1rem;
+}
+.course-header .desc {
+  color:var(--text-gray);font-size:1.05rem;max-width:640px;margin-bottom:1.5rem;
+}
+.course-meta-bar {
+  display:flex;gap:2rem;flex-wrap:wrap;
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--text-muted);
+}
+.course-meta-bar span { display:flex;align-items:center;gap:0.4rem; }
+
+/* --- LESSONS --- */
+.lessons-container {
+  max-width:860px;margin:0 auto;padding:3rem 5% 5rem;
+}
+.lesson {
+  border:1px solid var(--border-dim);margin-bottom:0.8rem;
+  transition:all 0.3s;
+}
+.lesson:hover { border-color:var(--border-med); }
+.lesson-header {
+  display:flex;align-items:center;gap:1rem;padding:1.2rem 1.6rem;
+  cursor:pointer;user-select:none;
+}
+.lesson-num {
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;
+  color:var(--lime);min-width:2.2rem;
+}
+.lesson-title {
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;flex:1;
+}
+.lesson-duration {
+  font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text-muted);
+}
+.lesson-toggle {
+  color:var(--text-muted);font-size:1.2rem;transition:transform 0.3s;
+}
+.lesson.open .lesson-toggle { transform:rotate(180deg); }
+.lesson-body {
+  display:none;padding:0 1.6rem 1.6rem;
+  border-top:1px solid var(--border-dim);
+}
+.lesson.open .lesson-body { display:block; }
+.lesson-body p {
+  color:var(--text-gray);font-size:0.9rem;line-height:1.7;margin-bottom:1rem;
+}
+.lesson-body .code-block {
+  background:var(--bg-card);padding:1.2rem 1.4rem;
+  font-family:'IBM Plex Mono',monospace;font-size:0.8rem;
+  line-height:1.7;color:var(--cyan);border-left:3px solid var(--lime);
+  margin-bottom:1rem;white-space:pre-wrap;overflow-x:auto;
+}
+.lesson-body .tip {
+  background:var(--lime-dim);padding:1rem 1.2rem;
+  font-size:0.85rem;color:var(--lime);border-left:3px solid var(--lime);
+  margin-bottom:1rem;
+}
+.lesson-body ul {
+  color:var(--text-gray);font-size:0.9rem;margin:0 0 1rem 1.2rem;
+}
+.lesson-body li { margin-bottom:0.4rem; }
+
+/* --- FOOTER --- */
+footer {
+  background:var(--bg-deep);padding:2rem 5%;
+  border-top:1px solid var(--border-dim);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:0.75rem;color:var(--text-muted);
+}
+footer a { color:var(--lime);transition:opacity 0.3s; }
+footer a:hover { opacity:0.8; }
+@media(max-width:768px) {
+  .course-meta-bar { gap:1rem; }
+  .lessons-container { padding:2rem 4% 4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav role="navigation" aria-label="Navegaci&oacute;n del curso">
+  <a href="index.html" class="logo" aria-label="KitZ Academy - Inicio">Kit<em>Z</em> Academy</a>
+  <a href="index.html#aprende" class="nav-back">&larr; Todos los cursos</a>
+</nav>
+
+<main>
+<div class="course-header" id="courseHeader">
+  <p class="eyebrow" id="courseEyebrow">// cargando...</p>
+  <h1 id="courseTitle">Cargando curso...</h1>
+  <p class="desc" id="courseDesc"></p>
+  <div class="course-meta-bar" id="courseMeta"></div>
+</div>
+
+<div class="lessons-container" id="lessonsContainer">
+</div>
+</main>
+
+<footer>
+  <span>&copy; 2026 KitZ Academy &mdash; Open Source</span>
+  <a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+<script>
+const courses = {
+  "intro-kitz": {
+    icon: "\u{1F30D}",
+    level: "B\u00e1sico",
+    title: "Introducci\u00f3n a KitZ OS",
+    desc: "Qu\u00e9 es KitZ, c\u00f3mo funciona el gateway de herramientas, y por qu\u00e9 open-source importa. Sin requisitos previos.",
+    duration: "1h 30m",
+    lessons: [
+      {
+        title: "\u00bfQu\u00e9 es KitZ?",
+        duration: "15 min",
+        content: '<p>KitZ es un ecosistema open-source de herramientas de inteligencia artificial dise\u00f1ado para la comunidad latinoamericana de desarrolladores. En su n\u00facleo, es un <strong>gateway de herramientas</strong>: un servidor HTTP ligero que expone funciones invocables a trav\u00e9s de una API REST.</p><p>A diferencia de otros frameworks, KitZ tiene <strong>cero dependencias externas</strong>. Usa exclusivamente la biblioteca est\u00e1ndar de Python, lo que significa que no necesitas pip install, no hay node_modules, y no hay sorpresas de compatibilidad.</p><div class="tip">KitZ es software libre bajo licencia open-source. Puedes usar, modificar y distribuir el c\u00f3digo sin restricciones.</div>'
+      },
+      {
+        title: "Arquitectura del Gateway",
+        duration: "20 min",
+        content: '<p>El KitZ Gateway se compone de tres capas principales:</p><ul><li><strong>HTTP Server</strong> \u2014 Basado en http.server de Python, escucha en el puerto 8787</li><li><strong>Tool Registry</strong> \u2014 Un diccionario que mapea nombres de tools a funciones Python</li><li><strong>Persistence Layer</strong> \u2014 SQLite con WAL para almacenamiento de datos</li></ul><div class="code-block">Cliente \u2192 HTTP Request \u2192 Gateway \u2192 Tool Registry \u2192 Tool Function\n                                              \u2193\n                                    SQLite DB (opcional)</div><p>Cada tool es una funci\u00f3n pura que recibe par\u00e1metros y devuelve un resultado. No hay estado compartido entre invocaciones.</p>'
+      },
+      {
+        title: "Instalaci\u00f3n y primer inicio",
+        duration: "15 min",
+        content: '<p>Iniciar el gateway es tan simple como clonar el repositorio y ejecutar un comando:</p><div class="code-block">git clone https://github.com/KenRoach/kitz.git\ncd kitz\npython -m kitz_gateway</div><p>El servidor se levanta en <code>http://localhost:8787</code>. Puedes verificar que est\u00e1 corriendo con:</p><div class="code-block">curl http://localhost:8787/v0.1/health\n# Respuesta: {"status": "ok", "version": "0.1"}</div><div class="tip">No necesitas instalar nada con pip. Solo Python 3.7+ es requerido.</div>'
+      },
+      {
+        title: "Tu primera llamada al Gateway",
+        duration: "15 min",
+        content: '<p>Hagamos nuestra primera llamada a un tool del gateway. Usaremos <code>echo</code>, el tool m\u00e1s simple:</p><div class="code-block">curl -X POST http://localhost:8787/v0.1/tools/echo \\\n  -H "Content-Type: application/json" \\\n  -d \'{"message": "Hola desde KitZ!"}\'\n\n# Respuesta:\n# {"result": "Hola desde KitZ!"}</div><p>El patr\u00f3n es siempre el mismo: <code>POST /v0.1/tools/{nombre_del_tool}</code> con un body JSON.</p>'
+      },
+      {
+        title: "Explorando los tools incluidos",
+        duration: "15 min",
+        content: '<p>El gateway incluye herramientas built-in que puedes usar inmediatamente:</p><ul><li><strong>echo</strong> \u2014 Devuelve el mensaje que le env\u00edas (prueba de conectividad)</li><li><strong>utc_now</strong> \u2014 Retorna el timestamp UTC actual</li><li><strong>sum</strong> \u2014 Suma un array de valores num\u00e9ricos</li><li><strong>list_assets</strong> \u2014 Consulta activos con filtros</li><li><strong>get_asset_metrics</strong> \u2014 M\u00e9tricas del portafolio de activos</li></ul><p>Para ver todas las herramientas disponibles:</p><div class="code-block">curl http://localhost:8787/v0.1/tools\n# Retorna lista de tools con nombres y descripciones</div>'
+      },
+      {
+        title: "Por qu\u00e9 Open Source importa",
+        duration: "10 min",
+        content: '<p>KitZ es open-source por convicci\u00f3n, no por conveniencia. Estos son los principios del proyecto:</p><ul><li><strong>Accesibilidad</strong> \u2014 El conocimiento y las herramientas deben ser accesibles para todos</li><li><strong>Transparencia</strong> \u2014 Puedes leer, auditar y entender cada l\u00ednea de c\u00f3digo</li><li><strong>Comunidad</strong> \u2014 Construimos mejor cuando construimos juntos</li><li><strong>LATAM first</strong> \u2014 Documentaci\u00f3n en espa\u00f1ol, ejemplos regionales, comunidad local</li></ul><div class="tip">Contribuir a KitZ es una excelente forma de empezar en open-source. El c\u00f3digo es simple, bien documentado, y la comunidad es amigable.</div>'
+      }
+    ]
+  },
+  "primer-tool": {
+    icon: "\u{1F40D}",
+    level: "B\u00e1sico",
+    title: "Tu Primer Tool con Python",
+    desc: "Construye tu primera herramienta para el KitZ Gateway usando solo la biblioteca est\u00e1ndar de Python. Cero dependencias.",
+    duration: "2h 45m",
+    lessons: [
+      {
+        title: "\u00bfQu\u00e9 es un Tool?",
+        duration: "15 min",
+        content: '<p>Un <strong>tool</strong> en KitZ es simplemente una funci\u00f3n Python que recibe un diccionario de par\u00e1metros y devuelve un resultado. No hay clases abstractas, no hay decoradores m\u00e1gicos, no hay herencia.</p><div class="code-block">def mi_tool(params):\n    """Un tool es una funci\u00f3n simple."""\n    return {"resultado": "algo \u00fatil"}</div><p>El gateway se encarga de recibir el HTTP request, parsear el JSON, invocar tu funci\u00f3n y devolver la respuesta.</p>'
+      },
+      {
+        title: "Estructura de un Tool",
+        duration: "20 min",
+        content: '<p>Cada tool sigue un patr\u00f3n consistente:</p><div class="code-block">def register(registry):\n    """Se llama al iniciar el gateway."""\n\n    def mi_tool(params):\n        # 1. Extraer par\u00e1metros\n        valor = params.get("clave", "default")\n\n        # 2. Hacer algo \u00fatil\n        resultado = procesar(valor)\n\n        # 3. Retornar resultado\n        return {"result": resultado}\n\n    # Registrar en el gateway\n    registry["mi_tool"] = mi_tool</div><p>La funci\u00f3n <code>register</code> recibe el registry del gateway y a\u00f1ade tu tool al diccionario. Es todo lo que necesitas.</p>'
+      },
+      {
+        title: "Creando un Tool: Conversor de Temperatura",
+        duration: "25 min",
+        content: '<p>Vamos a crear un tool real que convierte temperaturas entre Celsius y Fahrenheit:</p><div class="code-block">def register(registry):\n    def temp_convert(params):\n        value = params.get("value", 0)\n        from_unit = params.get("from", "C")\n\n        if from_unit.upper() == "C":\n            result = (value * 9/5) + 32\n            to_unit = "F"\n        else:\n            result = (value - 32) * 5/9\n            to_unit = "C"\n\n        return {\n            "original": f"{value}\u00b0{from_unit}",\n            "converted": f"{round(result, 2)}\u00b0{to_unit}"\n        }\n\n    registry["temp_convert"] = temp_convert</div><div class="tip">Nota c\u00f3mo no importamos nada externo. Todo se resuelve con la stdlib de Python.</div>'
+      },
+      {
+        title: "Validaci\u00f3n de par\u00e1metros",
+        duration: "20 min",
+        content: '<p>Un buen tool valida sus inputs antes de procesarlos:</p><div class="code-block">def register(registry):\n    def safe_divide(params):\n        a = params.get("a")\n        b = params.get("b")\n\n        if a is None or b is None:\n            return {"error": "Se requieren par\u00e1metros \'a\' y \'b\'"}\n\n        if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):\n            return {"error": "\'a\' y \'b\' deben ser n\u00fameros"}\n\n        if b == 0:\n            return {"error": "No se puede dividir por cero"}\n\n        return {"result": a / b}\n\n    registry["safe_divide"] = safe_divide</div><p>Siempre retorna un diccionario, incluso en caso de error. El gateway se encarga de enviar el JSON al cliente.</p>'
+      },
+      {
+        title: "Probando tu Tool localmente",
+        duration: "20 min",
+        content: '<p>Puedes probar tu tool directamente con Python antes de integrarlo al gateway:</p><div class="code-block"># test_mi_tool.py\nfrom kitz_gateway.tools import temp_convert\n\n# Test b\u00e1sico\nresult = temp_convert.register.__wrapped__({"value": 100, "from": "C"})\nprint(result)\n# {"original": "100\u00b0C", "converted": "212.0\u00b0F"}\n\n# Test con el gateway corriendo\nimport json\nfrom urllib.request import urlopen, Request\n\nreq = Request(\n    "http://localhost:8787/v0.1/tools/temp_convert",\n    data=json.dumps({"value": 0, "from": "C"}).encode(),\n    headers={"Content-Type": "application/json"},\n    method="POST"\n)\nresp = json.loads(urlopen(req).read())\nprint(resp)</div>'
+      },
+      {
+        title: "Tools con fecha y hora",
+        duration: "20 min",
+        content: '<p>Creemos un tool que trabaja con fechas usando el m\u00f3dulo <code>datetime</code> de la stdlib:</p><div class="code-block">from datetime import datetime, timezone\n\ndef register(registry):\n    def days_between(params):\n        fmt = "%Y-%m-%d"\n        start = datetime.strptime(params["start"], fmt)\n        end = datetime.strptime(params["end"], fmt)\n        diff = abs((end - start).days)\n        return {\n            "start": params["start"],\n            "end": params["end"],\n            "days": diff\n        }\n\n    registry["days_between"] = days_between</div><p>El m\u00f3dulo <code>datetime</code> es parte de la biblioteca est\u00e1ndar. No se viola el principio de cero dependencias.</p>'
+      },
+      {
+        title: "Tools con generaci\u00f3n de datos",
+        duration: "20 min",
+        content: '<p>Un tool \u00fatil: generar UUIDs y datos aleatorios para testing:</p><div class="code-block">import uuid\nimport random\nimport string\n\ndef register(registry):\n    def generate_id(params):\n        fmt = params.get("format", "uuid")\n\n        if fmt == "uuid":\n            return {"id": str(uuid.uuid4())}\n        elif fmt == "short":\n            chars = string.ascii_lowercase + string.digits\n            short = "".join(random.choices(chars, k=8))\n            return {"id": short}\n        else:\n            return {"error": f"Formato desconocido: {fmt}"}\n\n    registry["generate_id"] = generate_id</div><div class="tip">uuid, random y string son todos m\u00f3dulos de la stdlib. Puedes usar cualquier m\u00f3dulo que venga con Python.</div>'
+      },
+      {
+        title: "Publicando tu Tool",
+        duration: "25 min",
+        content: '<p>Para a\u00f1adir tu tool al gateway, solo necesitas:</p><ul><li>Crear un archivo .py en la carpeta de tools</li><li>Implementar la funci\u00f3n <code>register(registry)</code></li><li>Reiniciar el gateway</li></ul><div class="code-block"># Estructura del proyecto:\nkitz_gateway/\n  tools/\n    echo.py\n    utc_now.py\n    sum.py\n    mi_tool.py    \u2190 tu nuevo tool\n  server.py\n  db.py</div><p>El gateway auto-descubre todos los archivos .py en la carpeta tools y llama a <code>register()</code> en cada uno.</p><div class="tip">\u00bfTerminaste tu tool? Haz un fork del repo, a\u00f1ade tu tool y env\u00eda un Pull Request. As\u00ed contribuyes a open-source.</div>'
+      }
+    ]
+  },
+  "api-rest": {
+    icon: "\u{1F310}",
+    level: "Intermedio",
+    title: "API REST y el Gateway",
+    desc: "Endpoints HTTP, registro de tools, protocolo JSON y c\u00f3mo consumir el gateway desde cualquier frontend o servicio.",
+    duration: "3h 20m",
+    lessons: [
+      {
+        title: "Fundamentos de REST",
+        duration: "20 min",
+        content: '<p>REST (Representational State Transfer) es un estilo de arquitectura para APIs. Los conceptos clave:</p><ul><li><strong>Recursos</strong> \u2014 Todo es un recurso identificado por una URL</li><li><strong>M\u00e9todos HTTP</strong> \u2014 GET (leer), POST (crear), PUT (actualizar), DELETE (eliminar)</li><li><strong>Stateless</strong> \u2014 Cada request contiene toda la informaci\u00f3n necesaria</li><li><strong>JSON</strong> \u2014 Formato est\u00e1ndar para intercambio de datos</li></ul><p>El KitZ Gateway implementa un subconjunto pragm\u00e1tico: GET para consultas y POST para invocar tools.</p>'
+      },
+      {
+        title: "Endpoints del Gateway",
+        duration: "20 min",
+        content: '<p>El gateway expone estos endpoints bajo el prefijo <code>/v0.1</code>:</p><div class="code-block">GET  /v0.1/health          \u2192 Estado del servidor\nGET  /v0.1/tools            \u2192 Lista de tools disponibles\nPOST /v0.1/tools/{name}     \u2192 Invocar un tool espec\u00edfico</div><p>El versionado <code>/v0.1</code> permite evolucionar la API sin romper clientes existentes. Cuando haya cambios incompatibles, se crea <code>/v0.2</code>.</p>'
+      },
+      {
+        title: "Request y Response en detalle",
+        duration: "20 min",
+        content: '<p>Anatom\u00eda de una llamada al gateway:</p><div class="code-block"># REQUEST\nPOST /v0.1/tools/sum HTTP/1.1\nHost: localhost:8787\nContent-Type: application/json\nContent-Length: 25\n\n{"values": [10, 20, 30]}\n\n# RESPONSE\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{"result": 60}</div><p>Siempre env\u00eda <code>Content-Type: application/json</code>. El gateway rechaza requests sin este header.</p>'
+      },
+      {
+        title: "C\u00f3digos de estado HTTP",
+        duration: "15 min",
+        content: '<p>El gateway usa estos c\u00f3digos de respuesta:</p><ul><li><strong>200 OK</strong> \u2014 Tool ejecutado correctamente</li><li><strong>400 Bad Request</strong> \u2014 JSON inv\u00e1lido o par\u00e1metros incorrectos</li><li><strong>404 Not Found</strong> \u2014 Tool no existe en el registry</li><li><strong>405 Method Not Allowed</strong> \u2014 M\u00e9todo HTTP incorrecto</li><li><strong>500 Internal Server Error</strong> \u2014 Error inesperado en el tool</li></ul><div class="tip">Siempre verifica el c\u00f3digo de respuesta antes de procesar el body. Un 200 no garantiza que el resultado sea lo que esperas \u2014 revisa tambi\u00e9n el contenido.</div>'
+      },
+      {
+        title: "Consumir desde JavaScript",
+        duration: "25 min",
+        content: '<p>Llamar al gateway desde un frontend es simple con fetch:</p><div class="code-block">async function callTool(toolName, params) {\n  const response = await fetch(\n    `http://localhost:8787/v0.1/tools/${toolName}`,\n    {\n      method: "POST",\n      headers: { "Content-Type": "application/json" },\n      body: JSON.stringify(params)\n    }\n  );\n\n  if (!response.ok) {\n    throw new Error(`Error ${response.status}`);\n  }\n\n  return response.json();\n}\n\n// Uso:\nconst result = await callTool("echo", { message: "Hola!" });\nconsole.log(result); // { result: "Hola!" }</div>'
+      },
+      {
+        title: "Consumir desde Python",
+        duration: "20 min",
+        content: '<p>Desde otro script Python usando solo la stdlib:</p><div class="code-block">import json\nfrom urllib.request import urlopen, Request\n\ndef call_gateway(tool, params=None):\n    url = f"http://localhost:8787/v0.1/tools/{tool}"\n    data = json.dumps(params or {}).encode("utf-8")\n    req = Request(\n        url,\n        data=data,\n        headers={"Content-Type": "application/json"},\n        method="POST"\n    )\n    with urlopen(req) as resp:\n        return json.loads(resp.read())\n\n# Uso:\nresult = call_gateway("sum", {"values": [1, 2, 3]})\nprint(result)  # {"result": 6}</div>'
+      },
+      {
+        title: "CORS y acceso desde el navegador",
+        duration: "15 min",
+        content: '<p>Si tu frontend corre en un dominio diferente al gateway, necesitas configurar CORS (Cross-Origin Resource Sharing):</p><div class="code-block"># El gateway env\u00eda estos headers:\nAccess-Control-Allow-Origin: *\nAccess-Control-Allow-Methods: GET, POST, OPTIONS\nAccess-Control-Allow-Headers: Content-Type</div><p>Por defecto, el gateway permite todas las or\u00edgenes (<code>*</code>). En producci\u00f3n, deber\u00edas restringir esto al dominio de tu frontend.</p>'
+      },
+      {
+        title: "Versionado de la API",
+        duration: "15 min",
+        content: '<p>El prefijo <code>/v0.1</code> sigue el versionado sem\u00e1ntico de la API:</p><ul><li><strong>v0.x</strong> \u2014 Fase de desarrollo, cambios pueden ser incompatibles</li><li><strong>v1.x</strong> \u2014 Estable, cambios ser\u00e1n retrocompatibles</li></ul><p>Esto permite que clientes existentes sigan funcionando cuando se lanzan nuevas versiones.</p><div class="tip">Siempre incluye la versi\u00f3n en tus URLs. <code>/v0.1/tools/echo</code> es correcto, <code>/tools/echo</code> no funcionar\u00e1.</div>'
+      },
+      {
+        title: "Manejo de errores",
+        duration: "20 min",
+        content: '<p>El gateway devuelve errores en formato JSON consistente:</p><div class="code-block">// Tool no encontrado (404)\n{"error": "Tool \'noexiste\' not found"}\n\n// JSON inv\u00e1lido (400)\n{"error": "Invalid JSON body"}\n\n// Error interno (500)\n{"error": "Internal tool error", "detail": "..."}</div><p>Tu c\u00f3digo debe manejar estos errores gracefully:</p><div class="code-block">const resp = await fetch(url, opts);\nconst data = await resp.json();\n\nif (data.error) {\n  console.error("Error del gateway:", data.error);\n} else {\n  console.log("Resultado:", data.result);\n}</div>'
+      },
+      {
+        title: "Construyendo un cliente completo",
+        duration: "30 min",
+        content: '<p>Combinemos todo en un cliente reusable:</p><div class="code-block">class KitzClient {\n  constructor(baseUrl = "http://localhost:8787") {\n    this.baseUrl = baseUrl;\n    this.version = "v0.1";\n  }\n\n  async health() {\n    const r = await fetch(`${this.baseUrl}/${this.version}/health`);\n    return r.json();\n  }\n\n  async listTools() {\n    const r = await fetch(`${this.baseUrl}/${this.version}/tools`);\n    return r.json();\n  }\n\n  async call(tool, params = {}) {\n    const r = await fetch(\n      `${this.baseUrl}/${this.version}/tools/${tool}`,\n      {\n        method: "POST",\n        headers: { "Content-Type": "application/json" },\n        body: JSON.stringify(params)\n      }\n    );\n    const data = await r.json();\n    if (data.error) throw new Error(data.error);\n    return data;\n  }\n}\n\n// Uso:\nconst kitz = new KitzClient();\nawait kitz.call("echo", { message: "Hola!" });</div>'
+      }
+    ]
+  },
+  "sqlite-ia": {
+    icon: "\u{1F4CA}",
+    level: "Intermedio",
+    title: "Datos con SQLite e IA",
+    desc: "Persistencia con SQLite, consultas de datos, m\u00e9tricas y an\u00e1lisis automatizado con modelos de lenguaje.",
+    duration: "3h 40m",
+    lessons: [
+      {
+        title: "\u00bfPor qu\u00e9 SQLite?",
+        duration: "15 min",
+        content: '<p>SQLite es la base de datos m\u00e1s desplegada del mundo, y viene incluida en Python. Es perfecta para KitZ porque:</p><ul><li><strong>Zero configuraci\u00f3n</strong> \u2014 No hay servidor de base de datos que instalar</li><li><strong>Un solo archivo</strong> \u2014 Toda la BD vive en un archivo .db</li><li><strong>Incluida en Python</strong> \u2014 El m\u00f3dulo sqlite3 es parte de la stdlib</li><li><strong>WAL mode</strong> \u2014 Permite lecturas concurrentes sin bloqueos</li></ul>'
+      },
+      {
+        title: "Conectar y crear tablas",
+        duration: "20 min",
+        content: '<div class="code-block">import sqlite3\n\ndef init_db(path="kitz.db"):\n    conn = sqlite3.connect(path)\n    conn.execute("PRAGMA journal_mode=WAL")\n    conn.execute("PRAGMA foreign_keys=ON")\n\n    conn.execute("""\n        CREATE TABLE IF NOT EXISTS assets (\n            id TEXT PRIMARY KEY,\n            client TEXT NOT NULL,\n            brand TEXT,\n            status TEXT DEFAULT \'active\',\n            created_at TEXT DEFAULT (datetime(\'now\'))\n        )\n    """)\n    conn.commit()\n    return conn</div><p>El pragma <code>WAL</code> (Write-Ahead Logging) permite que m\u00faltiples lecturas ocurran mientras se escribe, ideal para un gateway con tr\u00e1fico concurrente.</p>'
+      },
+      {
+        title: "CRUD b\u00e1sico",
+        duration: "25 min",
+        content: '<p>Operaciones b\u00e1sicas de datos:</p><div class="code-block"># CREATE\nconn.execute(\n    "INSERT INTO assets (id, client, brand) VALUES (?, ?, ?)",\n    ("asset_001", "Acme Corp", "Dell")\n)\n\n# READ\nrow = conn.execute(\n    "SELECT * FROM assets WHERE id = ?", ("asset_001",)\n).fetchone()\n\n# UPDATE\nconn.execute(\n    "UPDATE assets SET status = ? WHERE id = ?",\n    ("retired", "asset_001")\n)\n\n# DELETE\nconn.execute("DELETE FROM assets WHERE id = ?", ("asset_001",))\nconn.commit()</div><div class="tip">Siempre usa par\u00e1metros con ? en lugar de f-strings. Esto previene inyecci\u00f3n SQL.</div>'
+      },
+      {
+        title: "Consultas con filtros",
+        duration: "20 min",
+        content: '<p>Construye consultas din\u00e1micas con filtros opcionales:</p><div class="code-block">def query_assets(conn, filters):\n    sql = "SELECT * FROM assets WHERE 1=1"\n    params = []\n\n    if "client" in filters:\n        sql += " AND client = ?"\n        params.append(filters["client"])\n\n    if "status" in filters:\n        sql += " AND status = ?"\n        params.append(filters["status"])\n\n    return conn.execute(sql, params).fetchall()</div>'
+      },
+      {
+        title: "M\u00e9tricas y agregaciones",
+        duration: "25 min",
+        content: '<p>SQL es poderoso para calcular m\u00e9tricas:</p><div class="code-block">def get_metrics(conn):\n    stats = {}\n\n    stats["total"] = conn.execute(\n        "SELECT COUNT(*) FROM assets"\n    ).fetchone()[0]\n\n    stats["by_client"] = dict(conn.execute(\n        "SELECT client, COUNT(*) FROM assets GROUP BY client"\n    ).fetchall())\n\n    stats["by_status"] = dict(conn.execute(\n        "SELECT status, COUNT(*) FROM assets GROUP BY status"\n    ).fetchall())\n\n    return stats</div><p>Estas m\u00e9tricas son exactamente lo que el tool <code>get_asset_metrics</code> del gateway retorna.</p>'
+      },
+      {
+        title: "Integrar SQLite con Tools",
+        duration: "20 min",
+        content: '<p>Conecta la base de datos a un tool del gateway:</p><div class="code-block">import sqlite3\n\ndef register(registry):\n    conn = sqlite3.connect("kitz.db")\n    conn.row_factory = sqlite3.Row\n\n    def list_assets(params):\n        sql = "SELECT * FROM assets WHERE 1=1"\n        p = []\n        if "client" in params:\n            sql += " AND client = ?"\n            p.append(params["client"])\n        rows = conn.execute(sql, p).fetchall()\n        return {"assets": [dict(r) for r in rows]}\n\n    registry["list_assets"] = list_assets</div><p><code>sqlite3.Row</code> permite acceder a columnas por nombre y convertir a diccionario f\u00e1cilmente.</p>'
+      },
+      {
+        title: "Migraciones simples",
+        duration: "15 min",
+        content: '<p>Para evolucionar el esquema sin perder datos:</p><div class="code-block">MIGRATIONS = [\n    "ALTER TABLE assets ADD COLUMN tier TEXT DEFAULT \'standard\'",\n    "ALTER TABLE assets ADD COLUMN expires_at TEXT",\n    "CREATE INDEX IF NOT EXISTS idx_client ON assets(client)",\n]\n\ndef migrate(conn):\n    conn.execute("CREATE TABLE IF NOT EXISTS migrations (id INTEGER)")\n    applied = {r[0] for r in conn.execute("SELECT id FROM migrations")}\n\n    for i, sql in enumerate(MIGRATIONS):\n        if i not in applied:\n            conn.execute(sql)\n            conn.execute("INSERT INTO migrations VALUES (?)", (i,))\n    conn.commit()</div>'
+      },
+      {
+        title: "An\u00e1lisis con IA: Preparar datos",
+        duration: "20 min",
+        content: '<p>Para que un modelo de IA analice tus datos, primero necesitas prepararlos en un formato legible:</p><div class="code-block">def prepare_for_ai(conn):\n    metrics = get_metrics(conn)\n    recent = conn.execute(\n        "SELECT * FROM assets ORDER BY created_at DESC LIMIT 10"\n    ).fetchall()\n\n    context = f"""Portfolio Summary:\n- Total assets: {metrics[\'total\']}\n- By client: {metrics[\'by_client\']}\n- By status: {metrics[\'by_status\']}\n\nRecent assets:\n"""\n    for r in recent:\n        context += f"  - {r[\'id\']}: {r[\'client\']} ({r[\'status\']})\n"\n\n    return context</div><p>Este contexto se puede enviar a Claude API para generar insights autom\u00e1ticos.</p>'
+      },
+      {
+        title: "Tool de insights con IA",
+        duration: "25 min",
+        content: '<p>Un tool que combina SQLite + IA para generar an\u00e1lisis:</p><div class="code-block">def register(registry):\n    def generate_insights(params):\n        # 1. Obtener datos de SQLite\n        context = prepare_for_ai(conn)\n\n        # 2. Generar insights (mock por ahora)\n        insights = {\n            "concentration_risk": analyze_concentration(conn),\n            "expiring_soon": count_expiring(conn, days=30),\n            "cost_comparison": compare_costs(conn),\n            "recommendations": [\n                "Diversificar proveedores",\n                "Renovar 5 activos pr\u00f3ximos a vencer"\n            ]\n        }\n        return {"insights": insights}\n\n    registry["generate_insights"] = generate_insights</div><div class="tip">En el curso de Claude API aprender\u00e1s a conectar esto con un modelo real para insights din\u00e1micos.</div>'
+      },
+      {
+        title: "Backup y recuperaci\u00f3n",
+        duration: "15 min",
+        content: '<p>SQLite hace backup trivial \u2014 es solo un archivo:</p><div class="code-block">import shutil\nfrom datetime import datetime\n\ndef backup_db(source="kitz.db"):\n    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")\n    dest = f"backups/kitz_{timestamp}.db"\n    shutil.copy2(source, dest)\n    return dest\n\n# O usando la API de backup de SQLite:\ndef backup_online(source_conn, dest_path):\n    dest = sqlite3.connect(dest_path)\n    source_conn.backup(dest)\n    dest.close()</div><p>El m\u00e9todo <code>backup()</code> de SQLite es seguro incluso con escrituras concurrentes gracias a WAL.</p>'
+      }
+    ]
+  },
+  "react-ts": {
+    icon: "\u26A1",
+    level: "Intermedio",
+    title: "Frontend con React y TypeScript",
+    desc: "Construye interfaces modernas que consumen el KitZ Gateway. React 19, Zustand, y dise\u00f1o de tokens.",
+    duration: "4h 30m",
+    lessons: [
+      {
+        title: "Setup del proyecto con Vite",
+        duration: "20 min",
+        content: '<p>Creamos un proyecto React + TypeScript con Vite:</p><div class="code-block">npm create vite@latest kitz-dashboard -- --template react-ts\ncd kitz-dashboard\nnpm install\nnpm run dev</div><p>Vite ofrece Hot Module Replacement instant\u00e1neo y builds r\u00e1pidos. El template incluye TypeScript configurado.</p>'
+      },
+      {
+        title: "Tipos para la API del Gateway",
+        duration: "20 min",
+        content: '<p>Definimos los tipos TypeScript para las respuestas del gateway:</p><div class="code-block">// types/gateway.ts\nexport interface ToolResponse\u003CT = unknown\u003E {\n  result?: T;\n  error?: string;\n}\n\nexport interface Asset {\n  id: string;\n  client: string;\n  brand: string;\n  status: "active" | "retired" | "expiring";\n  created_at: string;\n}\n\nexport interface Metrics {\n  total_devices: number;\n  unique_clients: number;\n  by_status: Record\u003Cstring, number\u003E;\n}</div>'
+      },
+      {
+        title: "Cliente HTTP tipado",
+        duration: "25 min",
+        content: '<p>Un cliente para consumir el gateway con tipos seguros:</p><div class="code-block">// lib/kitz-client.ts\nconst BASE = "http://localhost:8787/v0.1";\n\nexport async function callTool\u003CT\u003E(\n  tool: string,\n  params: Record\u003Cstring, unknown\u003E = {}\n): Promise\u003CT\u003E {\n  const res = await fetch(`${BASE}/tools/${tool}`, {\n    method: "POST",\n    headers: { "Content-Type": "application/json" },\n    body: JSON.stringify(params),\n  });\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  const data = await res.json();\n  if (data.error) throw new Error(data.error);\n  return data.result ?? data;\n}</div>'
+      },
+      {
+        title: "Componente: Dashboard de M\u00e9tricas",
+        duration: "25 min",
+        content: '<p>Un componente React que muestra m\u00e9tricas del gateway:</p><div class="code-block">// components/MetricsDashboard.tsx\nimport { useEffect, useState } from "react";\nimport { callTool } from "../lib/kitz-client";\nimport type { Metrics } from "../types/gateway";\n\nexport function MetricsDashboard() {\n  const [metrics, setMetrics] = useState\u003CMetrics | null\u003E(null);\n\n  useEffect(() =\u003E {\n    callTool\u003CMetrics\u003E("get_asset_metrics")\n      .then(setMetrics)\n      .catch(console.error);\n  }, []);\n\n  if (!metrics) return \u003Cp\u003ECargando...\u003C/p\u003E;\n\n  return (\n    \u003Cdiv className="metrics-grid"\u003E\n      \u003Cdiv className="metric-card"\u003E\n        \u003Cspan className="value"\u003E{metrics.total_devices}\u003C/span\u003E\n        \u003Cspan className="label"\u003EDispositivos\u003C/span\u003E\n      \u003C/div\u003E\n      {/* ... m\u00e1s cards */}\n    \u003C/div\u003E\n  );\n}</div>'
+      },
+      {
+        title: "Estado global con Zustand",
+        duration: "20 min",
+        content: '<p>Zustand es un gestor de estado minimalista perfecto para este proyecto:</p><div class="code-block">// store/gateway-store.ts\nimport { create } from "zustand";\nimport type { Asset, Metrics } from "../types/gateway";\nimport { callTool } from "../lib/kitz-client";\n\ninterface GatewayState {\n  assets: Asset[];\n  metrics: Metrics | null;\n  loading: boolean;\n  fetchAssets: (filters?: Record\u003Cstring, string\u003E) =\u003E Promise\u003Cvoid\u003E;\n  fetchMetrics: () =\u003E Promise\u003Cvoid\u003E;\n}\n\nexport const useGateway = create\u003CGatewayState\u003E((set) =\u003E ({\n  assets: [],\n  metrics: null,\n  loading: false,\n  fetchAssets: async (filters) =\u003E {\n    set({ loading: true });\n    const data = await callTool("list_assets", filters);\n    set({ assets: data.assets, loading: false });\n  },\n  fetchMetrics: async () =\u003E {\n    const data = await callTool("get_asset_metrics");\n    set({ metrics: data });\n  },\n}));</div>'
+      },
+      {
+        title: "Tabla de activos con filtros",
+        duration: "25 min",
+        content: '<p>Un componente de tabla con filtros interactivos:</p><div class="code-block">// components/AssetTable.tsx\nimport { useGateway } from "../store/gateway-store";\nimport { useState } from "react";\n\nexport function AssetTable() {\n  const { assets, loading, fetchAssets } = useGateway();\n  const [statusFilter, setStatusFilter] = useState("");\n\n  const handleFilter = () =\u003E {\n    const filters: Record\u003Cstring, string\u003E = {};\n    if (statusFilter) filters.status = statusFilter;\n    fetchAssets(filters);\n  };\n\n  return (\n    \u003Cdiv\u003E\n      \u003Cselect value={statusFilter}\n        onChange={(e) =\u003E setStatusFilter(e.target.value)}\u003E\n        \u003Coption value=""\u003ETodos\u003C/option\u003E\n        \u003Coption value="active"\u003EActivos\u003C/option\u003E\n        \u003Coption value="expired"\u003EExpirados\u003C/option\u003E\n      \u003C/select\u003E\n      \u003Cbutton onClick={handleFilter}\u003EFiltrar\u003C/button\u003E\n      {loading ? \u003Cp\u003ECargando...\u003C/p\u003E : (\n        \u003Ctable\u003E{/* render rows */}\u003C/table\u003E\n      )}\n    \u003C/div\u003E\n  );\n}</div>'
+      },
+      {
+        title: "Design tokens y CSS",
+        duration: "20 min",
+        content: '<p>Usamos CSS custom properties como design tokens, igual que KitZ Academy:</p><div class="code-block">/* tokens.css */\n:root {\n  --bg-deep: #06080c;\n  --bg-card: #111620;\n  --lime: #b5ff3b;\n  --cyan: #22d3ee;\n  --text-white: #eef1f6;\n  --text-gray: #8892a4;\n  --font-display: "Outfit", sans-serif;\n  --font-mono: "IBM Plex Mono", monospace;\n  --radius: 0px; /* Sharp corners, KitZ style */\n}\n\n.metric-card {\n  background: var(--bg-card);\n  border: 1px solid rgba(255,255,255,0.06);\n  padding: 1.5rem;\n  transition: all 0.3s;\n}\n\n.metric-card:hover {\n  border-color: var(--lime);\n  transform: translateY(-2px);\n}</div>'
+      },
+      {
+        title: "Llamar tools desde formularios",
+        duration: "20 min",
+        content: '<p>Conecta formularios directamente a tools del gateway:</p><div class="code-block">function ToolRunner() {\n  const [tool, setTool] = useState("echo");\n  const [params, setParams] = useState("{}");\n  const [result, setResult] = useState("");\n\n  const run = async () =\u003E {\n    try {\n      const parsed = JSON.parse(params);\n      const data = await callTool(tool, parsed);\n      setResult(JSON.stringify(data, null, 2));\n    } catch (e) {\n      setResult(`Error: ${e.message}`);\n    }\n  };\n\n  return (\n    \u003Cdiv\u003E\n      \u003Cinput value={tool} onChange={e =\u003E setTool(e.target.value)}\n        placeholder="Nombre del tool" /\u003E\n      \u003Ctextarea value={params}\n        onChange={e =\u003E setParams(e.target.value)} /\u003E\n      \u003Cbutton onClick={run}\u003EEjecutar\u003C/button\u003E\n      \u003Cpre\u003E{result}\u003C/pre\u003E\n    \u003C/div\u003E\n  );\n}</div>'
+      },
+      {
+        title: "Gr\u00e1ficos simples con SVG",
+        duration: "25 min",
+        content: '<p>Crea visualizaciones sin dependencias externas usando SVG:</p><div class="code-block">function BarChart({ data }: { data: Record\u003Cstring, number\u003E }) {\n  const entries = Object.entries(data);\n  const max = Math.max(...entries.map(([, v]) =\u003E v));\n  const barH = 28;\n\n  return (\n    \u003Csvg width="100%" height={entries.length * (barH + 8)}\u003E\n      {entries.map(([label, value], i) =\u003E (\n        \u003Cg key={label} transform={`translate(0, ${i * (barH + 8)})`}\u003E\n          \u003Crect width={`${(value / max) * 80}%`} height={barH}\n            fill="var(--lime)" opacity={0.8} /\u003E\n          \u003Ctext x="4" y={barH / 2 + 5}\n            fill="var(--bg-deep)" fontSize="12"\u003E\n            {label}: {value}\n          \u003C/text\u003E\n        \u003C/g\u003E\n      ))}\n    \u003C/svg\u003E\n  );\n}</div>'
+      },
+      {
+        title: "Responsive layout",
+        duration: "15 min",
+        content: '<p>Patrones responsive para el dashboard:</p><div class="code-block">.dashboard {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));\n  gap: 1.2rem;\n  padding: 2rem;\n}\n\n@media (max-width: 768px) {\n  .dashboard {\n    grid-template-columns: 1fr;\n    padding: 1rem;\n  }\n  .metric-card {\n    padding: 1rem;\n  }\n}</div><div class="tip">El patr\u00f3n auto-fill + minmax es el m\u00e1s vers\u00e1til para grids responsive. No necesitas media queries para la mayor\u00eda de layouts.</div>'
+      },
+      {
+        title: "Deploy a GitHub Pages",
+        duration: "15 min",
+        content: '<p>Publica tu dashboard con GitHub Pages:</p><div class="code-block"># vite.config.ts\nexport default defineConfig({\n  base: "/kitz-dashboard/",\n  plugins: [react()],\n});\n\n# Build y deploy\nnpm run build\n# El output est\u00e1 en dist/\n\n# Configura GitHub Pages para servir desde\n# la branch gh-pages o el directorio docs/</div><p>Ahora tienes un dashboard completo que consume el KitZ Gateway y se despliega gratis en GitHub Pages.</p>'
+      },
+      {
+        title: "Pr\u00f3ximos pasos",
+        duration: "10 min",
+        content: '<p>Has construido un frontend completo. Ideas para seguir:</p><ul><li>Agregar autenticaci\u00f3n con tokens</li><li>Implementar WebSocket para datos en tiempo real</li><li>A\u00f1adir tests con Vitest</li><li>Crear un modo oscuro/claro con toggle</li><li>Conectar con el curso de Claude API para features de IA</li></ul><div class="tip">El c\u00f3digo fuente del frontend de RenewFlow en este mismo repo es un ejemplo real de estas t\u00e9cnicas aplicadas.</div>'
+      }
+    ]
+  },
+  "claude-api": {
+    icon: "\u{1F916}",
+    level: "Avanzado",
+    title: "Integraci\u00f3n con Claude API",
+    desc: "Conecta modelos de IA a tus tools: salida estructurada, chat inteligente y asistentes con contexto de negocio.",
+    duration: "4h 15m",
+    lessons: [
+      {
+        title: "Introducci\u00f3n a Claude API",
+        duration: "20 min",
+        content: '<p>Claude es un modelo de IA de Anthropic que se integra perfectamente con KitZ. La API de Claude permite:</p><ul><li><strong>Chat completions</strong> \u2014 Conversaciones inteligentes</li><li><strong>Tool use</strong> \u2014 El modelo puede invocar tus tools</li><li><strong>Structured output</strong> \u2014 Respuestas en formato JSON definido</li></ul><div class="code-block">import anthropic\n\nclient = anthropic.Anthropic(api_key="tu-api-key")\n\nresponse = client.messages.create(\n    model="claude-sonnet-4-20250514",\n    max_tokens=1024,\n    messages=[{"role": "user", "content": "Hola!"}]\n)\nprint(response.content[0].text)</div>'
+      },
+      {
+        title: "Conectar Claude con KitZ Tools",
+        duration: "30 min",
+        content: '<p>Claude puede invocar directamente los tools de tu gateway usando la feature de tool use:</p><div class="code-block">tools = [\n    {\n        "name": "list_assets",\n        "description": "Lista activos filtrados por cliente o estado",\n        "input_schema": {\n            "type": "object",\n            "properties": {\n                "client": {"type": "string"},\n                "status": {"type": "string"}\n            }\n        }\n    },\n    {\n        "name": "get_asset_metrics",\n        "description": "Obtiene m\u00e9tricas del portafolio",\n        "input_schema": {"type": "object", "properties": {}}\n    }\n]\n\nresponse = client.messages.create(\n    model="claude-sonnet-4-20250514",\n    max_tokens=1024,\n    tools=tools,\n    messages=[{\n        "role": "user",\n        "content": "Cu\u00e1ntos activos tiene Acme Corp?"\n    }]\n)</div><p>Claude decidir\u00e1 autom\u00e1ticamente qu\u00e9 tool invocar basado en la pregunta del usuario.</p>'
+      },
+      {
+        title: "El loop de tool use",
+        duration: "25 min",
+        content: '<p>Cuando Claude decide usar un tool, debes ejecutarlo y devolver el resultado:</p><div class="code-block">import json\nfrom urllib.request import urlopen, Request\n\ndef execute_tool(name, params):\n    """Llama al KitZ Gateway."""\n    req = Request(\n        f"http://localhost:8787/v0.1/tools/{name}",\n        data=json.dumps(params).encode(),\n        headers={"Content-Type": "application/json"},\n        method="POST"\n    )\n    return json.loads(urlopen(req).read())\n\n# Loop: Claude \u2192 Tool \u2192 Claude\nmessages = [{"role": "user", "content": query}]\n\nwhile True:\n    resp = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        tools=tools,\n        messages=messages,\n        max_tokens=1024\n    )\n\n    if resp.stop_reason == "tool_use":\n        tool_block = next(b for b in resp.content\n                         if b.type == "tool_use")\n        result = execute_tool(tool_block.name, tool_block.input)\n\n        messages.append({"role": "assistant", "content": resp.content})\n        messages.append({"role": "user", "content": [{\n            "type": "tool_result",\n            "tool_use_id": tool_block.id,\n            "content": json.dumps(result)\n        }]})\n    else:\n        print(resp.content[0].text)\n        break</div>'
+      },
+      {
+        title: "Salida estructurada con JSON",
+        duration: "20 min",
+        content: '<p>Puedes hacer que Claude devuelva datos en un formato JSON espec\u00edfico:</p><div class="code-block">response = client.messages.create(\n    model="claude-sonnet-4-20250514",\n    max_tokens=1024,\n    messages=[{\n        "role": "user",\n        "content": """Analiza estos datos y responde SOLO en JSON:\n{\n  "risk_level": "low|medium|high",\n  "top_clients": ["..."],\n  "recommendations": ["..."]\n}\n\nDatos: 150 activos, 80% de un solo cliente,\n20 expiran en 30 d\u00edas.\"\"\"\n    }]\n)\n\nimport json\nanalysis = json.loads(response.content[0].text)</div><div class="tip">Para resultados m\u00e1s confiables, usa tool_use con un schema definido en lugar de pedir JSON en el prompt.</div>'
+      },
+      {
+        title: "Construir un asistente de negocio",
+        duration: "30 min",
+        content: '<p>Combina Claude + KitZ Gateway para crear un asistente que entiende tu negocio:</p><div class="code-block">SYSTEM_PROMPT = """Eres un asistente de gesti\u00f3n de activos.\nTienes acceso a las herramientas del KitZ Gateway.\nResponde siempre en espa\u00f1ol.\nCuando el usuario pregunte sobre datos, usa los tools.\nS\u00e9 conciso y profesional."""\n\ndef chat(user_message, history=[]):\n    history.append({"role": "user", "content": user_message})\n\n    resp = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        system=SYSTEM_PROMPT,\n        tools=kitz_tools,\n        messages=history,\n        max_tokens=2048\n    )\n\n    # Procesar tool calls si las hay...\n    # (loop similar al de la lecci\u00f3n anterior)\n\n    assistant_msg = resp.content[0].text\n    history.append({"role": "assistant", "content": assistant_msg})\n    return assistant_msg</div>'
+      },
+      {
+        title: "Streaming de respuestas",
+        duration: "20 min",
+        content: '<p>Para una mejor UX, usa streaming para mostrar la respuesta mientras se genera:</p><div class="code-block">with client.messages.stream(\n    model="claude-sonnet-4-20250514",\n    max_tokens=1024,\n    messages=[{"role": "user", "content": query}]\n) as stream:\n    for text in stream.text_stream:\n        print(text, end="", flush=True)\n\nprint()  # Nueva l\u00ednea al final</div><p>El streaming reduce el tiempo percibido de espera significativamente.</p>'
+      },
+      {
+        title: "Manejo de contexto y memoria",
+        duration: "20 min",
+        content: '<p>Para conversaciones largas, gestiona el contexto eficientemente:</p><div class="code-block">class Conversation:\n    def __init__(self, system, tools, max_history=20):\n        self.system = system\n        self.tools = tools\n        self.history = []\n        self.max_history = max_history\n\n    def send(self, message):\n        self.history.append({"role": "user", "content": message})\n\n        # Mantener solo las \u00faltimas N interacciones\n        if len(self.history) > self.max_history:\n            self.history = self.history[-self.max_history:]\n\n        resp = client.messages.create(\n            model="claude-sonnet-4-20250514",\n            system=self.system,\n            tools=self.tools,\n            messages=self.history,\n            max_tokens=2048\n        )\n        # ... procesar respuesta\n        return resp</div>'
+      },
+      {
+        title: "Rate limiting y buenas pr\u00e1cticas",
+        duration: "15 min",
+        content: '<p>Buenas pr\u00e1cticas al usar Claude API en producci\u00f3n:</p><ul><li><strong>Rate limiting</strong> \u2014 Respeta los l\u00edmites de la API. Implementa retry con backoff exponencial</li><li><strong>Caching</strong> \u2014 Cachea respuestas para queries repetidas</li><li><strong>Tokens</strong> \u2014 Monitorea el uso de tokens para controlar costos</li><li><strong>Seguridad</strong> \u2014 Nunca expongas tu API key en el frontend</li></ul><div class="code-block"># Nunca hagas esto:\nAPI_KEY = "sk-ant-..."  # NO en el c\u00f3digo\n\n# Usa variables de entorno:\nimport os\nAPI_KEY = os.environ["ANTHROPIC_API_KEY"]</div>'
+      },
+      {
+        title: "Testing de integraciones IA",
+        duration: "20 min",
+        content: '<p>Testea tu integraci\u00f3n sin llamadas reales a la API:</p><div class="code-block">import unittest\nfrom unittest.mock import patch, MagicMock\n\nclass TestAssistant(unittest.TestCase):\n    @patch("anthropic.Anthropic")\n    def test_tool_invocation(self, mock_client):\n        # Mock de respuesta con tool_use\n        mock_resp = MagicMock()\n        mock_resp.stop_reason = "tool_use"\n        mock_resp.content = [MagicMock(\n            type="tool_use",\n            name="list_assets",\n            input={"client": "Acme"},\n            id="call_123"\n        )]\n\n        mock_client.return_value.messages.create\\\n            .return_value = mock_resp\n\n        # Verifica que tu c\u00f3digo procesa\n        # el tool_use correctamente\n        result = execute_with_tools("lista activos de Acme")\n        self.assertIn("assets", result)</div>'
+      },
+      {
+        title: "Proyecto final: Chat con KitZ",
+        duration: "35 min",
+        content: '<p>Combinemos todo en un chat interactivo por terminal:</p><div class="code-block">#!/usr/bin/env python3\n"""KitZ Chat - Asistente IA para el Gateway."""\nimport os\nimport json\nimport anthropic\nfrom urllib.request import urlopen, Request\n\nclient = anthropic.Anthropic()\ntools = [...]  # Tus tools definidos\n\nprint("KitZ Chat v0.1 \u2014 Escribe \'salir\' para terminar")\nprint("-" * 40)\n\nhistory = []\nwhile True:\n    user_input = input("\\nT\u00fa: ")\n    if user_input.lower() == "salir":\n        break\n\n    history.append({"role": "user", "content": user_input})\n\n    resp = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        system="Eres un asistente de KitZ Gateway. Espa\u00f1ol.",\n        tools=tools,\n        messages=history,\n        max_tokens=2048\n    )\n\n    # Procesar tool calls...\n    # Mostrar respuesta final\n    print(f"\\nKitZ: {resp.content[0].text}")\n    history.append({"role": "assistant", "content": resp.content})\n\nprint("\\nHasta pronto!")</div><div class="tip">Este es un punto de partida. Puedes extenderlo con un frontend web, m\u00e1s tools, y persistencia de conversaciones.</div>'
+      }
+    ]
+  },
+  "open-source": {
+    icon: "\u{1F680}",
+    level: "Avanzado",
+    title: "Contribuir a Open Source",
+    desc: "Git workflow, pull requests, c\u00f3digo de conducta y c\u00f3mo contribuir al ecosistema KitZ y otros proyectos libres.",
+    duration: "2h 30m",
+    lessons: [
+      {
+        title: "\u00bfPor qu\u00e9 contribuir?",
+        duration: "15 min",
+        content: '<p>Contribuir a open-source es una de las mejores formas de crecer como desarrollador:</p><ul><li><strong>Aprendizaje</strong> \u2014 Lees c\u00f3digo real de otros desarrolladores</li><li><strong>Portfolio</strong> \u2014 Tus contribuciones son p\u00fablicas y verificables</li><li><strong>Comunidad</strong> \u2014 Conectas con desarrolladores de todo el mundo</li><li><strong>Impacto</strong> \u2014 Tu c\u00f3digo lo usan miles de personas</li></ul><p>KitZ es un proyecto ideal para empezar: c\u00f3digo simple, documentaci\u00f3n en espa\u00f1ol, y una comunidad peque\u00f1a y amigable.</p>'
+      },
+      {
+        title: "Git fundamentals",
+        duration: "20 min",
+        content: '<p>Comandos esenciales de Git que usar\u00e1s constantemente:</p><div class="code-block"># Configuraci\u00f3n inicial\ngit config --global user.name "Tu Nombre"\ngit config --global user.email "tu@email.com"\n\n# Clonar un repo\ngit clone https://github.com/KenRoach/kitz.git\n\n# Ver estado\ngit status\ngit log --oneline -10\n\n# Crear branch\ngit checkout -b feature/mi-tool\n\n# Agregar cambios\ngit add archivo.py\ngit commit -m "feat: add temperature converter tool"\n\n# Subir cambios\ngit push -u origin feature/mi-tool</div>'
+      },
+      {
+        title: "Fork y clone workflow",
+        duration: "20 min",
+        content: '<p>El flujo est\u00e1ndar para contribuir a un proyecto:</p><div class="code-block"># 1. Fork el repo en GitHub (bot\u00f3n "Fork")\n\n# 2. Clona TU fork\ngit clone https://github.com/TU-USER/kitz.git\ncd kitz\n\n# 3. Agrega el repo original como "upstream"\ngit remote add upstream https://github.com/KenRoach/kitz.git\n\n# 4. Sincroniza antes de trabajar\ngit fetch upstream\ngit checkout main\ngit merge upstream/main\n\n# 5. Crea tu branch de feature\ngit checkout -b feature/mi-contribucion</div><div class="tip">Siempre trabaja en un branch separado. Nunca hagas commits directamente en main.</div>'
+      },
+      {
+        title: "Escribir buenos commits",
+        duration: "15 min",
+        content: '<p>KitZ sigue Conventional Commits:</p><div class="code-block"># Formato:\n\u003Ctipo\u003E: \u003Cdescripci\u00f3n corta\u003E\n\n# Tipos comunes:\nfeat: add new echo tool with logging\nfix: handle empty JSON body in gateway\ndocs: add API reference for list_assets\ntest: add unit tests for sum tool\nrefactor: simplify tool registry lookup\nchore: update .gitignore patterns</div><ul><li>Primera l\u00ednea: m\u00e1ximo 72 caracteres</li><li>Usa imperativo: "add" no "added"</li><li>Explica el <em>qu\u00e9</em> y el <em>por qu\u00e9</em>, no el <em>c\u00f3mo</em></li></ul>'
+      },
+      {
+        title: "Pull Requests efectivos",
+        duration: "20 min",
+        content: '<p>C\u00f3mo crear un PR que sea f\u00e1cil de revisar y aprobar:</p><div class="code-block"># T\u00edtulo:\nfeat: add temperature converter tool\n\n# Descripci\u00f3n:\n## Qu\u00e9 hace\nAgrega un tool `temp_convert` que convierte\ntemperaturas entre Celsius y Fahrenheit.\n\n## C\u00f3mo probarlo\n```\ncurl -X POST http://localhost:8787/v0.1/tools/temp_convert \\\n  -H "Content-Type: application/json" \\\n  -d \'{"value": 100, "from": "C"}\'\n```\n\n## Checklist\n- [x] Zero dependencias externas\n- [x] Tests incluidos\n- [x] Documentaci\u00f3n actualizada</div><div class="tip">PRs peque\u00f1os se revisan m\u00e1s r\u00e1pido. Si tu cambio es grande, div\u00eddelo en varios PRs.</div>'
+      },
+      {
+        title: "Code review: dar y recibir feedback",
+        duration: "15 min",
+        content: '<p>El code review es una conversaci\u00f3n, no un examen:</p><ul><li><strong>Al dar review:</strong><ul><li>S\u00e9 constructivo y espec\u00edfico</li><li>Sugiere alternativas, no solo problemas</li><li>Reconoce lo bueno del c\u00f3digo</li></ul></li><li><strong>Al recibir review:</strong><ul><li>No lo tomes personal \u2014 se revisa el c\u00f3digo, no a ti</li><li>Pregunta si no entiendes un comentario</li><li>Agradece el tiempo del reviewer</li></ul></li></ul><p>En KitZ, todos los PRs pasan por review. Es normal recibir sugerencias de cambio.</p>'
+      },
+      {
+        title: "Reportar bugs e issues",
+        duration: "15 min",
+        content: '<p>Contribuir no es solo c\u00f3digo. Reportar bugs es igual de valioso:</p><div class="code-block"># T\u00edtulo del issue:\nBug: Gateway returns 500 when body is empty\n\n# Descripci\u00f3n:\n## Pasos para reproducir\n1. Iniciar el gateway\n2. Enviar POST sin body:\n   `curl -X POST http://localhost:8787/v0.1/tools/echo`\n3. Recibir error 500\n\n## Comportamiento esperado\nDeber\u00eda retornar 400 Bad Request con mensaje\n"JSON body required"\n\n## Comportamiento actual\nRetorna 500 Internal Server Error\n\n## Entorno\n- Python 3.11\n- macOS 14.2</div>'
+      },
+      {
+        title: "Tu primera contribuci\u00f3n a KitZ",
+        duration: "30 min",
+        content: '<p>Vamos a hacer una contribuci\u00f3n real paso a paso:</p><div class="code-block"># 1. Fork y clone\ngit clone https://github.com/TU-USER/kitz.git\ncd kitz\n\n# 2. Crear branch\ngit checkout -b feat/word-count-tool\n\n# 3. Crear el tool\n# kitz_gateway/tools/word_count.py\ndef register(registry):\n    def word_count(params):\n        text = params.get("text", "")\n        words = text.split()\n        return {\n            "words": len(words),\n            "characters": len(text),\n            "lines": text.count("\\n") + 1\n        }\n    registry["word_count"] = word_count\n\n# 4. Commit y push\ngit add kitz_gateway/tools/word_count.py\ngit commit -m "feat: add word_count tool"\ngit push -u origin feat/word-count-tool\n\n# 5. Crear PR en GitHub</div><div class="tip">Felicidades! Has completado el curso. Ahora tienes las herramientas para contribuir a cualquier proyecto open-source.</div>'
+      }
+    ]
+  }
+};
+
+// --- Load course from URL ---
+const params = new URLSearchParams(window.location.search);
+const courseId = params.get("id");
+
+if (courseId && courses[courseId]) {
+  const course = courses[courseId];
+  document.title = course.title + " \u2014 KitZ Academy";
+  document.getElementById("courseEyebrow").textContent = "// " + course.level.toLowerCase() + " \u00b7 " + course.lessons.length + " lecciones";
+  document.getElementById("courseTitle").textContent = course.icon + " " + course.title;
+  document.getElementById("courseDesc").textContent = course.desc;
+  document.getElementById("courseMeta").innerHTML =
+    "<span>\u{1F551} " + course.duration + "</span>" +
+    "<span>\u{1F4DA} " + course.lessons.length + " lecciones</span>" +
+    "<span>\u{1F3AF} " + course.level + "</span>";
+
+  const container = document.getElementById("lessonsContainer");
+  course.lessons.forEach(function(lesson, i) {
+    const div = document.createElement("div");
+    div.className = "lesson";
+    div.innerHTML =
+      '<div class="lesson-header" onclick="this.parentElement.classList.toggle(\'open\')">' +
+        '<span class="lesson-num">' + String(i + 1).padStart(2, "0") + '</span>' +
+        '<span class="lesson-title">' + lesson.title + '</span>' +
+        '<span class="lesson-duration">' + lesson.duration + '</span>' +
+        '<span class="lesson-toggle">\u25BC</span>' +
+      '</div>' +
+      '<div class="lesson-body">' + lesson.content + '</div>';
+    container.appendChild(div);
+  });
+
+  // Auto-open first lesson
+  var firstLesson = container.querySelector(".lesson");
+  if (firstLesson) firstLesson.classList.add("open");
+} else {
+  document.getElementById("courseTitle").textContent = "Curso no encontrado";
+  document.getElementById("courseDesc").textContent = "El curso que buscas no existe. Vuelve a la p\u00e1gina principal.";
+}
+</script>
+</body>
+</html>
