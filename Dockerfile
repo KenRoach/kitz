@@ -1,4 +1,4 @@
-# Multi-stage build: Stage 1 builds frontend, Stage 2 builds + runs Kitz Gateway (TypeScript)
+# Multi-stage build: Stage 1 builds frontend, Stage 2 compiles gateway TS, Stage 3 runs
 
 # Stage 1: Build frontend
 FROM node:20-alpine AS frontend
@@ -8,15 +8,24 @@ RUN npm ci
 COPY renewflo/ ./
 RUN npm run build
 
-# Stage 2: Build + run Kitz Gateway (TypeScript/Fastify)
+# Stage 2: Compile gateway TypeScript
+FROM node:20-alpine AS gateway-build
+WORKDIR /app
+COPY kitz_gateway_ts/package.json kitz_gateway_ts/package-lock.json* ./
+RUN npm ci
+COPY kitz_gateway_ts/ ./
+RUN npx tsc
+
+# Stage 3: Production runtime
 FROM node:20-alpine
 WORKDIR /app
 
-# Copy gateway source and install
+# Install production deps only
 COPY kitz_gateway_ts/package.json kitz_gateway_ts/package-lock.json* ./
 RUN npm ci --omit=dev
-COPY kitz_gateway_ts/ ./
-RUN npx tsc
+
+# Copy compiled JS from build stage
+COPY --from=gateway-build /app/dist ./dist/
 
 # Copy built frontend
 COPY --from=frontend /app/renewflo/dist ./static/
