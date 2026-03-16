@@ -12,7 +12,6 @@ import { RewardsPage } from "@/features/rewards";
 import { OrdersPage } from "@/features/orders";
 import { InsightsPage } from "@/features/insights";
 import { ChatPanel } from "@/features/chat";
-import { INBOX_DATA } from "@/data/seeds";
 import type { Asset, PageId } from "@/types";
 import { useAssetStore } from "@/stores";
 
@@ -71,7 +70,7 @@ export default function App() {
   }
 
   const colors = isDark ? DARK : LIGHT;
-  const unread = INBOX_DATA.filter((m) => m.unread).length;
+  const unread = 0; // TODO: wire to real inbox data
   const alerts = assets.filter((a) => a.daysLeft <= 30 && a.daysLeft >= 0).length;
 
   const handleImport = (newAssets: Asset[] | null) => {
