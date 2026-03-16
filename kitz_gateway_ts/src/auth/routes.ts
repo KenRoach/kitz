@@ -65,12 +65,13 @@ function registerAuthHandlers(app: FastifyInstance, prefix: string): void {
   });
 
   app.post(`${prefix}/reset-password-with-token`, async (request, reply) => {
-    const { token, newPassword } = request.body as { token: string; newPassword: string };
-    if (!token || !newPassword) {
-      return reply.status(400).send({ error: "token and newPassword are required" });
+    const body = request.body as { token?: string; access_token?: string; newPassword: string };
+    const accessToken = body.access_token || body.token;
+    if (!accessToken || !body.newPassword) {
+      return reply.status(400).send({ error: "access_token and newPassword are required" });
     }
     try {
-      return await resetPasswordWithToken(token, newPassword);
+      return await resetPasswordWithToken(accessToken, body.newPassword);
     } catch (err) {
       return reply.status(400).send({ error: (err as Error).message });
     }

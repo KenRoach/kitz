@@ -21,7 +21,7 @@ export function loadConfig(): Config {
   const config: Config = {
     port: parseInt(env("PORT", "8787"), 10),
     host: env("HOST", "0.0.0.0"),
-    appUrl: env("APP_URL", "https://renewflow.io"),
+    appUrl: env("APP_URL", "https://www.renewflow.io"),
     supabaseUrl: env("SUPABASE_URL"),
     supabaseServiceKey: env("SUPABASE_SERVICE_ROLE_KEY") || env("SUPABASE_SERVICE_KEY"),
     authEnabled: env("AUTH_ENABLED", "false") === "true",

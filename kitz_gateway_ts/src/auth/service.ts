@@ -127,42 +127,31 @@ export async function forgotPassword(
 }
 
 export async function resetPasswordWithToken(
-  token: string,
+  accessToken: string,
   newPassword: string
-): Promise<{ username: string; role: string }> {
+): Promise<{ email: string }> {
   if (newPassword.length < 8) throw new Error("Password must be at least 8 characters");
 
+  const { createClient } = await import("@supabase/supabase-js");
   const db = getSupabase();
 
-  // Find valid token
-  const { data: resetToken } = await db
-    .from("password_reset_tokens")
-    .select("user_id, expires_at, used")
-    .eq("token", token)
-    .single();
+  // Create a client authenticated with the user's access token
+  const userClient = createClient(
+    (db as unknown as { supabaseUrl: string }).supabaseUrl || process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+    { global: { headers: { Authorization: `Bearer ${accessToken}` } } }
+  );
 
-  if (!resetToken) throw new Error("Invalid or expired reset link");
-  if (resetToken.used) throw new Error("This reset link has already been used");
-  if (new Date(resetToken.expires_at) < new Date()) throw new Error("This reset link has expired");
+  // Use admin API to decode the JWT and get the user ID
+  const { data: userData, error: userError } = await db.auth.getUser(accessToken);
+  if (userError || !userData.user) throw new Error("Invalid or expired reset link");
 
-  // Get user
-  const { data: user } = await db
-    .from("users")
-    .select("id, username, role")
-    .eq("id", resetToken.user_id)
-    .single();
+  // Update password via admin API
+  const { error } = await db.auth.admin.updateUserById(userData.user.id, {
+    password: newPassword,
+  });
 
-  if (!user) throw new Error("User not found");
+  if (error) throw new Error("Failed to update password: " + error.message);
 
-  // Update password
-  const hash = await bcrypt.hash(newPassword, SALT_ROUNDS);
-  await db.from("users").update({ password_hash: hash }).eq("id", user.id);
-
-  // Mark token as used
-  await db.from("password_reset_tokens").update({ used: true }).eq("token", token);
-
-  // Invalidate all sessions
-  await db.from("sessions").delete().eq("user_id", user.id);
-
-  return { username: user.username, role: user.role };
+  return { email: userData.user.email ?? "" };
 }
