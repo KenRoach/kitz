@@ -1,10 +1,6 @@
-/** Authentication service — bcrypt hashing, session tokens, password reset. */
+/** Authentication service — Supabase Auth based. */
 
-import { randomBytes } from "node:crypto";
-import bcrypt from "bcrypt";
 import { getSupabase } from "../db/client.js";
-
-const SALT_ROUNDS = 10;
 
 export interface AuthUser {
   id: string;
@@ -13,98 +9,101 @@ export interface AuthUser {
 }
 
 export async function initDefaultAdmin(): Promise<void> {
-  const db = getSupabase();
-  const { count } = await db.from("users").select("*", { count: "exact", head: true });
-  if (count && count > 0) return;
-
-  const hash = await bcrypt.hash("admin", SALT_ROUNDS);
-  await db.from("users").insert({ username: "admin", password_hash: hash, role: "admin" });
+  // No-op: admin users are managed via Supabase Auth
 }
 
-export async function login(username: string, password: string): Promise<{ token: string; username: string; role: string }> {
+export async function login(
+  email: string,
+  password: string
+): Promise<{ token: string; username: string; role: string }> {
   const db = getSupabase();
-  const { data: user, error } = await db
-    .from("users")
-    .select("id, username, password_hash, role")
-    .eq("username", username)
+  const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+  if (error || !data.session) throw new Error("Invalid credentials");
+
+  // Look up role from core_user
+  const { data: coreUser } = await db
+    .from("core_user")
+    .select("role, full_name")
+    .eq("id", data.user.id)
     .single();
 
-  if (error || !user) throw new Error("Invalid credentials");
-
-  const valid = await bcrypt.compare(password, user.password_hash);
-  if (!valid) throw new Error("Invalid credentials");
-
-  const token = randomBytes(32).toString("hex");
-  await db.from("sessions").insert({ token, user_id: user.id });
-
-  return { token, username: user.username, role: user.role };
+  return {
+    token: data.session.access_token,
+    username: coreUser?.full_name || data.user.email || email,
+    role: coreUser?.role || "member",
+  };
 }
 
 export async function validateToken(token: string): Promise<AuthUser | null> {
   const db = getSupabase();
-  const { data: session } = await db
-    .from("sessions")
-    .select("user_id")
-    .eq("token", token)
+  const { data, error } = await db.auth.getUser(token);
+
+  if (error || !data.user) return null;
+
+  const { data: coreUser } = await db
+    .from("core_user")
+    .select("role, full_name")
+    .eq("id", data.user.id)
     .single();
 
-  if (!session) return null;
-
-  const { data: user } = await db
-    .from("users")
-    .select("id, username, role")
-    .eq("id", session.user_id)
-    .single();
-
-  return user ?? null;
+  return {
+    id: data.user.id,
+    username: coreUser?.full_name || data.user.email || "",
+    role: coreUser?.role || "member",
+  };
 }
 
 export async function registerUser(
-  username: string,
+  email: string,
   password: string,
-  role = "user"
+  role = "member"
 ): Promise<{ username: string; role: string }> {
-  if (username.length < 3) throw new Error("Username must be at least 3 characters");
   if (password.length < 8) throw new Error("Password must be at least 8 characters");
 
   const db = getSupabase();
 
-  const { data: existing } = await db.from("users").select("id").eq("username", username).single();
-  if (existing) throw new Error("Username already taken");
+  // Find a default org for self-registration
+  const { data: orgs } = await db.from("core_org").select("id").limit(1).single();
+  if (!orgs) throw new Error("Registration not available");
 
-  const hash = await bcrypt.hash(password, SALT_ROUNDS);
-  const { error } = await db.from("users").insert({ username, password_hash: hash, role });
-  if (error) throw new Error("Registration failed");
+  const { data, error } = await db.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { org_id: orgs.id, role },
+  });
 
-  return { username, role };
+  if (error) throw new Error(error.message);
+
+  return { username: data.user.email || email, role };
 }
 
 export async function resetPassword(
-  username: string,
+  email: string,
   currentPassword: string,
   newPassword: string
 ): Promise<{ username: string; role: string }> {
   if (newPassword.length < 8) throw new Error("New password must be at least 8 characters");
 
   const db = getSupabase();
-  const { data: user } = await db
-    .from("users")
-    .select("id, username, password_hash, role")
-    .eq("username", username)
-    .single();
 
+  // Verify current password
+  const { error: loginErr } = await db.auth.signInWithPassword({ email, password: currentPassword });
+  if (loginErr) throw new Error("Current password is incorrect");
+
+  // Get user
+  const { data: users } = await db.auth.admin.listUsers();
+  const user = users?.users?.find((u) => u.email === email);
   if (!user) throw new Error("User not found");
 
-  const valid = await bcrypt.compare(currentPassword, user.password_hash);
-  if (!valid) throw new Error("Current password is incorrect");
+  // Update password
+  const { error } = await db.auth.admin.updateUserById(user.id, { password: newPassword });
+  if (error) throw new Error("Failed to update password");
 
-  const hash = await bcrypt.hash(newPassword, SALT_ROUNDS);
-  await db.from("users").update({ password_hash: hash }).eq("id", user.id);
+  const { data: coreUser } = await db.from("core_user").select("role").eq("id", user.id).single();
 
-  // Invalidate all sessions
-  await db.from("sessions").delete().eq("user_id", user.id);
-
-  return { username: user.username, role: user.role };
+  return { username: user.email || email, role: coreUser?.role || "member" };
 }
 
 export async function forgotPassword(
@@ -113,17 +112,13 @@ export async function forgotPassword(
 ): Promise<{ sent: boolean }> {
   const db = getSupabase();
 
-  // Use Supabase Auth's built-in password reset (handles email delivery)
-  // Use API service URL directly since it has the updated SPA with hash parsing
-  const redirectTo = `https://api-production-dcc6.up.railway.app/reset-password`;
+  const redirectTo = "https://www.renewflow.io/reset-password";
   const { error } = await db.auth.resetPasswordForEmail(identifier, { redirectTo });
 
   if (error) {
-    // Log but don't expose to client (prevent user enumeration)
     console.error("[auth] resetPasswordForEmail error:", error.message);
   }
 
-  // Always return success to prevent user enumeration
   return { sent: true };
 }
 
@@ -135,11 +130,9 @@ export async function resetPasswordWithToken(
 
   const db = getSupabase();
 
-  // Use admin API to decode the JWT and get the user ID
   const { data: userData, error: userError } = await db.auth.getUser(accessToken);
   if (userError || !userData.user) throw new Error("Invalid or expired reset link");
 
-  // Update password via admin API
   const { error } = await db.auth.admin.updateUserById(userData.user.id, {
     password: newPassword,
   });
