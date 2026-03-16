@@ -1,4 +1,10 @@
-# Kitz Tool Gateway (v0.1)
+# KitZ — Tu Asistente Personal de Negocios
+
+AI-powered business assistant for small business owners in Latin America. Manage sales, expenses, inventory, customers, and reports — all through WhatsApp.
+
+**Live site:** [kenroach.github.io/kitz](https://kenroach.github.io/kitz/)
+
+## Tool Gateway (v0.1)
 
 A lightweight HTTP gateway that exposes a tiny registry of callable tools.
 
