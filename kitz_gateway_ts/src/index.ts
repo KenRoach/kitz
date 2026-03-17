@@ -58,8 +58,11 @@ async function main(): Promise<void> {
     initTranscriber(config.elevenlabsApiKey);
   }
 
-  // Configure SMTP if available
+  // Configure SMTP if available — validate all required fields
   if (config.smtp.host) {
+    if (!config.smtp.user || !config.smtp.pass || !config.smtp.from) {
+      throw new Error("SMTP_HOST is set but SMTP_USER, SMTP_PASS, and SMTP_FROM are all required");
+    }
     configureMail(config.smtp.host, config.smtp.port, config.smtp.user, config.smtp.pass, config.smtp.from);
   }
 
@@ -95,19 +98,43 @@ async function main(): Promise<void> {
   });
 
   // Security headers
-  await app.register(helmet, { contentSecurityPolicy: false });
-
-  // CORS — restrict to configured origins or same-origin
-  const allowedOrigins = process.env.CORS_ORIGIN?.split(",") ?? [];
-  await app.register(cors, {
-    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+  await app.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'", "https:", "data:"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+      },
+    },
   });
 
-  // Rate limiting
+  // CORS — restrict to configured origins, deny all if not set
+  const allowedOrigins = process.env.CORS_ORIGIN?.split(",").map(s => s.trim()).filter(Boolean) ?? [];
+  await app.register(cors, {
+    origin: allowedOrigins.length > 0 ? allowedOrigins : false,
+  });
+
+  // Rate limiting — global
   await app.register(rateLimit, {
     max: 100,
     timeWindow: "1 minute",
     keyGenerator: (req) => req.ip,
+  });
+
+  // Stricter rate limiting on auth routes (brute-force protection)
+  app.addHook("onRoute", (routeOptions) => {
+    if (routeOptions.url.includes("/auth/")) {
+      const existing = routeOptions.config ?? {};
+      routeOptions.config = {
+        ...existing,
+        rateLimit: { max: 10, timeWindow: "15 minutes" },
+      };
+    }
   });
 
   // Auth middleware
