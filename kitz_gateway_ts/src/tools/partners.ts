@@ -3,6 +3,7 @@
 import type { ToolDef } from "./registry.js";
 import { getSupabase } from "../db/client.js";
 import { sendEmail, isConfigured } from "../services/mailer.js";
+import { partnerToken } from "../routes/partner-portal.js";
 
 export const partnerTools: ToolDef[] = [
   {
@@ -69,11 +70,21 @@ export const partnerTools: ToolDef[] = [
           .join("\n");
 
         try {
+          const appUrl = process.env.APP_URL || "https://www.renewflow.io";
+          const token = partnerToken(partnerId);
+          const portalUrl = `${appUrl}/partner/portal?token=${token}`;
+
           await sendEmail(
             partner.email,
             `RenewFlow PO ${orderId} — ${order.client}`,
-            `New purchase order from RenewFlow.\n\nPO: ${orderId}\nClient: ${order.client}\nTotal: $${order.total}\n\nItems:\n${itemLines}\n\nPlease acknowledge receipt.`,
-            undefined
+            `New purchase order from RenewFlow.\n\nPO: ${orderId}\nClient: ${order.client}\nTotal: $${order.total}\n\nItems:\n${itemLines}\n\nView and acknowledge in the Partner Portal:\n${portalUrl}`,
+            `<div style="font-family:'DM Sans',sans-serif;max-width:600px;margin:0 auto;padding:24px;">
+              <h2>New Purchase Order</h2>
+              <p><strong>PO:</strong> ${orderId}<br><strong>Client:</strong> ${order.client}<br><strong>Total:</strong> $${order.total}</p>
+              <p>${itemLines.replace(/\n/g, "<br>")}</p>
+              <p style="margin-top:16px;"><a href="${portalUrl}" style="display:inline-block;padding:10px 20px;background:#0f172a;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">View in Partner Portal</a></p>
+              <p style="margin-top:16px;font-size:12px;color:#9ca3af;">Sent by RenewFlow</p>
+            </div>`
           );
           emailSent = true;
         } catch {

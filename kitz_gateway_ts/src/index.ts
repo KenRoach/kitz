@@ -32,6 +32,7 @@ import { runMigrations } from "./db/migrate.js";
 import { initTranscriber } from "./voice/transcriber.js";
 import { initScheduler } from "./scheduler/index.js";
 import { initWarrantyScheduler } from "./scheduler/warrantyScheduler.js";
+import { partnerPortalRoutes } from "./routes/partner-portal.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -118,6 +119,9 @@ async function main(): Promise<void> {
 
   // Tool routes (health, list, invoke)
   await app.register(async (instance) => toolRoutes(instance, registry));
+
+  // Partner portal (read-only PO view for delivery partners)
+  await app.register(partnerPortalRoutes);
 
   // Messaging routes (WhatsApp, outbound, drafts)
   await app.register(async (instance) =>
