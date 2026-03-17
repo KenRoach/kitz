@@ -8,6 +8,7 @@
  */
 
 import type { FastifyInstance } from "fastify";
+import fp from "fastify-plugin";
 import crypto from "node:crypto";
 import { getSupabase } from "../db/client.js";
 
@@ -29,7 +30,7 @@ async function resolvePartner(token: string): Promise<{ id: string; name: string
   return null;
 }
 
-export async function partnerPortalRoutes(app: FastifyInstance): Promise<void> {
+async function partnerPortalPlugin(app: FastifyInstance): Promise<void> {
   // JSON API: list submissions for this partner
   app.get("/partner/api/submissions", async (request, reply) => {
     const token = (request.query as { token?: string }).token;
@@ -80,6 +81,8 @@ export async function partnerPortalRoutes(app: FastifyInstance): Promise<void> {
     return reply.type("text/html").send(html);
   });
 }
+
+export const partnerPortalRoutes = fp(partnerPortalPlugin, { name: "partner-portal" });
 
 /** Exported so PO emails can include the portal link. */
 export { partnerToken };
