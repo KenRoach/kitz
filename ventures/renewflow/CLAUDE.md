@@ -1,12 +1,13 @@
-# RenewFlow — Venture Frontend
+# Flow — Venture Frontend (RenewFlow Product)
 
-Next.js frontend for the RenewFlow warranty renewal platform.
+Next.js frontend for Flow's RenewFlow warranty renewal platform.
 
 ## What This Is
 
-RenewFlow helps LATAM IT resellers manage warranty renewals. This is the
-Next.js version that connects to the KitZ factory backend. For the standalone
-Vite/React app, see `renewflo/CLAUDE.md` at the repo root.
+Flow is the company (venture). RenewFlow is the product — it helps LATAM IT
+resellers manage warranty renewals. This is the Next.js version that connects
+to the KitZ factory backend. For the standalone Vite/React app, see
+`renewflo/CLAUDE.md` at the repo root.
 
 ## Tech Stack
 

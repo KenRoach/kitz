@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { Shell } from "@/components/layout/shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kitz - AI Business OS",
-  description: "AI Business Operating System for LATAM SMBs",
+  title: "KitZ — Company Factory OS",
+  description: "AI-native company factory that launches and operates portfolio ventures",
 };
 
 export default function RootLayout({
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Shell>{children}</Shell>
+      </body>
     </html>
   );
 }

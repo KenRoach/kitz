@@ -37,7 +37,7 @@ kitz/
 | Venture | Slug | Description |
 |---------|------|-------------|
 | KitZ | `kitz` | The factory itself — admin, venture management, analytics |
-| RenewFlow | `renewflow` | AI warranty renewal platform for LATAM IT channel partners |
+| Flow | `renewflow` | AI warranty renewal platform for LATAM IT channel partners (product: RenewFlow) |
 
 ## Tech Stack
 
