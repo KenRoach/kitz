@@ -135,9 +135,12 @@ async function main(): Promise<void> {
       wildcard: false,
     });
 
-    // SPA fallback — serve index.html for unmatched routes
-    app.setNotFoundHandler(async (_request, reply) => {
-      return reply.sendFile("index.html", root);
+    // SPA fallback — serve index.html for unmatched GET requests (not API calls)
+    app.setNotFoundHandler(async (request, reply) => {
+      if (request.method === "GET" && !request.url.startsWith("/v0.1/")) {
+        return reply.sendFile("index.html", root);
+      }
+      return reply.status(404).send({ error: "Not found" });
     });
   }
 
