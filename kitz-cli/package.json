@@ -1,0 +1,32 @@
+{
+  "name": "kitz-cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "KitZ Brain CLI — AI business OS with Google Workspace integration",
+  "type": "module",
+  "bin": {
+    "kitz": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.4.0",
+    "googleapis": "^144.0.0",
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
