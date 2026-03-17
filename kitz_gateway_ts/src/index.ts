@@ -142,7 +142,7 @@ async function main(): Promise<void> {
 
     // SPA fallback — serve index.html for unmatched GET requests (not API calls)
     app.setNotFoundHandler(async (request, reply) => {
-      if (request.method === "GET" && !request.url.startsWith("/v0.1/")) {
+      if (request.method === "GET" && !request.url.startsWith("/v0.1/") && !request.url.startsWith("/partner/") && !request.url.startsWith("/health")) {
         return reply.sendFile("index.html", root);
       }
       return reply.status(404).send({ error: "Not found" });
