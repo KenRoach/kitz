@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, type FC } from "react";
-import ExcelJS from "exceljs";
+import * as XLSX from "xlsx";
 import { useTheme, MONO, FONT } from "@/theme";
 import { Icon } from "@/components/icons";
 import { Badge, Card } from "@/components/ui";
@@ -26,28 +26,20 @@ export const ImportModule: FC<ImportModuleProps> = ({ onImport }) => {
     setError("");
     setFileName(file.name);
     const reader = new FileReader();
-    reader.onload = async (e) => {
+    reader.onload = (e) => {
       try {
-        const buffer = e.target?.result as ArrayBuffer;
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(buffer);
-        const sheet = workbook.worksheets[0];
-        if (!sheet || sheet.rowCount < 2) {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]!]!;
+        const json = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, defval: "" });
+        if (json.length < 2) {
           setError("File needs at least a header row and one data row.");
           return;
         }
-
-        const json: unknown[][] = [];
-        sheet.eachRow((row) => {
-          json.push(row.values as unknown[]);
-        });
-
-        // ExcelJS row.values is 1-indexed (index 0 is undefined), so shift
-        const rows = json.map((r) => r.slice(1));
-        const hdrs = (rows[0] ?? []).map((h) => String(h ?? "").trim());
-        const dataRows = rows.slice(1).filter((r) => r.some((c) => c !== "" && c != null));
+        const hdrs = (json[0] as unknown[]).map((h) => String(h).trim());
+        const rows = json.slice(1).filter((r) => (r as unknown[]).some((c) => c !== ""));
         setHeaders(hdrs);
-        setRawData(dataRows);
+        setRawData(rows as unknown[][]);
 
         // Auto-map columns
         const autoMap: ColumnMapping = {};
@@ -75,21 +67,12 @@ export const ImportModule: FC<ImportModuleProps> = ({ onImport }) => {
     reader.readAsArrayBuffer(file);
   }, []);
 
-  const downloadTemplate = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const ws = workbook.addWorksheet("Assets");
-    SAMPLE_TEMPLATE_ROWS.forEach((row) => ws.addRow(row));
-    ws.columns = (SAMPLE_TEMPLATE_ROWS[0] ?? []).map((_, i) => ({
-      width: i === 2 ? 24 : i === 3 ? 20 : 16,
-    }));
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "RenewFlow_Asset_Template.xlsx";
-    a.click();
-    URL.revokeObjectURL(url);
+  const downloadTemplate = () => {
+    const ws = XLSX.utils.aoa_to_sheet(SAMPLE_TEMPLATE_ROWS);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Assets");
+    ws["!cols"] = SAMPLE_TEMPLATE_ROWS[0]!.map((_, i) => ({ wch: i === 2 ? 24 : i === 3 ? 20 : 16 }));
+    XLSX.writeFile(wb, "RenewFlow_Asset_Template.xlsx");
   };
 
   const processMappedData = () => {
