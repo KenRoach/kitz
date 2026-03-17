@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(pnpm:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(turbo:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Read",
+      "Glob",
+      "Grep"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; case \"$f\" in */kitz_gateway_ts/*) cd /home/user/kitz/kitz_gateway_ts && npx tsc --noEmit 2>&1 | tail -20 ;; */renewflo/*) cd /home/user/kitz/renewflo && npx tsc --noEmit 2>&1 | tail -20 ;; */packages/*|*/services/*) cd /home/user/kitz && pnpm typecheck 2>&1 | tail -20 ;; esac; } 2>/dev/null || true",
+            "timeout": 60,
+            "statusMessage": "Type-checking changed area..."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command // empty' | { read -r cmd; case \"$cmd\" in *'git commit'*) cd /home/user/kitz; changed=$(git diff --cached --name-only 2>/dev/null); if echo \"$changed\" | grep -q '^kitz_gateway_ts/'; then echo '--- Running gateway tests ---'; cd /home/user/kitz/kitz_gateway_ts && npx vitest run 2>&1 | tail -20; fi; if echo \"$changed\" | grep -q '^renewflo/'; then echo '--- Running RenewFlow tests ---'; cd /home/user/kitz/renewflo && npm test 2>&1 | tail -20; fi ;; esac; } 2>/dev/null || true",
+            "timeout": 120,
+            "statusMessage": "Running pre-commit tests..."
+          }
+        ]
+      }
+    ]
+  }
+}
