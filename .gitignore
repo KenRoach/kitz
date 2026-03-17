@@ -1,6 +1,16 @@
+# Python
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Node
+node_modules/
+dist/
+.next/
+.turbo/
+*.tsbuildinfo
+
+# Data
 data/
 *.db
 
@@ -10,3 +20,11 @@ data/
 .env.production
 */.env
 */.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

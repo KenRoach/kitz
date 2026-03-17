@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Venture {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String        @default("")
+  status      VentureStatus @default(active)
+  config      Json          @default("{}")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  agents       Agent[]
+  skills       Skill[]
+  pipelines    Pipeline[]
+  contacts     Contact[]
+  deals        Deal[]
+  interactions Interaction[]
+  agentLogs    AgentLog[]
+
+  @@map("ventures")
+}
+
+enum VentureStatus {
+  active
+  paused
+  archived
+}
+
+model Agent {
+  id          String  @id @default(cuid())
+  ventureId   String  @map("venture_id")
+  name        String
+  description String  @default("")
+  skills      Json    @default("[]")
+  isActive    Boolean @default(true) @map("is_active")
+  config      Json    @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  venture Venture @relation(fields: [ventureId], references: [id])
+
+  @@map("agents")
+}
+
+model Skill {
+  id             String  @id @default(cuid())
+  ventureId      String  @map("venture_id")
+  name           String
+  slug           String
+  description    String  @default("")
+  promptTemplate String  @default("") @map("prompt_template")
+  inputSchema    Json    @default("{}") @map("input_schema")
+  outputSchema   Json    @default("{}") @map("output_schema")
+  isActive       Boolean @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  venture Venture @relation(fields: [ventureId], references: [id])
+
+  @@unique([ventureId, slug])
+  @@map("skills")
+}
+
+model Pipeline {
+  id          String         @id @default(cuid())
+  ventureId   String         @map("venture_id")
+  name        String
+  description String         @default("")
+  status      PipelineStatus @default(draft)
+  steps       Json           @default("[]")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  venture Venture        @relation(fields: [ventureId], references: [id])
+  runs    PipelineRun[]
+
+  @@map("pipelines")
+}
+
+enum PipelineStatus {
+  draft
+  active
+  paused
+  completed
+  failed
+}
+
+model PipelineRun {
+  id         String   @id @default(cuid())
+  pipelineId String   @map("pipeline_id")
+  status     String   @default("pending")
+  context    Json     @default("{}")
+  result     Json?
+  startedAt  DateTime? @map("started_at")
+  finishedAt DateTime? @map("finished_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id])
+
+  @@map("pipeline_runs")
+}
+
+model Contact {
+  id        String  @id @default(cuid())
+  ventureId String  @map("venture_id")
+  email     String?
+  phone     String?
+  firstName String  @map("first_name")
+  lastName  String  @map("last_name")
+  company   String?
+  language  String  @default("es")
+  country   String?
+  metadata  Json    @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  venture      Venture       @relation(fields: [ventureId], references: [id])
+  deals        Deal[]
+  interactions Interaction[]
+
+  @@unique([ventureId, email])
+  @@unique([ventureId, phone])
+  @@map("contacts")
+}
+
+model Deal {
+  id        String    @id @default(cuid())
+  ventureId String    @map("venture_id")
+  contactId String    @map("contact_id")
+  title     String
+  stage     DealStage @default(identified)
+  value     Float     @default(0)
+  currency  String    @default("USD")
+  metadata  Json      @default("{}")
+  closedAt  DateTime? @map("closed_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  venture Venture @relation(fields: [ventureId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
+
+  @@map("deals")
+}
+
+enum DealStage {
+  identified
+  contacted
+  qualified
+  quoted
+  negotiation
+  closed_won
+  closed_lost
+}
+
+model Interaction {
+  id        String   @id @default(cuid())
+  ventureId String   @map("venture_id")
+  contactId String   @map("contact_id")
+  channel   String
+  direction String
+  content   String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  venture Venture @relation(fields: [ventureId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
+
+  @@map("interactions")
+}
+
+model AgentLog {
+  id        String   @id @default(cuid())
+  ventureId String   @map("venture_id")
+  skill     String
+  inputHash String   @map("input_hash")
+  input     Json
+  output    Json
+  latencyMs Int      @map("latency_ms")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  venture Venture @relation(fields: [ventureId], references: [id])
+
+  @@index([ventureId, skill])
+  @@map("agent_logs")
+}
