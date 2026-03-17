@@ -546,6 +546,137 @@
 .term-body .dim { color: var(--text-mid); }
 .term-body .ok { color: var(--accent); }
 
+/* =========================================================
+   Benefits Grid
+========================================================= */
+.benefits { padding: 6rem 5%; }
+.benefits-inner { max-width: 1100px; margin: 0 auto; }
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.benefit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.benefit-card:hover {
+  border-color: rgba(0,212,170,0.2);
+  transform: translateY(-2px);
+}
+.benefit-icon { font-size: 1.8rem; display: block; margin-bottom: 1rem; }
+.benefit-card h3 { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.benefit-card p { color: var(--text-mid); font-size: 0.9rem; line-height: 1.5; }
+
+/* =========================================================
+   Get Started CTA
+========================================================= */
+.cta-section {
+  padding: 6rem 5%;
+  background: var(--bg-card);
+  position: relative;
+}
+.cta-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0,184,148,0.04) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cta-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.cta-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.cta-card {
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.cta-card-icon { font-size: 2rem; margin-bottom: 1rem; }
+.cta-card h3 { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.cta-card p { color: var(--text-mid); font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5; }
+.cta-card .btn-green,
+.cta-card .btn-outline {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cta-card code {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+/* =========================================================
+   Footer
+========================================================= */
+footer {
+  padding: 3rem 5%;
+  border-top: 1px solid var(--border);
+  background: var(--bg-deep);
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.footer-brand .logo { margin-bottom: 0.5rem; }
+.footer-tagline { font-size: 0.85rem; color: var(--text-mid); }
+.footer-links-group {
+  display: flex;
+  gap: 3rem;
+}
+.footer-col h4 {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 0.8rem;
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.4rem; }
+.footer-col a {
+  font-size: 0.85rem;
+  color: var(--text-mid);
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-right { text-align: right; }
+.footer-copy {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-mid);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
     /* =========================================================
        Mobile Responsive
     ========================================================= */
@@ -586,6 +717,11 @@
       .dash-window { max-width: 100%; }
       .term-window { max-width: 100%; }
       .dash-metrics { grid-template-columns: repeat(3, 1fr); }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .cta-cards { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; text-align: center; }
+      .footer-links-group { justify-content: center; }
+      .footer-right { text-align: center; }
     }
 
     @media (max-width: 480px) {
@@ -803,6 +939,198 @@ Profit:   $260.00  <span class="ok">▲ 23%</span>
       </div>
     </div>
   </section>
+
+  <!-- Benefits Grid -->
+  <section class="benefits" id="features" style="background: var(--bg-main);">
+    <div class="benefits-inner">
+      <div class="section-label">// why kitz</div>
+      <h2 class="section-title">
+        <span class="en">Built for how you actually work</span>
+        <span class="es">Hecho para como realmente trabajas</span>
+        <span class="pt">Feito para como você realmente trabalha</span>
+      </h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <span class="benefit-icon">🤖</span>
+          <h3><span class="en">Multi-LLM</span><span class="es">Multi-LLM</span><span class="pt">Multi-LLM</span></h3>
+          <p>
+            <span class="en">Powered by Anthropic, OpenAI, and Google AI. Kitz picks the best model for each task.</span>
+            <span class="es">Potenciado por Anthropic, OpenAI y Google AI. Kitz elige el mejor modelo para cada tarea.</span>
+            <span class="pt">Alimentado por Anthropic, OpenAI e Google AI. Kitz escolhe o melhor modelo para cada tarefa.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🌎</span>
+          <h3><span class="en">Multilingual</span><span class="es">Multilingüe</span><span class="pt">Multilíngue</span></h3>
+          <p>
+            <span class="en">Spanish, English, Portuguese. Kitz speaks your language.</span>
+            <span class="es">Español, inglés, portugués. Kitz habla tu idioma.</span>
+            <span class="pt">Espanhol, inglês, português. Kitz fala seu idioma.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">📱</span>
+          <h3><span class="en">WhatsApp-native</span><span class="es">Nativo de WhatsApp</span><span class="pt">Nativo do WhatsApp</span></h3>
+          <p>
+            <span class="en">No app to download. Works where your customers already are.</span>
+            <span class="es">Sin app que descargar. Funciona donde tus clientes ya están.</span>
+            <span class="pt">Sem app para baixar. Funciona onde seus clientes já estão.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🔒</span>
+          <h3><span class="en">Your data, your control</span><span class="es">Tus datos, tu control</span><span class="pt">Seus dados, seu controle</span></h3>
+          <p>
+            <span class="en">Self-host or cloud. Open source. Nothing leaves without your say.</span>
+            <span class="es">Auto-alojado o en la nube. Open source. Nada sale sin tu permiso.</span>
+            <span class="pt">Auto-hospedado ou nuvem. Open source. Nada sai sem sua permissão.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">⚡</span>
+          <h3><span class="en">Real-time insights</span><span class="es">Insights en tiempo real</span><span class="pt">Insights em tempo real</span></h3>
+          <p>
+            <span class="en">AI-generated weekly reports, daily summaries, inventory alerts.</span>
+            <span class="es">Reportes semanales generados por IA, resúmenes diarios, alertas de inventario.</span>
+            <span class="pt">Relatórios semanais gerados por IA, resumos diários, alertas de estoque.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🔌</span>
+          <h3><span class="en">Open source</span><span class="es">Código abierto</span><span class="pt">Código aberto</span></h3>
+          <p>
+            <span class="en">MIT licensed. Extend it, fork it, make it yours.</span>
+            <span class="es">Licencia MIT. Extiéndelo, bifúrcalo, hazlo tuyo.</span>
+            <span class="pt">Licença MIT. Estenda, faça fork, torne-o seu.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get Started CTA -->
+  <section class="cta-section" id="get-started">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <h2 class="section-title" style="text-align: center;">
+        <span class="en">Ready to meet your new business assistant?</span>
+        <span class="es">¿Listo para conocer a tu nuevo asistente de negocios?</span>
+        <span class="pt">Pronto para conhecer seu novo assistente de negócios?</span>
+      </h2>
+      <p class="section-body" style="text-align: center; margin: 0 auto 0;">
+        <span class="en">Pick how you want to start.</span>
+        <span class="es">Elige cómo quieres empezar.</span>
+        <span class="pt">Escolha como quer começar.</span>
+      </p>
+      <div class="cta-cards">
+        <div class="cta-card">
+          <div class="cta-card-icon">💬</div>
+          <h3>WhatsApp</h3>
+          <p>
+            <span class="en">Send a message, start in 30 seconds</span>
+            <span class="es">Envía un mensaje, empieza en 30 segundos</span>
+            <span class="pt">Envie uma mensagem, comece em 30 segundos</span>
+          </p>
+          <a class="btn-green" href="https://wa.me/50760001234?text=Hola%20Kitz" target="_blank" rel="noopener">
+            <span class="en">Try on WhatsApp</span>
+            <span class="es">Probar en WhatsApp</span>
+            <span class="pt">Testar no WhatsApp</span>
+          </a>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">🖥️</div>
+          <h3>Workspace</h3>
+          <p>
+            <span class="en">Full dashboard, sign up free</span>
+            <span class="es">Dashboard completo, regístrate gratis</span>
+            <span class="pt">Painel completo, cadastre-se grátis</span>
+          </p>
+          <a class="btn-outline" href="https://workspace.kitz.services" target="_blank" rel="noopener">
+            <span class="en">Open Workspace</span>
+            <span class="es">Abrir Workspace</span>
+            <span class="pt">Abrir Workspace</span>
+          </a>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">⌨️</div>
+          <h3>Brain</h3>
+          <p><code>npm install -g kitz</code></p>
+          <a class="btn-outline" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">
+            <span class="en">View on GitHub</span>
+            <span class="es">Ver en GitHub</span>
+            <span class="pt">Ver no GitHub</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-badge">K</div>
+          <span>KitZ</span>
+        </div>
+        <p class="footer-tagline">
+          <span class="en">AI business assistant — open source.</span>
+          <span class="es">Asistente de negocios con IA — código abierto.</span>
+          <span class="pt">Assistente de negócios com IA — código aberto.</span>
+        </p>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="https://wa.me/50760001234?text=Hola%20Kitz" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="https://workspace.kitz.services" target="_blank" rel="noopener">Workspace</a></li>
+            <li><a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://github.com/KenRoach/kitz/issues" target="_blank" rel="noopener">Issues</a></li>
+            <li><a href="https://kenroach.github.io/kitz/" target="_blank" rel="noopener">Academy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-right">
+        <div class="lang-toggle" aria-label="Language">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="pt">PT</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 KitZ — Open Source · MIT License</div>
+  </footer>
+
+  <script>
+  // Language toggle — sync nav + footer toggles
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      document.documentElement.setAttribute('data-lang', lang);
+      document.documentElement.setAttribute('lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.lang-btn[data-lang="' + lang + '"]').forEach(b => b.classList.add('active'));
+    });
+  });
+
+  // Hamburger menu
+  document.querySelector('.hamburger').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('show');
+  });
+
+  // Close menu on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.remove('show');
+    });
+  });
+  </script>
 
 </body>
 </html>

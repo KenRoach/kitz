@@ -1,698 +1,1136 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en" data-lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KitZ — Tu Asistente Personal de Negocios</title>
-<meta name="description" content="Asistente de IA por WhatsApp para dueños de pequeños negocios en Latinoamérica. Ventas, gastos, inventario, clientes y reportes — todo desde tu chat.">
-<meta name="keywords" content="KitZ, asistente, negocios, WhatsApp, IA, LATAM, ventas, inventario, gastos, clientes">
-<meta name="author" content="KitZ">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://kenroach.github.io/kitz/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="KitZ — Tu Asistente Personal de Negocios">
-<meta property="og:description" content="Asistente de IA por WhatsApp para dueños de pequeños negocios en Latinoamérica.">
-<meta property="og:url" content="https://kenroach.github.io/kitz/">
-<meta property="og:site_name" content="KitZ">
-<meta property="og:locale" content="es_419">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="KitZ — Tu Asistente Personal de Negocios">
-<meta name="twitter:description" content="Asistente de IA por WhatsApp para dueños de pequeños negocios en Latinoamérica.">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg-deep: #06080c;
-  --bg-main: #0b0e14;
-  --bg-card: #111620;
-  --bg-card-alt: #151b27;
-  --bg-elevated: #1a2233;
-  --lime: #b5ff3b;
-  --lime-dim: rgba(181,255,59,0.12);
-  --lime-glow: rgba(181,255,59,0.25);
-  --cyan: #22d3ee;
-  --orange: #ff7a3d;
-  --magenta: #f43f8e;
-  --blue: #3b82f6;
-  --gold: #fbbf24;
-  --text-white: #eef1f6;
-  --text-gray: #8892a4;
-  --text-muted: #4a5568;
-  --border-dim: rgba(255,255,255,0.06);
-  --border-med: rgba(255,255,255,0.1);
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg-deep);
-  color: var(--text-white);
-  font-family: 'DM Sans', sans-serif;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-}
-::selection { background: var(--lime); color: var(--bg-deep); }
-a { color: inherit; text-decoration: none; }
-.mono { font-family: 'IBM Plex Mono', monospace; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KitZ — Your AI Business Assistant</title>
+  <meta name="description" content="AI business assistant for small business owners. Manage sales, expenses, inventory, and clients from WhatsApp, your browser, or your terminal." />
 
-/* ── NAV ── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 1rem 5%;
-  background: rgba(6,8,12,0.8);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border-dim);
-}
-.logo {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900; font-size: 1.5rem;
-  letter-spacing: -0.03em;
-  display: flex; align-items: center; gap: 0.4rem;
-}
-.logo em { font-style: normal; color: var(--lime); }
-.nav-links { display: flex; gap: 2rem; list-style: none; }
-.nav-links a {
-  font-size: 0.78rem; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--text-gray); transition: color 0.3s;
-}
-.nav-links a:hover { color: var(--lime); }
-.btn-lime {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700; font-size: 0.82rem;
-  padding: 0.65rem 1.6rem;
-  background: var(--lime); color: var(--bg-deep);
-  border: none; cursor: pointer;
-  letter-spacing: 0.04em;
-  transition: all 0.3s;
-  display: inline-block;
-}
-.btn-lime:hover {
-  box-shadow: 0 0 30px var(--lime-glow);
-  transform: translateY(-1px);
-}
-.btn-outline {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700; font-size: 0.82rem;
-  padding: 0.6rem 1.5rem;
-  background: transparent;
-  color: var(--text-white);
-  border: 1px solid var(--border-med);
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  transition: all 0.3s;
-  display: inline-block;
-}
-.btn-outline:hover {
-  border-color: var(--lime);
-  color: var(--lime);
-}
-.hamburger {
-  display: none;
-  background: none; border: none; cursor: pointer;
-  width: 28px; height: 20px; position: relative;
-}
-.hamburger span {
-  display: block; width: 100%; height: 2px;
-  background: var(--text-white);
-  position: absolute; left: 0;
-  transition: all 0.3s;
-}
-.hamburger span:nth-child(1) { top: 0; }
-.hamburger span:nth-child(2) { top: 9px; }
-.hamburger span:nth-child(3) { top: 18px; }
+  <!-- Open Graph -->
+  <meta property="og:title" content="KitZ — Your AI Business Assistant" />
+  <meta property="og:description" content="AI business assistant for small business owners. Manage sales, expenses, inventory, and clients from WhatsApp, your browser, or your terminal." />
+  <meta property="og:url" content="https://kenroach.github.io/kitz/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="KitZ" />
 
-/* ── SECTIONS ── */
-section { padding: 6rem 5%; }
-.section-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.7rem; font-weight: 600;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--lime);
-  margin-bottom: 1rem;
-}
-.section-title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.8rem);
-  line-height: 1.15;
-  margin-bottom: 1rem;
-}
-.section-sub {
-  color: var(--text-gray);
-  font-size: 1.05rem;
-  max-width: 600px;
-  margin-bottom: 3rem;
-}
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
 
-/* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding-top: 5rem;
-  position: relative;
-}
-.hero-inner { max-width: 720px; }
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.75rem; font-weight: 500;
-  color: var(--lime);
-  background: var(--lime-dim);
-  padding: 0.4rem 1rem;
-  margin-bottom: 2rem;
-  border: 1px solid rgba(181,255,59,0.15);
-}
-.hero h1 {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.5rem;
-}
-.hero h1 .grad {
-  background: linear-gradient(135deg, var(--lime), var(--cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero p {
-  color: var(--text-gray);
-  font-size: 1.15rem;
-  max-width: 520px;
-  margin: 0 auto 2.5rem;
-}
-.hero-buttons {
-  display: flex; gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.hero-glow {
-  position: absolute;
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(181,255,59,0.06) 0%, transparent 70%);
-  top: 20%; left: 50%; transform: translateX(-50%);
-  pointer-events: none;
-}
+  <!-- Favicon: inline SVG data URI — green rounded rect with white "K" -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2300B894'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial%2C sans-serif' font-weight='700' font-size='18' fill='white'%3EK%3C/text%3E%3C/svg%3E" />
 
-/* ── FEATURES ── */
-.features { background: var(--bg-main); }
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-.feature-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  padding: 2rem;
-  transition: border-color 0.3s, transform 0.3s;
-}
-.feature-card:hover {
-  border-color: var(--border-med);
-  transform: translateY(-2px);
-}
-.feature-icon {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  display: block;
-}
-.feature-card h3 {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-.feature-card p {
-  color: var(--text-gray);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
-/* ── CHAT DEMO ── */
-.demo { background: var(--bg-deep); }
-.demo-layout {
+  <style>
+    /* =========================================================
+       CSS Custom Properties
+    ========================================================= */
+    :root {
+      --bg-deep: #0B0F1A;
+      --bg-main: #0F1422;
+      --bg-card: #151B2E;
+      --bg-card-hover: #1A2240;
+      --bg-elevated: #1A1F36;
+      --border: #1E2745;
+      --accent: #00D4AA;
+      --accent-solid: #00B894;
+      --accent-dim: rgba(0,212,170,0.09);
+      --accent-glow: rgba(0,212,170,0.27);
+      --purple: #A78BFA;
+      --purple-dim: rgba(167,139,250,0.09);
+      --blue: #5B8DEF;
+      --danger: #FF4D6A;
+      --warn: #FFB020;
+      --text: #E8ECF4;
+      --text-mid: #8B95AD;
+      --text-dim: #4A5578;
+      --font: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --radius: 8px;
+      --radius-card: 12px;
+      --radius-lg: 16px;
+    }
+
+    /* =========================================================
+       CSS Reset
+    ========================================================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg-deep); color: var(--text); font-family: var(--font); line-height: 1.6; overflow-x: hidden; }
+    ::selection { background: var(--accent); color: var(--bg-deep); }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* =========================================================
+       Language Toggle
+    ========================================================= */
+    [data-lang="en"] .es, [data-lang="en"] .pt { display: none !important; }
+    [data-lang="es"] .en, [data-lang="es"] .pt { display: none !important; }
+    [data-lang="pt"] .en, [data-lang="pt"] .es { display: none !important; }
+
+    /* =========================================================
+       Skip Link
+    ========================================================= */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 0;
+      background: var(--accent);
+      color: var(--bg-deep);
+      padding: 0.5rem 1rem;
+      z-index: 10000;
+      font-weight: 600;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* =========================================================
+       Navigation
+    ========================================================= */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: rgba(11,15,26,0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .logo-badge {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #00B894, #00A88A);
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo span {
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-mid);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .lang-toggle {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--text-mid);
+      font-family: var(--font);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .btn-green {
+      background: var(--accent-solid);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-green:hover {
+      background: #00A88A;
+      box-shadow: 0 0 20px rgba(0,184,148,0.25);
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 28px;
+      height: 20px;
+      position: relative;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--text);
+      position: absolute;
+      left: 0;
+      transition: all 0.2s;
+    }
+
+    .hamburger span:nth-child(1) { top: 0; }
+    .hamburger span:nth-child(2) { top: 9px; }
+    .hamburger span:nth-child(3) { top: 18px; }
+
+    /* =========================================================
+       Hero Section
+    ========================================================= */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 5% 4rem;
+      position: relative;
+      background: linear-gradient(135deg, #0B0F1A 0%, #1A1F36 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0,184,148,0.06) 0%, transparent 70%);
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 680px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 0.4rem 1.2rem;
+      border: 1px solid rgba(0,212,170,0.15);
+      border-radius: var(--radius);
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-weight: 700;
+      font-size: clamp(2.5rem, 7vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-mid);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.6rem 1.4rem;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* =========================================================
+   Surface Sections
+========================================================= */
+.surface { padding: 6rem 5%; }
+.surface-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
 }
+.surface-layout.flip { direction: rtl; }
+.surface-layout.flip > * { direction: ltr; }
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+.section-body {
+  color: var(--text-mid);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.link-arrow {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.link-arrow:hover { opacity: 0.8; }
+
+/* =========================================================
+   WhatsApp Chat Mockup
+========================================================= */
 .chat-window {
   background: var(--bg-card);
-  border: 1px solid var(--border-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
   overflow: hidden;
   max-width: 380px;
 }
 .chat-header {
-  background: var(--bg-elevated);
-  padding: 1rem 1.2rem;
-  display: flex; align-items: center; gap: 0.75rem;
-  border-bottom: 1px solid var(--border-dim);
+  background: var(--bg-card-hover);
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 1px solid var(--border);
 }
 .chat-avatar {
-  width: 36px; height: 36px;
-  background: var(--lime);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900; font-size: 0.85rem;
-  color: var(--bg-deep);
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #00B894, #00A88A);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: white;
+  flex-shrink: 0;
 }
-.chat-name {
-  font-weight: 700; font-size: 0.9rem;
-}
-.chat-status {
-  font-size: 0.72rem; color: var(--lime);
-}
+.chat-name { font-weight: 700; font-size: 0.85rem; }
+.chat-status { font-size: 0.7rem; color: var(--accent); }
 .chat-body {
-  padding: 1.2rem;
-  display: flex; flex-direction: column; gap: 0.8rem;
-  min-height: 300px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 .msg {
   max-width: 85%;
-  padding: 0.7rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.82rem;
   line-height: 1.45;
+  border-radius: var(--radius);
 }
 .msg-user {
-  background: #1a3a1a;
+  background: rgba(0,184,148,0.1);
+  border: 1px solid rgba(0,184,148,0.15);
   align-self: flex-end;
-  border: 1px solid rgba(181,255,59,0.1);
 }
 .msg-bot {
-  background: var(--bg-elevated);
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border);
   align-self: flex-start;
-  border: 1px solid var(--border-dim);
 }
-.msg-bot strong { color: var(--lime); }
+.msg-bot strong { color: var(--accent); }
 .msg-time {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  margin-top: 0.3rem;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
   text-align: right;
 }
 
-/* ── HOW IT WORKS ── */
-.how { background: var(--bg-main); }
-.steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
-  counter-reset: step;
-}
-.step {
-  position: relative;
-  padding: 2rem;
+/* =========================================================
+   Workspace Dashboard Mockup
+========================================================= */
+.dash-window {
   background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  counter-increment: step;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  max-width: 480px;
+  display: flex;
 }
-.step::before {
-  content: counter(step, decimal-leading-zero);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  font-size: 2.5rem;
-  color: rgba(181,255,59,0.12);
-  line-height: 1;
-  display: block;
-  margin-bottom: 1rem;
+.dash-sidebar {
+  width: 48px;
+  background: var(--bg-main);
+  border-right: 1px solid var(--border);
+  padding: 0.8rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
 }
-.step h3 {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
+.dash-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+.dash-dot.active {
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(0,212,170,0.4);
+}
+.dash-main { padding: 1rem; flex: 1; }
+.dash-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-dim);
+  margin-bottom: 0.8rem;
+}
+.dash-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.metric-card {
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem;
+}
+.metric-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
   margin-bottom: 0.5rem;
 }
-.step p {
-  color: var(--text-gray);
-  font-size: 0.9rem;
+.metric-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.25rem;
 }
+.metric-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-mid);
+}
+.metric-trend {
+  font-size: 0.6rem;
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+.metric-trend.up { color: var(--accent); }
+.metric-trend.down { color: var(--accent); }
 
-/* ── TECH ── */
-.tech { background: var(--bg-deep); }
-.tech-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+/* =========================================================
+   Terminal Mockup
+========================================================= */
+.term-window {
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  max-width: 420px;
 }
-.tech-badge {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
+.term-bar {
   background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  color: var(--text-gray);
-  display: inline-flex;
+  padding: 0.6rem 1rem;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: border-color 0.3s;
+  border-bottom: 1px solid var(--border);
 }
-.tech-badge:hover { border-color: var(--border-med); }
-.tech-dot {
-  width: 6px; height: 6px;
+.term-dot {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  display: inline-block;
 }
+.term-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+.term-body {
+  padding: 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre;
+}
+.term-body .cmd { color: var(--accent); }
+.term-body .dim { color: var(--text-mid); }
+.term-body .ok { color: var(--accent); }
 
-/* ── DEVELOPER ── */
-.dev { background: var(--bg-main); }
-.code-block {
+/* =========================================================
+   Benefits Grid
+========================================================= */
+.benefits { padding: 6rem 5%; }
+.benefits-inner { max-width: 1100px; margin: 0 auto; }
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.benefit-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  padding: 1.5rem 2rem;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.82rem;
-  line-height: 1.8;
-  overflow-x: auto;
-  max-width: 640px;
-  color: var(--text-gray);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  transition: border-color 0.2s, transform 0.2s;
 }
-.code-block .comment { color: var(--text-muted); }
-.code-block .cmd { color: var(--lime); }
-.code-block .flag { color: var(--cyan); }
+.benefit-card:hover {
+  border-color: rgba(0,212,170,0.2);
+  transform: translateY(-2px);
+}
+.benefit-icon { font-size: 1.8rem; display: block; margin-bottom: 1rem; }
+.benefit-card h3 { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.benefit-card p { color: var(--text-mid); font-size: 0.9rem; line-height: 1.5; }
 
-/* ── FOOTER ── */
+/* =========================================================
+   Get Started CTA
+========================================================= */
+.cta-section {
+  padding: 6rem 5%;
+  background: var(--bg-card);
+  position: relative;
+}
+.cta-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0,184,148,0.04) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cta-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.cta-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.cta-card {
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.cta-card-icon { font-size: 2rem; margin-bottom: 1rem; }
+.cta-card h3 { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.cta-card p { color: var(--text-mid); font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5; }
+.cta-card .btn-green,
+.cta-card .btn-outline {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cta-card code {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+/* =========================================================
+   Footer
+========================================================= */
 footer {
   padding: 3rem 5%;
-  border-top: 1px solid var(--border-dim);
+  border-top: 1px solid var(--border);
+  background: var(--bg-deep);
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.footer-brand .logo { margin-bottom: 0.5rem; }
+.footer-tagline { font-size: 0.85rem; color: var(--text-mid); }
+.footer-links-group {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 3rem;
 }
-footer .logo { font-size: 1.2rem; }
-.footer-links {
-  display: flex; gap: 1.5rem; list-style: none;
+.footer-col h4 {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 0.8rem;
 }
-.footer-links a {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  transition: color 0.3s;
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.4rem; }
+.footer-col a {
+  font-size: 0.85rem;
+  color: var(--text-mid);
+  transition: color 0.2s;
 }
-.footer-links a:hover { color: var(--lime); }
+.footer-col a:hover { color: var(--accent); }
+.footer-right { text-align: right; }
 .footer-copy {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  width: 100%;
   text-align: center;
-  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-mid);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* ── MASCOT ── */
-.mascot-float {
-  animation: mascotFloat 4s ease-in-out infinite;
-}
-@keyframes mascotFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
+    /* =========================================================
+       Mobile Responsive
+    ========================================================= */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.show {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(11,15,26,0.95);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        padding: 1.5rem 5%;
+        border-bottom: 1px solid var(--border);
+        gap: 1rem;
+      }
+      .nav-right .btn-green { display: none; }
+      .hamburger { display: block; }
+      .hero { min-height: auto; padding: 7rem 5% 4rem; }
+      .hero h1 { font-size: clamp(2rem, 9vw, 3rem); }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .hero-buttons .btn-green,
+      .hero-buttons .btn-outline {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .surface-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .surface-layout.flip { direction: ltr; }
+      .chat-window { max-width: 100%; }
+      .dash-window { max-width: 100%; }
+      .term-window { max-width: 100%; }
+      .dash-metrics { grid-template-columns: repeat(3, 1fr); }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .cta-cards { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; text-align: center; }
+      .footer-links-group { justify-content: center; }
+      .footer-right { text-align: center; }
+    }
 
-/* ── MOBILE ── */
-@media (max-width: 768px) {
-  section { padding: 4rem 5%; }
-  nav { padding: 0.8rem 5%; }
-  .nav-links { display: none; }
-  .hamburger { display: block; }
-  .hero { min-height: auto; padding: 7rem 5% 4rem; }
-  .hero h1 { font-size: clamp(2rem, 9vw, 3rem); }
-  .hero p { font-size: 1rem; }
-  .hero-buttons { flex-direction: column; align-items: center; }
-  .hero-buttons .btn-lime,
-  .hero-buttons .btn-outline {
-    width: 100%; max-width: 280px;
-    text-align: center;
-    padding: 0.85rem 1.6rem;
-    min-height: 48px;
-  }
-  .demo-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  .chat-window { max-width: 100%; }
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-  .steps {
-    grid-template-columns: 1fr;
-  }
-  .code-block {
-    font-size: 0.75rem;
-    padding: 1rem;
-  }
-  footer {
-    flex-direction: column;
-    text-align: center;
-  }
-  .footer-links { justify-content: center; }
-}
-@media (max-width: 480px) {
-  .hero h1 { font-size: 2rem; }
-  .section-title { font-size: 1.5rem; }
-  .feature-card { padding: 1.5rem; }
-  .step { padding: 1.5rem; }
-}
-</style>
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.8rem; }
+      .dash-metrics { grid-template-columns: 1fr; }
+      .metric-value { font-size: 1.1rem; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="logo">Kit<em>Z</em></div>
-  <ul class="nav-links">
-    <li><a href="#features">Funciones</a></li>
-    <li><a href="#demo">Demo</a></li>
-    <li><a href="#how">C&oacute;mo funciona</a></li>
-    <li><a href="#tech">Tech</a></li>
-    <li><a href="#dev">Developers</a></li>
-  </ul>
-  <a class="btn-lime" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a>
-  <button class="hamburger" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('show')">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+  <a class="skip-link" href="#main-content">Skip to content</a>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-inner">
-    <div class="hero-badge">
-      <span class="mono">v0.1</span> &middot; Open Source &middot; Hecho para LATAM
+  <nav>
+    <div class="logo">
+      <div class="logo-badge">K</div>
+      <span>KitZ</span>
     </div>
-    <h1>Tu asistente personal de <span class="grad">negocios</span></h1>
-    <p>Kitz ayuda a due&ntilde;os de peque&ntilde;os negocios en Latinoam&eacute;rica a manejar ventas, gastos, inventario y clientes &mdash; todo desde WhatsApp.</p>
-    <div class="hero-buttons">
-      <a class="btn-lime" href="https://wa.me/50760001234?text=Hola%20Kitz" target="_blank" rel="noopener">Probar en WhatsApp</a>
-      <a class="btn-outline" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">Ver en GitHub</a>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features" id="features">
-  <div class="section-label">// funciones</div>
-  <h2 class="section-title">Todo lo que tu negocio necesita</h2>
-  <p class="section-sub">Kitz entiende tu tipo de negocio &mdash; panader&iacute;a, sal&oacute;n, tienda, restaurante, taller &mdash; y adapta su vocabulario y herramientas.</p>
-  <div class="features-grid">
-    <div class="feature-card">
-      <span class="feature-icon">&#128230;</span>
-      <h3>Ventas y pedidos</h3>
-      <p>&ldquo;Vend&iacute; 5 arepas a $2 cada una&rdquo; &mdash; Kitz captura la venta, calcula el total y lo registra autom&aacute;ticamente.</p>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">&#128176;</span>
-      <h3>Control de gastos</h3>
-      <p>&ldquo;Gast&eacute; $50 en harina&rdquo; &mdash; registra gastos, consulta totales y genera res&uacute;menes semanales.</p>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">&#128203;</span>
-      <h3>Inventario</h3>
-      <p>Lleva el control de tus productos. Kitz te avisa cuando algo est&aacute; por agotarse.</p>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">&#128101;</span>
-      <h3>Clientes</h3>
-      <p>Registra clientes con nombre y tel&eacute;fono. Programa seguimientos y mant&eacute;n la relaci&oacute;n.</p>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">&#128200;</span>
-      <h3>Insights con IA</h3>
-      <p>Reportes semanales, res&uacute;menes diarios y recomendaciones accionables generadas por IA.</p>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">&#128424;</span>
-      <h3>Facturas</h3>
-      <p>Genera facturas desde tus pedidos registrados. Env&iacute;a por email directamente.</p>
-    </div>
-  </div>
-</section>
-
-<!-- DEMO -->
-<section class="demo" id="demo">
-  <div class="demo-layout">
-    <div>
-      <div class="section-label">// as&iacute; se ve</div>
-      <h2 class="section-title">Conversa con Kitz como si fuera tu asistente</h2>
-      <p class="section-sub">Sin apps que instalar. Sin formularios. Solo escribe en WhatsApp como le hablar&iacute;as a un empleado.</p>
-    </div>
-    <div class="chat-window mascot-float">
-      <div class="chat-header">
-        <div class="chat-avatar">K</div>
-        <div>
-          <div class="chat-name">Kitz</div>
-          <div class="chat-status">en l&iacute;nea</div>
-        </div>
+    <ul class="nav-links">
+      <li><a href="#whatsapp">WhatsApp</a></li>
+      <li><a href="#workspace">Workspace</a></li>
+      <li><a href="#brain">Brain</a></li>
+      <li><a href="#features">Features</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle" aria-label="Language">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="pt">PT</button>
       </div>
-      <div class="chat-body">
-        <div class="msg msg-user">
-          Vend&iacute; 3 pasteles de chocolate a $15 cada uno
-          <div class="msg-time">10:32 AM</div>
-        </div>
-        <div class="msg msg-bot">
-          <strong>&#10003; Venta registrada:</strong> 3 pasteles de chocolate &mdash; $45.00 total.
-          <br><br>Llevas <strong>$180.00</strong> en ventas hoy. &#128170;
-          <div class="msg-time">10:32 AM</div>
-        </div>
-        <div class="msg msg-user">
-          &iquest;Cu&aacute;nto gast&eacute; esta semana?
-          <div class="msg-time">10:33 AM</div>
-        </div>
-        <div class="msg msg-bot">
-          Esta semana: <strong>$320.00</strong> en gastos (harina, mantequilla, gas).
-          <br>Ganancia bruta: <strong>$580.00</strong>. &#128200;
-          <div class="msg-time">10:33 AM</div>
+      <a class="btn-green" href="#get-started">Get Started</a>
+    </div>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <section class="hero" id="main-content">
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">v0.1 — Open Source</div>
+      <h1>
+        <span class="en">Meet Kitz. Your AI business assistant.</span>
+        <span class="es">Conoce a Kitz. Tu asistente de negocios con IA.</span>
+        <span class="pt">Conheça o Kitz. Seu assistente de negócios com IA.</span>
+      </h1>
+      <p>
+        <span class="en">Manage sales, expenses, inventory, and clients — from WhatsApp, your browser, or your terminal.</span>
+        <span class="es">Maneja ventas, gastos, inventario y clientes — desde WhatsApp, tu navegador o tu terminal.</span>
+        <span class="pt">Gerencie vendas, despesas, estoque e clientes — pelo WhatsApp, navegador ou terminal.</span>
+      </p>
+      <div class="hero-buttons">
+        <a class="btn-green" href="https://wa.me/50760001234?text=Hola%20Kitz">
+          <span class="en">Try on WhatsApp</span>
+          <span class="es">Probar en WhatsApp</span>
+          <span class="pt">Testar no WhatsApp</span>
+        </a>
+        <a class="btn-outline" href="https://workspace.kitz.services">
+          <span class="en">Open Workspace</span>
+          <span class="es">Abrir Workspace</span>
+          <span class="pt">Abrir Workspace</span>
+        </a>
+        <a class="btn-outline" href="https://github.com/KenRoach/kitz">
+          <span class="en">Install the Brain</span>
+          <span class="es">Instalar el Brain</span>
+          <span class="pt">Instalar o Brain</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WhatsApp Surface -->
+  <section class="surface" id="whatsapp">
+    <div class="surface-layout">
+      <div class="surface-text">
+        <div class="section-label">// whatsapp</div>
+        <h2 class="section-title">
+          <span class="en">Your business in your pocket</span>
+          <span class="es">Tu negocio en tu bolsillo</span>
+          <span class="pt">Seu negócio no bolso</span>
+        </h2>
+        <p class="section-body">
+          <span class="en">Send Kitz a message like you'd talk to an employee. "Vendí 5 empanadas a $1.50" — and it's tracked. Sales, expenses, inventory, customer follow-ups. All from the chat you already use every day.</span>
+          <span class="es">Envíale un mensaje a Kitz como le hablarías a un empleado. "Vendí 5 empanadas a $1.50" — y queda registrado. Ventas, gastos, inventario, seguimiento de clientes. Todo desde el chat que ya usas todos los días.</span>
+          <span class="pt">Mande uma mensagem pro Kitz como falaria com um funcionário. "Vendi 5 empanadas a $1.50" — e fica registrado. Vendas, despesas, estoque, acompanhamento de clientes. Tudo pelo chat que você já usa todo dia.</span>
+        </p>
+        <a class="link-arrow" href="https://wa.me/50760001234?text=Hola%20Kitz" target="_blank" rel="noopener">
+          <span class="en">Try on WhatsApp →</span>
+          <span class="es">Probar en WhatsApp →</span>
+          <span class="pt">Testar no WhatsApp →</span>
+        </a>
+      </div>
+      <div class="surface-mockup">
+        <div class="chat-window" role="img" aria-label="WhatsApp chat demo with Kitz">
+          <div class="chat-header">
+            <div class="chat-avatar">K</div>
+            <div>
+              <div class="chat-name">Kitz</div>
+              <div class="chat-status">online</div>
+            </div>
+          </div>
+          <div class="chat-body">
+            <div class="msg msg-user">Hola<div class="msg-time">10:30 AM</div></div>
+            <div class="msg msg-bot">¡Hola! 👋 Soy <strong>Kitz</strong>, tu asistente personal de negocios.<br><br>¿Qué tipo de negocio tienes?<div class="msg-time">10:30 AM</div></div>
+            <div class="msg msg-user">Panadería<div class="msg-time">10:31 AM</div></div>
+            <div class="msg msg-bot">¡Genial! 🏪 Un negocio de tipo <strong>panadería</strong>.<br><br>¿Cómo se llama tu negocio?<div class="msg-time">10:31 AM</div></div>
+            <div class="msg msg-user">La Panadería Rosa<div class="msg-time">10:32 AM</div></div>
+            <div class="msg msg-bot"><strong>✓ La Panadería Rosa</strong> queda registrado. ✅<br><br>Dime tu primera venta para empezar.<div class="msg-time">10:32 AM</div></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="section-label">// c&oacute;mo funciona</div>
-  <h2 class="section-title">De cero a listo en 2 minutos</h2>
-  <p class="section-sub">El onboarding es una conversaci&oacute;n. Kitz te pregunta, t&uacute; respondes, y ya est&aacute;s dentro.</p>
-  <div class="steps">
-    <div class="step">
-      <h3>Escr&iacute;bele a Kitz</h3>
-      <p>Manda un &ldquo;Hola&rdquo; al n&uacute;mero de WhatsApp. Kitz se presenta y te pregunta qu&eacute; tipo de negocio tienes.</p>
+  <!-- Workspace Surface -->
+  <section class="surface" id="workspace" style="background: var(--bg-main);">
+    <div class="surface-layout flip">
+      <div class="surface-text">
+        <div class="section-label">// workspace</div>
+        <h2 class="section-title">
+          <span class="en">The full picture, in your browser</span>
+          <span class="es">La imagen completa, en tu navegador</span>
+          <span class="pt">A visão completa, no seu navegador</span>
+        </h2>
+        <p class="section-body">
+          <span class="en">Dashboard with real-time metrics. Weekly reports. Inventory alerts. Customer management. Invoice generation. Everything Kitz tracks on WhatsApp, visualized and organized in one place.</span>
+          <span class="es">Dashboard con métricas en tiempo real. Reportes semanales. Alertas de inventario. Gestión de clientes. Generación de facturas. Todo lo que Kitz rastrea en WhatsApp, visualizado y organizado en un solo lugar.</span>
+          <span class="pt">Painel com métricas em tempo real. Relatórios semanais. Alertas de estoque. Gestão de clientes. Geração de faturas. Tudo que o Kitz rastreia no WhatsApp, visualizado e organizado em um só lugar.</span>
+        </p>
+        <a class="link-arrow" href="https://workspace.kitz.services" target="_blank" rel="noopener">
+          <span class="en">Open Workspace →</span>
+          <span class="es">Abrir Workspace →</span>
+          <span class="pt">Abrir Workspace →</span>
+        </a>
+      </div>
+      <div class="surface-mockup">
+        <div class="dash-window" role="img" aria-label="KitZ Workspace dashboard">
+          <div class="dash-sidebar">
+            <div class="dash-dot active"></div>
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
+          </div>
+          <div class="dash-main">
+            <div class="dash-title">Portfolio Overview</div>
+            <div class="dash-metrics">
+              <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(0,212,170,0.09);">📦</div>
+                <div class="metric-value">$580</div>
+                <div class="metric-label">Sales</div>
+                <div class="metric-trend up">▲ 12%</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(167,139,250,0.09);">💰</div>
+                <div class="metric-value">$320</div>
+                <div class="metric-label">Expenses</div>
+                <div class="metric-trend down">▼ 8%</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(0,212,170,0.09);">📊</div>
+                <div class="metric-value">$260</div>
+                <div class="metric-label">Profit</div>
+                <div class="metric-trend up">▲ 23%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="step">
-      <h3>Configura tu negocio</h3>
-      <p>Dile si tienes panader&iacute;a, sal&oacute;n, tienda, restaurante, taller, o lo que sea. Dale un nombre.</p>
+  </section>
+
+  <!-- Brain / Terminal Surface -->
+  <section class="surface" id="brain">
+    <div class="surface-layout">
+      <div class="surface-text">
+        <div class="section-label">// kitz brain</div>
+        <h2 class="section-title">
+          <span class="en">AI in your terminal</span>
+          <span class="es">IA en tu terminal</span>
+          <span class="pt">IA no seu terminal</span>
+        </h2>
+        <p class="section-body">
+          <span class="en">Install the Kitz brain locally. Query your business data, generate reports, run insights — all from the command line. Built for power users who live in the terminal.</span>
+          <span class="es">Instala el cerebro de Kitz localmente. Consulta datos de tu negocio, genera reportes, ejecuta análisis — todo desde la línea de comandos. Hecho para usuarios avanzados que viven en la terminal.</span>
+          <span class="pt">Instale o cérebro do Kitz localmente. Consulte dados do seu negócio, gere relatórios, execute análises — tudo pela linha de comando. Feito para usuários avançados que vivem no terminal.</span>
+        </p>
+        <a class="link-arrow" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">
+          <span class="en">Install →</span>
+          <span class="es">Instalar →</span>
+          <span class="pt">Instalar →</span>
+        </a>
+      </div>
+      <div class="surface-mockup">
+        <div class="term-window" role="img" aria-label="Kitz Brain terminal demo">
+          <div class="term-bar">
+            <div class="term-dot" style="background: var(--danger);"></div>
+            <div class="term-dot" style="background: var(--warn);"></div>
+            <div class="term-dot" style="background: var(--accent);"></div>
+            <div class="term-title">kitz-brain</div>
+          </div>
+          <div class="term-body"><span class="cmd">$</span> npm install -g kitz
+<span class="ok">✓</span> kitz brain installed
+
+<span class="cmd">$</span> kitz insights
+<span class="dim">📊 Weekly Report — La Panadería Rosa</span>
+<span class="dim">─────────────────────────────</span>
+Sales:    $580.00  <span class="ok">▲ 12%</span>
+Expenses: $320.00  <span class="ok">▼  8%</span>
+Profit:   $260.00  <span class="ok">▲ 23%</span>
+
+<span class="dim">💡 Tip: Your flour costs dropped — lock in
+   this supplier price with a bulk order.</span></div>
+        </div>
+      </div>
     </div>
-    <div class="step">
-      <h3>Registra tu primera venta</h3>
-      <p>&ldquo;Vend&iacute; 10 empanadas a $1.50&rdquo; &mdash; Kitz entiende, registra y confirma. Ya est&aacute;s operando.</p>
+  </section>
+
+  <!-- Benefits Grid -->
+  <section class="benefits" id="features" style="background: var(--bg-main);">
+    <div class="benefits-inner">
+      <div class="section-label">// why kitz</div>
+      <h2 class="section-title">
+        <span class="en">Built for how you actually work</span>
+        <span class="es">Hecho para como realmente trabajas</span>
+        <span class="pt">Feito para como você realmente trabalha</span>
+      </h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <span class="benefit-icon">🤖</span>
+          <h3><span class="en">Multi-LLM</span><span class="es">Multi-LLM</span><span class="pt">Multi-LLM</span></h3>
+          <p>
+            <span class="en">Powered by Anthropic, OpenAI, and Google AI. Kitz picks the best model for each task.</span>
+            <span class="es">Potenciado por Anthropic, OpenAI y Google AI. Kitz elige el mejor modelo para cada tarea.</span>
+            <span class="pt">Alimentado por Anthropic, OpenAI e Google AI. Kitz escolhe o melhor modelo para cada tarefa.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🌎</span>
+          <h3><span class="en">Multilingual</span><span class="es">Multilingüe</span><span class="pt">Multilíngue</span></h3>
+          <p>
+            <span class="en">Spanish, English, Portuguese. Kitz speaks your language.</span>
+            <span class="es">Español, inglés, portugués. Kitz habla tu idioma.</span>
+            <span class="pt">Espanhol, inglês, português. Kitz fala seu idioma.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">📱</span>
+          <h3><span class="en">WhatsApp-native</span><span class="es">Nativo de WhatsApp</span><span class="pt">Nativo do WhatsApp</span></h3>
+          <p>
+            <span class="en">No app to download. Works where your customers already are.</span>
+            <span class="es">Sin app que descargar. Funciona donde tus clientes ya están.</span>
+            <span class="pt">Sem app para baixar. Funciona onde seus clientes já estão.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🔒</span>
+          <h3><span class="en">Your data, your control</span><span class="es">Tus datos, tu control</span><span class="pt">Seus dados, seu controle</span></h3>
+          <p>
+            <span class="en">Self-host or cloud. Open source. Nothing leaves without your say.</span>
+            <span class="es">Auto-alojado o en la nube. Open source. Nada sale sin tu permiso.</span>
+            <span class="pt">Auto-hospedado ou nuvem. Open source. Nada sai sem sua permissão.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">⚡</span>
+          <h3><span class="en">Real-time insights</span><span class="es">Insights en tiempo real</span><span class="pt">Insights em tempo real</span></h3>
+          <p>
+            <span class="en">AI-generated weekly reports, daily summaries, inventory alerts.</span>
+            <span class="es">Reportes semanales generados por IA, resúmenes diarios, alertas de inventario.</span>
+            <span class="pt">Relatórios semanais gerados por IA, resumos diários, alertas de estoque.</span>
+          </p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🔌</span>
+          <h3><span class="en">Open source</span><span class="es">Código abierto</span><span class="pt">Código aberto</span></h3>
+          <p>
+            <span class="en">MIT licensed. Extend it, fork it, make it yours.</span>
+            <span class="es">Licencia MIT. Extiéndelo, bifúrcalo, hazlo tuyo.</span>
+            <span class="pt">Licença MIT. Estenda, faça fork, torne-o seu.</span>
+          </p>
+        </div>
+      </div>
     </div>
-    <div class="step">
-      <h3>Usa tu asistente a diario</h3>
-      <p>Ventas, gastos, inventario, clientes, reportes &mdash; todo por chat, cuando quieras.</p>
+  </section>
+
+  <!-- Get Started CTA -->
+  <section class="cta-section" id="get-started">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <h2 class="section-title" style="text-align: center;">
+        <span class="en">Ready to meet your new business assistant?</span>
+        <span class="es">¿Listo para conocer a tu nuevo asistente de negocios?</span>
+        <span class="pt">Pronto para conhecer seu novo assistente de negócios?</span>
+      </h2>
+      <p class="section-body" style="text-align: center; margin: 0 auto 0;">
+        <span class="en">Pick how you want to start.</span>
+        <span class="es">Elige cómo quieres empezar.</span>
+        <span class="pt">Escolha como quer começar.</span>
+      </p>
+      <div class="cta-cards">
+        <div class="cta-card">
+          <div class="cta-card-icon">💬</div>
+          <h3>WhatsApp</h3>
+          <p>
+            <span class="en">Send a message, start in 30 seconds</span>
+            <span class="es">Envía un mensaje, empieza en 30 segundos</span>
+            <span class="pt">Envie uma mensagem, comece em 30 segundos</span>
+          </p>
+          <a class="btn-green" href="https://wa.me/50760001234?text=Hola%20Kitz" target="_blank" rel="noopener">
+            <span class="en">Try on WhatsApp</span>
+            <span class="es">Probar en WhatsApp</span>
+            <span class="pt">Testar no WhatsApp</span>
+          </a>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">🖥️</div>
+          <h3>Workspace</h3>
+          <p>
+            <span class="en">Full dashboard, sign up free</span>
+            <span class="es">Dashboard completo, regístrate gratis</span>
+            <span class="pt">Painel completo, cadastre-se grátis</span>
+          </p>
+          <a class="btn-outline" href="https://workspace.kitz.services" target="_blank" rel="noopener">
+            <span class="en">Open Workspace</span>
+            <span class="es">Abrir Workspace</span>
+            <span class="pt">Abrir Workspace</span>
+          </a>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">⌨️</div>
+          <h3>Brain</h3>
+          <p><code>npm install -g kitz</code></p>
+          <a class="btn-outline" href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">
+            <span class="en">View on GitHub</span>
+            <span class="es">Ver en GitHub</span>
+            <span class="pt">Ver no GitHub</span>
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- TECH STACK -->
-<section class="tech" id="tech">
-  <div class="section-label">// stack</div>
-  <h2 class="section-title">Construido con lo mejor</h2>
-  <p class="section-sub">Open source. Multi-LLM. Listo para producci&oacute;n.</p>
-  <div class="tech-grid">
-    <div class="tech-badge"><span class="tech-dot" style="background:#3178c6"></span> TypeScript</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#000"></span> Fastify 5</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#61dafb"></span> React 19</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#646cff"></span> Vite 6</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:var(--gold)"></span> Zustand</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#3ecf8e"></span> Supabase</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#336791"></span> PostgreSQL</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#d4a574"></span> Anthropic SDK</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#74aa9c"></span> OpenAI SDK</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#4285f4"></span> Google AI</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#25d366"></span> Baileys (WhatsApp)</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:var(--orange)"></span> Nodemailer</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#1a7f37"></span> SheetJS</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#729b1b"></span> Vitest</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#2ead33"></span> Playwright</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#2496ed"></span> Docker</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#844fba"></span> Railway</div>
-    <div class="tech-badge"><span class="tech-dot" style="background:#3572a5"></span> Python (legacy)</div>
-  </div>
-</section>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-badge">K</div>
+          <span>KitZ</span>
+        </div>
+        <p class="footer-tagline">
+          <span class="en">AI business assistant — open source.</span>
+          <span class="es">Asistente de negocios con IA — código abierto.</span>
+          <span class="pt">Assistente de negócios com IA — código aberto.</span>
+        </p>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="https://wa.me/50760001234?text=Hola%20Kitz" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="https://workspace.kitz.services" target="_blank" rel="noopener">Workspace</a></li>
+            <li><a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://github.com/KenRoach/kitz/issues" target="_blank" rel="noopener">Issues</a></li>
+            <li><a href="https://kenroach.github.io/kitz/" target="_blank" rel="noopener">Academy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-right">
+        <div class="lang-toggle" aria-label="Language">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="pt">PT</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 KitZ — Open Source · MIT License</div>
+  </footer>
 
-<!-- DEVELOPER -->
-<section class="dev" id="dev">
-  <div class="section-label">// developers</div>
-  <h2 class="section-title">Empieza a desarrollar</h2>
-  <p class="section-sub">Clona, configura variables de entorno, y levanta el gateway.</p>
-  <div class="code-block">
-    <span class="comment"># Clonar el repositorio</span><br>
-    <span class="cmd">git clone</span> https://github.com/KenRoach/kitz.git<br>
-    <span class="cmd">cd</span> kitz/kitz_gateway_ts<br><br>
-    <span class="comment"># Instalar dependencias</span><br>
-    <span class="cmd">npm install</span><br><br>
-    <span class="comment"># Configurar variables de entorno</span><br>
-    <span class="cmd">cp</span> .env.example .env<br><br>
-    <span class="comment"># Levantar en desarrollo</span><br>
-    <span class="cmd">npm run dev</span><br><br>
-    <span class="comment"># O con Docker</span><br>
-    <span class="cmd">docker build</span> <span class="flag">-t</span> kitz .<br>
-    <span class="cmd">docker run</span> <span class="flag">-p</span> 8787:8787 kitz
-  </div>
-  <br><br>
-  <h3 style="font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:1rem;">API</h3>
-  <div class="code-block">
-    <span class="comment"># Health check</span><br>
-    <span class="cmd">curl</span> <span class="flag">-s</span> http://127.0.0.1:8787/v0.1/health<br><br>
-    <span class="comment"># Listar herramientas disponibles</span><br>
-    <span class="cmd">curl</span> <span class="flag">-s</span> http://127.0.0.1:8787/v0.1/tools<br><br>
-    <span class="comment"># Invocar una herramienta</span><br>
-    <span class="cmd">curl</span> <span class="flag">-s -X POST</span> \<br>
-    &nbsp;&nbsp;http://127.0.0.1:8787/v0.1/tools/sum/invoke \<br>
-    &nbsp;&nbsp;<span class="flag">-H</span> 'content-type: application/json' \<br>
-    &nbsp;&nbsp;<span class="flag">-d</span> '{"args":{"numbers":[1,2,3.5]}}'
-  </div>
-</section>
+  <script>
+  // Language toggle — sync nav + footer toggles
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      document.documentElement.setAttribute('data-lang', lang);
+      document.documentElement.setAttribute('lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.lang-btn[data-lang="' + lang + '"]').forEach(b => b.classList.add('active'));
+    });
+  });
 
-<!-- FOOTER -->
-<footer>
-  <div class="logo">Kit<em>Z</em></div>
-  <ul class="footer-links">
-    <li><a href="https://github.com/KenRoach/kitz" target="_blank" rel="noopener">GitHub</a></li>
-    <li><a href="https://github.com/KenRoach/kitz/issues" target="_blank" rel="noopener">Issues</a></li>
-    <li><a href="https://kenroach.github.io/kitz/" target="_blank" rel="noopener">Academy</a></li>
-  </ul>
-  <div class="footer-copy">
-    &copy; 2026 KitZ &mdash; Open Source &middot; Hecho para Latinoam&eacute;rica
-  </div>
-</footer>
+  // Hamburger menu
+  document.querySelector('.hamburger').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('show');
+  });
 
-<!-- Mobile nav toggle -->
-<style>
-.nav-links.show {
-  display: flex !important;
-  flex-direction: column;
-  position: absolute;
-  top: 100%;
-  left: 0; right: 0;
-  background: rgba(6,8,12,0.95);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  padding: 1.5rem 5%;
-  border-bottom: 1px solid var(--border-dim);
-  gap: 1rem;
-}
-</style>
+  // Close menu on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.remove('show');
+    });
+  });
+  </script>
 
 </body>
 </html>
