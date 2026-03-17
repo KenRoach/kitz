@@ -46,6 +46,7 @@ export async function runMigrations(databaseUrl: string): Promise<void> {
     // Read and execute schema SQL (skip old auth tables)
     const schemaSQL = resolveSQL("schema.sql");
     const kzSQL = resolveSQL("migrations/001_kitzos_tables.sql");
+    const notifSQL = resolveSQL("migrations/003_notif_tables.sql");
     const seedSQL = resolveSQL("seed.sql");
 
     // Filter out old auth tables (users, sessions, password_reset_tokens) — we use Supabase Auth
@@ -77,6 +78,9 @@ export async function runMigrations(databaseUrl: string): Promise<void> {
 
     console.log("[migrate] Creating KitZ(OS) tables...");
     await client.query(kzSQL);
+
+    console.log("[migrate] Creating notification tables...");
+    await client.query(notifSQL);
 
     console.log("[migrate] Seeding sample data...");
     await client.query(seedSQL);

@@ -31,6 +31,7 @@ import { messagingRoutes, getWhatsAppAdapter } from "./messaging/routes.js";
 import { runMigrations } from "./db/migrate.js";
 import { initTranscriber } from "./voice/transcriber.js";
 import { initScheduler } from "./scheduler/index.js";
+import { initWarrantyScheduler } from "./scheduler/warrantyScheduler.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -172,6 +173,9 @@ async function main(): Promise<void> {
   if (adapter) {
     initScheduler(adapter);
   }
+
+  // Start RenewFlow warranty alert scheduler (runs daily, independent of WhatsApp)
+  initWarrantyScheduler();
 
   app.log.info(
     `KitZ(OS) Gateway v0.1 ready on port ${config.port} [${features.join(", ")}]`
