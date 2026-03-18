@@ -25,7 +25,9 @@ export async function runMigrations(databaseUrl: string): Promise<void> {
 
   const client = new pg.Client({
     connectionString: databaseUrl,
-    ssl: databaseUrl.includes("supabase") ? { rejectUnauthorized: false } : false,
+    ssl: databaseUrl.startsWith("postgresql") || databaseUrl.includes("supabase")
+      ? { rejectUnauthorized: true }
+      : false,
   });
 
   try {

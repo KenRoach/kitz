@@ -1,5 +1,6 @@
 /** KitZ(OS) Gateway — AI Business OS powered by multi-LLM orchestration. */
 
+import * as Sentry from "@sentry/node";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
@@ -37,6 +38,15 @@ import { partnerPortalRoutes } from "./routes/partner-portal.js";
 async function main(): Promise<void> {
   const config = loadConfig();
 
+  // Initialize Sentry error tracking
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      environment: process.env.NODE_ENV || "production",
+      tracesSampleRate: 0.1,
+    });
+  }
+
   // Initialize Supabase
   initSupabase(config.supabaseUrl, config.supabaseServiceKey);
 
@@ -58,8 +68,11 @@ async function main(): Promise<void> {
     initTranscriber(config.elevenlabsApiKey);
   }
 
-  // Configure SMTP if available
+  // Configure SMTP if available — validate all required fields
   if (config.smtp.host) {
+    if (!config.smtp.user || !config.smtp.pass || !config.smtp.from) {
+      throw new Error("SMTP_HOST is set but SMTP_USER, SMTP_PASS, and SMTP_FROM are all required");
+    }
     configureMail(config.smtp.host, config.smtp.port, config.smtp.user, config.smtp.pass, config.smtp.from);
   }
 
@@ -89,26 +102,59 @@ async function main(): Promise<void> {
   }
 
   // Create Fastify server
+  const logLevel = process.env.LOG_LEVEL || "info";
   const app = Fastify({
-    logger: true,
+    logger: { level: logLevel },
     bodyLimit: 10 * 1024 * 1024, // 10MB
   });
 
   // Security headers
-  await app.register(helmet, { contentSecurityPolicy: false });
-
-  // CORS — restrict to configured origins or same-origin
-  const allowedOrigins = process.env.CORS_ORIGIN?.split(",") ?? [];
-  await app.register(cors, {
-    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+  await app.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'", "https:", "data:"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+      },
+    },
   });
 
-  // Rate limiting
+  // CORS — restrict to configured origins, deny all if not set
+  const allowedOrigins = process.env.CORS_ORIGIN?.split(",").map(s => s.trim()).filter(Boolean) ?? [];
+  await app.register(cors, {
+    origin: allowedOrigins.length > 0 ? allowedOrigins : false,
+  });
+
+  // Rate limiting — global
   await app.register(rateLimit, {
     max: 100,
     timeWindow: "1 minute",
     keyGenerator: (req) => req.ip,
   });
+
+  // Stricter rate limiting on auth routes (brute-force protection)
+  app.addHook("onRoute", (routeOptions) => {
+    if (routeOptions.url.includes("/auth/")) {
+      const existing = routeOptions.config ?? {};
+      routeOptions.config = {
+        ...existing,
+        rateLimit: { max: 10, timeWindow: "15 minutes" },
+      };
+    }
+  });
+
+  // Sentry error tracking hook
+  if (process.env.SENTRY_DSN) {
+    app.addHook("onError", (_request, _reply, error, done) => {
+      Sentry.captureException(error);
+      done();
+    });
+  }
 
   // Auth middleware
   await app.register(authPlugin);
@@ -131,7 +177,7 @@ async function main(): Promise<void> {
     }),
   );
 
-  // Static file serving (SPA fallback)
+  // Static file serving (optional — only if gateway serves a frontend SPA directly)
   if (config.staticDir) {
     const root = path.resolve(config.staticDir);
     await app.register(fastifyStatic, {
@@ -140,7 +186,6 @@ async function main(): Promise<void> {
       wildcard: false,
     });
 
-    // SPA fallback — serve index.html for unmatched GET requests (not API calls)
     app.setNotFoundHandler(async (request, reply) => {
       if (request.method === "GET" && !request.url.startsWith("/v0.1/") && !request.url.startsWith("/partner/") && !request.url.startsWith("/health")) {
         return reply.sendFile("index.html", root);
@@ -157,6 +202,13 @@ async function main(): Promise<void> {
   };
   process.on("SIGTERM", () => void shutdown("SIGTERM"));
   process.on("SIGINT", () => void shutdown("SIGINT"));
+  process.on("unhandledRejection", (reason) => {
+    app.log.error({ err: reason }, "Unhandled promise rejection");
+  });
+  process.on("uncaughtException", (err) => {
+    app.log.fatal({ err }, "Uncaught exception — shutting down");
+    process.exit(1);
+  });
 
   // Start
   const features = [

@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS notif_alert (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL,
-  asset_id UUID NOT NULL REFERENCES asset_item(id) ON DELETE CASCADE,
+  asset_id TEXT NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
   threshold_days INT NOT NULL,        -- 90, 60, 30, 14, 7, 0
   priority TEXT NOT NULL DEFAULT 'medium', -- low, medium, high, critical
   status TEXT NOT NULL DEFAULT 'pending',  -- pending, sent, failed, dismissed

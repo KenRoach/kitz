@@ -1,0 +1,10 @@
+packages:
+  - packages/*
+  - services/*
+  - ventures/*
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - esbuild
+  - prisma

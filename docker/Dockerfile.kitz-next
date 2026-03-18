@@ -1,0 +1,40 @@
+# Dockerfile for KitZ Admin Dashboard (ventures/kitz — Next.js 14)
+# Build from repo root: docker build -f docker/Dockerfile.kitz-next .
+
+# Stage 1: Install + build
+FROM node:20-alpine AS build
+RUN corepack enable && corepack prepare pnpm@10 --activate
+WORKDIR /app
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY packages/ui/package.json packages/ui/
+COPY ventures/kitz/package.json ventures/kitz/
+
+RUN pnpm install --frozen-lockfile --filter @kitz/web...
+
+COPY packages/ui/ packages/ui/
+COPY ventures/kitz/ ventures/kitz/
+
+# Build args become NEXT_PUBLIC_* at build time
+ARG NEXT_PUBLIC_API_BASE
+ARG NEXT_PUBLIC_GATEWAY_URL
+ENV NEXT_PUBLIC_API_BASE=${NEXT_PUBLIC_API_BASE}
+ENV NEXT_PUBLIC_GATEWAY_URL=${NEXT_PUBLIC_GATEWAY_URL}
+
+RUN pnpm --filter @kitz/web build
+
+# Stage 2: Production
+FROM node:20-alpine
+RUN addgroup -S app && adduser -S app -G app
+WORKDIR /app
+
+COPY --from=build --chown=app:app /app/ventures/kitz/.next/standalone ./
+COPY --from=build --chown=app:app /app/ventures/kitz/.next/static ./ventures/kitz/.next/static
+COPY --from=build --chown=app:app /app/ventures/kitz/public ./ventures/kitz/public
+
+ENV NODE_ENV=production
+ENV PORT=3000
+USER app
+EXPOSE 3000
+
+CMD ["node", "ventures/kitz/server.js"]

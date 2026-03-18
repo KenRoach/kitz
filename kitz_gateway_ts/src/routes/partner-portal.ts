@@ -13,9 +13,16 @@ import crypto from "node:crypto";
 import { getSupabase } from "../db/client.js";
 
 /** Generate a deterministic token for a partner (based on partner ID + secret). */
+function getPartnerTokenSecret(): string {
+  const secret = process.env.PARTNER_TOKEN_SECRET;
+  if (!secret) {
+    throw new Error("PARTNER_TOKEN_SECRET environment variable is required");
+  }
+  return secret;
+}
+
 function partnerToken(partnerId: string): string {
-  const secret = process.env.PARTNER_TOKEN_SECRET || "renewflow-partner-default-secret";
-  return crypto.createHmac("sha256", secret).update(partnerId).digest("hex").slice(0, 32);
+  return crypto.createHmac("sha256", getPartnerTokenSecret()).update(partnerId).digest("hex").slice(0, 32);
 }
 
 /** Look up partner by token. */
@@ -28,6 +35,16 @@ async function resolvePartner(token: string): Promise<{ id: string; name: string
     if (partnerToken(p.id) === token) return p;
   }
   return null;
+}
+
+/** Escape HTML special characters to prevent XSS. */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 async function partnerPortalPlugin(app: FastifyInstance): Promise<void> {
@@ -122,41 +139,42 @@ function portalHTML(partnerName: string, token: string): string {
 <body>
   <div class="header">
     <h1>RenewFlow Partner Portal</h1>
-    <p>Welcome, ${partnerName}</p>
+    <p>Welcome, ${escapeHtml(partnerName)}</p>
   </div>
   <div class="container" id="content">
     <div id="loading">Loading submissions...</div>
   </div>
   <script>
-    const TOKEN = "${token}";
+    const TOKEN = ${JSON.stringify(token)};
+    function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
     async function load() {
-      const res = await fetch("/partner/api/submissions?token=" + TOKEN);
-      if (!res.ok) { document.getElementById("content").innerHTML = "<p>Error loading data.</p>"; return; }
+      const res = await fetch("/partner/api/submissions?token=" + encodeURIComponent(TOKEN));
+      if (!res.ok) { document.getElementById("content").textContent = "Error loading data."; return; }
       const { submissions } = await res.json();
       const c = document.getElementById("content");
       if (!submissions.length) { c.innerHTML = '<div class="empty">No purchase orders yet.</div>'; return; }
       c.innerHTML = submissions.map(s => {
         const order = s.order_po;
         const items = (order?.items || []);
-        const badgeClass = "badge-" + s.status;
+        const badgeClass = "badge-" + esc(s.status);
         const ackBtn = s.status === "submitted"
-          ? '<button class="btn" onclick="ack(\\'' + s.id + '\\')">Acknowledge Receipt</button>'
+          ? '<button class="btn" onclick="ack(' + JSON.stringify(s.id) + ')">Acknowledge Receipt</button>'
           : "";
         return '<div class="card">' +
-          '<h3>PO ' + s.order_id.slice(0,8) + ' — ' + (order?.client || "—") + '</h3>' +
-          '<span class="badge ' + badgeClass + '">' + s.status + '</span>' +
-          '<div class="meta">Submitted: ' + new Date(s.created_at).toLocaleDateString() +
-          (s.acknowledged_at ? " · Acknowledged: " + new Date(s.acknowledged_at).toLocaleDateString() : "") +
-          (s.fulfilled_at ? " · Fulfilled: " + new Date(s.fulfilled_at).toLocaleDateString() : "") +
+          '<h3>PO ' + esc(s.order_id.slice(0,8)) + ' \\u2014 ' + esc(order?.client || "\\u2014") + '</h3>' +
+          '<span class="badge ' + badgeClass + '">' + esc(s.status) + '</span>' +
+          '<div class="meta">Submitted: ' + esc(new Date(s.created_at).toLocaleDateString()) +
+          (s.acknowledged_at ? " \\u00b7 Acknowledged: " + esc(new Date(s.acknowledged_at).toLocaleDateString()) : "") +
+          (s.fulfilled_at ? " \\u00b7 Fulfilled: " + esc(new Date(s.fulfilled_at).toLocaleDateString()) : "") +
           '</div>' +
           (items.length ? '<div class="items"><table><thead><tr><th>Device</th><th>Coverage</th><th>Price</th></tr></thead><tbody>' +
-            items.map(i => '<tr><td>' + (i.brand||"") + " " + (i.model||"") + '</td><td>' + (i.coverageType||"—") + '</td><td>$' + (i.price||0) + '</td></tr>').join("") +
+            items.map(i => '<tr><td>' + esc((i.brand||"") + " " + (i.model||"")) + '</td><td>' + esc(i.coverageType||"\\u2014") + '</td><td>$' + esc(String(i.price||0)) + '</td></tr>').join("") +
             '</tbody></table></div>' : "") +
           '<div style="margin-top:12px">' + ackBtn + '</div></div>';
       }).join("");
     }
     async function ack(id) {
-      const res = await fetch("/partner/api/acknowledge?token=" + TOKEN, {
+      const res = await fetch("/partner/api/acknowledge?token=" + encodeURIComponent(TOKEN), {
         method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({submissionId: id})
       });
       if (res.ok) load(); else alert("Failed to acknowledge.");
