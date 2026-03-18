@@ -1,6 +1,17 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { Prisma } from "@prisma/client";
 import { getDB } from "@kitz/core";
+import { z } from "zod";
+
+const CreateContact = z.object({
+  ventureId: z.string().min(1),
+  firstName: z.string().min(1, "firstName is required"),
+  lastName: z.string().min(1, "lastName is required"),
+  email: z.string().email().optional().or(z.literal("")),
+  phone: z.string().optional(),
+  company: z.string().optional(),
+  metadata: z.record(z.unknown()).optional().default({}),
+});
 
 export const contactRoutes: FastifyPluginAsync = async (app) => {
   const db = getDB();
@@ -33,7 +44,9 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
       metadata?: Prisma.InputJsonValue;
     };
   }>("/", async (req, reply) => {
-    const { ventureId, firstName, lastName, email, phone, company, metadata } = req.body;
+    const parsed = CreateContact.safeParse(req.body);
+    if (!parsed.success) return reply.badRequest(parsed.error.issues[0].message);
+    const { ventureId, firstName, lastName, email, phone, company, metadata } = parsed.data;
 
     // Dedup: check for existing contact with same email or phone within venture
     if (email || phone) {
@@ -60,7 +73,7 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
         email: email || null,
         phone: phone || null,
         company: company || null,
-        metadata: metadata || {},
+        metadata: (metadata || {}) as Prisma.InputJsonValue,
       },
     });
   });
@@ -74,4 +87,12 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
       return db.contact.update({ where: { id: req.params.id }, data: req.body });
     },
   );
+
+  // Delete a contact
+  app.delete<{ Params: { id: string } }>("/:id", async (req, reply) => {
+    const record = await db.contact.findUnique({ where: { id: req.params.id } });
+    if (!record) return reply.notFound("contact not found");
+    await db.contact.delete({ where: { id: req.params.id } });
+    return { deleted: true };
+  });
 };

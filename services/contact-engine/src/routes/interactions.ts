@@ -1,6 +1,16 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { Prisma } from "@prisma/client";
 import { getDB } from "@kitz/core";
+import { z } from "zod";
+
+const CreateInteraction = z.object({
+  contactId: z.string().min(1),
+  ventureId: z.string().min(1),
+  channel: z.string().min(1),
+  direction: z.string().min(1),
+  content: z.string().min(1),
+  metadata: z.record(z.unknown()).optional().default({}),
+});
 
 export const interactionRoutes: FastifyPluginAsync = async (app) => {
   const db = getDB();
@@ -24,8 +34,10 @@ export const interactionRoutes: FastifyPluginAsync = async (app) => {
       content: string;
       metadata?: Prisma.InputJsonValue;
     };
-  }>("/", async (req) => {
-    const { contactId, ventureId, channel, direction, content, metadata } = req.body;
+  }>("/", async (req, reply) => {
+    const parsed = CreateInteraction.safeParse(req.body);
+    if (!parsed.success) return reply.badRequest(parsed.error.issues[0].message);
+    const { contactId, ventureId, channel, direction, content, metadata } = parsed.data;
     return db.interaction.create({
       data: {
         contactId,
@@ -33,8 +45,23 @@ export const interactionRoutes: FastifyPluginAsync = async (app) => {
         channel,
         direction,
         content,
-        metadata: metadata || {},
+        metadata: (metadata || {}) as Prisma.InputJsonValue,
       },
     });
+  });
+
+  // Get a single interaction by id
+  app.get<{ Params: { id: string } }>("/:id", async (req, reply) => {
+    const record = await db.interaction.findUnique({ where: { id: req.params.id } });
+    if (!record) return reply.notFound("interaction not found");
+    return record;
+  });
+
+  // Delete an interaction
+  app.delete<{ Params: { id: string } }>("/:id", async (req, reply) => {
+    const record = await db.interaction.findUnique({ where: { id: req.params.id } });
+    if (!record) return reply.notFound("interaction not found");
+    await db.interaction.delete({ where: { id: req.params.id } });
+    return { deleted: true };
   });
 };
