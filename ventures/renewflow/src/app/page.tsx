@@ -1,9 +1,7 @@
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">
-        RenewFlow - Warranty Renewal Platform
-      </h1>
+    <div>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
 
       {/* Installed Base */}
       <section className="mb-8">
@@ -23,7 +21,6 @@ export default function DashboardPage() {
           Renewal Pipeline
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Identified */}
           <div className="rounded-lg border border-gray-200 bg-white p-4">
             <h3 className="font-medium text-gray-700 mb-3 pb-2 border-b">
               Identified
@@ -33,7 +30,6 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* Quoted */}
           <div className="rounded-lg border border-gray-200 bg-white p-4">
             <h3 className="font-medium text-gray-700 mb-3 pb-2 border-b">
               Quoted
@@ -41,7 +37,6 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-400">No quotes pending.</p>
           </div>
 
-          {/* Closed */}
           <div className="rounded-lg border border-gray-200 bg-white p-4">
             <h3 className="font-medium text-gray-700 mb-3 pb-2 border-b">
               Closed
@@ -62,6 +57,6 @@ export default function DashboardPage() {
           </p>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

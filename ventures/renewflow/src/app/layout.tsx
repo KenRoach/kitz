@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { Shell } from "@/components/layout/shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RenewFlow - Warranty Renewal Platform",
+  title: "Flow - Warranty Renewal Platform",
   description: "Warranty Renewal SaaS for LATAM IT resellers",
 };
 
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Shell>{children}</Shell>
+      </body>
     </html>
   );
 }
