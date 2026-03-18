@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import sensible from "@fastify/sensible";
 import cors from "@fastify/cors";
-import { loadEnv, createLogger } from "@kitz/core";
+import { loadEnv, createLogger, registerAuth } from "@kitz/core";
 import { ventureRoutes } from "./routes/ventures.js";
 import { skillRoutes } from "./routes/skills.js";
 
@@ -14,6 +14,7 @@ const app = Fastify({ logger: false });
 
 await app.register(sensible);
 await app.register(cors, { origin: true });
+registerAuth(app);
 
 app.get("/health", async () => ({ status: "ok", service: "factory-api" }));
 

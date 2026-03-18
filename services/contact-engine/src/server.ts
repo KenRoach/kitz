@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import sensible from "@fastify/sensible";
 import cors from "@fastify/cors";
-import { loadEnv, createLogger } from "@kitz/core";
+import { loadEnv, createLogger, registerAuth } from "@kitz/core";
 import { contactRoutes } from "./routes/contacts.js";
 import { dealRoutes } from "./routes/deals.js";
 import { interactionRoutes } from "./routes/interactions.js";
@@ -15,6 +15,7 @@ const app = Fastify({ logger: false });
 
 await app.register(sensible);
 await app.register(cors, { origin: true });
+registerAuth(app);
 
 app.get("/health", async () => ({ status: "ok", service: "contact-engine" }));
 

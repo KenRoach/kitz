@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import sensible from "@fastify/sensible";
 import cors from "@fastify/cors";
-import { loadEnv, createLogger } from "@kitz/core";
+import { loadEnv, createLogger, registerAuth } from "@kitz/core";
 import { sendRoutes } from "./routes/send.js";
 
 loadEnv();
@@ -13,6 +13,7 @@ const app = Fastify({ logger: false });
 
 await app.register(sensible);
 await app.register(cors, { origin: true });
+registerAuth(app);
 
 app.get("/health", async () => ({ status: "ok", service: "channel-router" }));
 
