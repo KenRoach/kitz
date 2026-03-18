@@ -13,7 +13,10 @@
     "clean": "turbo clean",
     "db:generate": "pnpm --filter @kitz/core exec prisma generate",
     "db:push": "pnpm --filter @kitz/core exec prisma db push",
-    "db:migrate": "pnpm --filter @kitz/core exec prisma migrate dev"
+    "db:migrate": "pnpm --filter @kitz/core exec prisma migrate dev",
+    "db:migrate:deploy": "pnpm --filter @kitz/core exec prisma migrate deploy",
+    "happy-path": "node scripts/happy-path-api.mjs",
+    "production-verify": "bash scripts/production-verify.sh"
   },
   "devDependencies": {
     "turbo": "^2.4.0",

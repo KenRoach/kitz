@@ -58,3 +58,21 @@ curl -s -X POST \
 ```bash
 python -m pytest -q
 ```
+
+## Production & Ops Docs
+
+| Doc | Description |
+|-----|-------------|
+| [docs/friday-database.md](docs/friday-database.md) | Backup → migrate → sanity check → rollback runbook |
+| [docs/friday-ops.md](docs/friday-ops.md) | Friday pre-traffic checklist |
+| [docs/production/02-database.md](docs/production/02-database.md) | Production database reference |
+| [docs/happy-path-checklist.md](docs/happy-path-checklist.md) | Manual walkthrough for RenewFlow + KitZ |
+| [docs/support-and-oncall.md](docs/support-and-oncall.md) | On-call ownership, escalation, triage |
+
+### Scripts
+
+```bash
+pnpm happy-path          # API smoke test (needs GATEWAY_URL, HAPPY_PATH_EMAIL, HAPPY_PATH_PASSWORD)
+pnpm production-verify   # Check all required docs/scripts exist
+pnpm db:migrate:deploy   # Apply pending Prisma migrations (prod)
+```
