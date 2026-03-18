@@ -20,14 +20,10 @@ COPY --chown=app:app kitz_gateway_ts/src/db/schema.sql ./src/db/schema.sql
 COPY --chown=app:app kitz_gateway_ts/src/db/seed.sql ./src/db/seed.sql
 COPY --chown=app:app kitz_gateway_ts/src/db/migrations ./src/db/migrations
 
-# Pre-built frontend SPA (build externally or skip if deploying separately)
-COPY --chown=app:app static_dist ./static/
-
 ENV NODE_ENV=production
 ENV PORT=8787
 ENV HOST=0.0.0.0
 ENV AUTH_ENABLED=true
-ENV STATIC_DIR=/app/static
 
 USER app
 EXPOSE 8787

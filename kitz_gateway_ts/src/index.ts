@@ -1,5 +1,6 @@
 /** KitZ(OS) Gateway — AI Business OS powered by multi-LLM orchestration. */
 
+import * as Sentry from "@sentry/node";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
@@ -36,6 +37,15 @@ import { partnerPortalRoutes } from "./routes/partner-portal.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
+
+  // Initialize Sentry error tracking
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      environment: process.env.NODE_ENV || "production",
+      tracesSampleRate: 0.1,
+    });
+  }
 
   // Initialize Supabase
   initSupabase(config.supabaseUrl, config.supabaseServiceKey);
@@ -138,6 +148,14 @@ async function main(): Promise<void> {
     }
   });
 
+  // Sentry error tracking hook
+  if (process.env.SENTRY_DSN) {
+    app.addHook("onError", (_request, _reply, error, done) => {
+      Sentry.captureException(error);
+      done();
+    });
+  }
+
   // Auth middleware
   await app.register(authPlugin);
   (app as unknown as { authEnabled: boolean }).authEnabled = config.authEnabled;
@@ -159,7 +177,7 @@ async function main(): Promise<void> {
     }),
   );
 
-  // Static file serving (SPA fallback)
+  // Static file serving (optional — only if gateway serves a frontend SPA directly)
   if (config.staticDir) {
     const root = path.resolve(config.staticDir);
     await app.register(fastifyStatic, {
@@ -168,7 +186,6 @@ async function main(): Promise<void> {
       wildcard: false,
     });
 
-    // SPA fallback — serve index.html for unmatched GET requests (not API calls)
     app.setNotFoundHandler(async (request, reply) => {
       if (request.method === "GET" && !request.url.startsWith("/v0.1/") && !request.url.startsWith("/partner/") && !request.url.startsWith("/health")) {
         return reply.sendFile("index.html", root);
