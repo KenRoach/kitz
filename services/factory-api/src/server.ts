@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import { loadEnv, createLogger, registerAuth } from "@kitz/core";
 import { ventureRoutes } from "./routes/ventures.js";
 import { skillRoutes } from "./routes/skills.js";
+import { logRoutes } from "./routes/logs.js";
 
 loadEnv();
 
@@ -20,6 +21,7 @@ app.get("/health", async () => ({ status: "ok", service: "factory-api" }));
 
 await app.register(ventureRoutes, { prefix: "/ventures" });
 await app.register(skillRoutes, { prefix: "/skills" });
+await app.register(logRoutes, { prefix: "/logs" });
 
 try {
   await app.listen({ port: PORT, host: "0.0.0.0" });
