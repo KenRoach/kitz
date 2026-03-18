@@ -22,10 +22,10 @@ WORKDIR /app
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY packages/core/package.json packages/core/
 COPY --from=build /app/services/agent-runtime/package.json services/agent-runtime/
+COPY prisma/ prisma/
 RUN pnpm install --frozen-lockfile --prod --filter @kitz/agent-runtime...
 COPY --from=build --chown=app:app /app/packages/core/dist packages/core/dist
 COPY --from=build --chown=app:app /app/services/agent-runtime/dist services/agent-runtime/dist
-COPY --from=build --chown=app:app /app/prisma prisma
 COPY --chown=app:app skills/ skills/
 ENV NODE_ENV=production
 USER app
