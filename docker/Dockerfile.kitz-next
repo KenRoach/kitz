@@ -30,7 +30,7 @@ WORKDIR /app
 
 COPY --from=build --chown=app:app /app/ventures/kitz/.next/standalone ./
 COPY --from=build --chown=app:app /app/ventures/kitz/.next/static ./ventures/kitz/.next/static
-COPY --from=build --chown=app:app /app/ventures/kitz/public ./ventures/kitz/public
+COPY --from=build --chown=app:app /app/ventures/kitz/public* ./ventures/kitz/public/
 
 ENV NODE_ENV=production
 ENV PORT=3000
