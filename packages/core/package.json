@@ -16,7 +16,7 @@
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "postinstall": "prisma generate"
+    "postinstall": "test -f ../../prisma/schema.prisma && prisma generate || true"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
