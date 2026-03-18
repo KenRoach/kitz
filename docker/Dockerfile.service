@@ -1,0 +1,53 @@
+# Generic Dockerfile for KitZ backend microservices (services/*)
+# Usage: docker build --build-arg SERVICE=factory-api -f docker/Dockerfile.service .
+#
+# Requires monorepo context (build from repo root) because services
+# depend on packages/core via pnpm workspaces.
+
+ARG SERVICE
+
+# Stage 1: Install + compile
+FROM node:20-alpine AS build
+RUN corepack enable && corepack prepare pnpm@10 --activate
+WORKDIR /app
+
+# Copy workspace config + lockfile
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY packages/core/package.json packages/core/
+COPY services/${SERVICE}/package.json services/${SERVICE}/
+
+# Install deps (workspace-aware)
+RUN pnpm install --frozen-lockfile --filter @kitz/${SERVICE}...
+
+# Copy source
+COPY packages/core/ packages/core/
+COPY services/${SERVICE}/ services/${SERVICE}/
+COPY prisma/ prisma/
+
+# Build shared core + service
+RUN pnpm --filter @kitz/core build 2>/dev/null || true
+RUN pnpm --filter @kitz/${SERVICE} build
+
+# Stage 2: Production
+FROM node:20-alpine
+RUN addgroup -S app && adduser -S app -G app
+RUN corepack enable && corepack prepare pnpm@10 --activate
+WORKDIR /app
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY packages/core/package.json packages/core/
+COPY --from=build /app/services/${SERVICE}/package.json services/${SERVICE}/
+
+RUN pnpm install --frozen-lockfile --prod --filter @kitz/${SERVICE}...
+
+COPY --from=build --chown=app:app /app/packages/core/dist packages/core/dist
+COPY --from=build --chown=app:app /app/services/${SERVICE}/dist services/${SERVICE}/dist
+COPY --from=build --chown=app:app /app/prisma prisma
+
+# Skills directory (needed by agent-runtime)
+COPY --chown=app:app skills/ skills/
+
+ENV NODE_ENV=production
+USER app
+
+CMD ["node", "services/${SERVICE}/dist/server.js"]

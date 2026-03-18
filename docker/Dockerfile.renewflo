@@ -1,0 +1,42 @@
+# Dockerfile for RenewFlow SPA + API proxy
+# Builds the Vite SPA then serves it via a small Fastify server
+# that also proxies /api/* → GATEWAY_URL/v0.1/*
+#
+# Build from repo root: docker build -f docker/Dockerfile.renewflo .
+
+# Stage 1: Build the Vite SPA
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY renewflo/package.json renewflo/package-lock.json ./
+RUN npm ci
+COPY renewflo/ .
+
+# Bake public env vars at build time
+ARG VITE_API_BASE=/api
+ENV VITE_API_BASE=${VITE_API_BASE}
+
+RUN npm run build
+
+# Stage 2: Production — Fastify static + proxy
+FROM node:20-alpine
+RUN addgroup -S app && adduser -S app -G app
+WORKDIR /app
+
+# Install only the proxy server deps
+COPY renewflo/server/package.json ./
+RUN npm install --omit=dev && chown -R app:app /app
+
+# Copy built SPA
+COPY --from=build --chown=app:app /app/dist ./dist
+
+# Copy proxy server
+COPY --chown=app:app renewflo/server/index.mjs ./index.mjs
+
+ENV NODE_ENV=production
+ENV PORT=3000
+# GATEWAY_URL must be set at runtime (e.g. http://kitz-gateway.railway.internal:8787)
+ENV GATEWAY_URL=http://localhost:8787
+
+USER app
+EXPOSE 3000
+CMD ["node", "index.mjs"]
