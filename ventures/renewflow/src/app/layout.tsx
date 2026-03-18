@@ -3,7 +3,7 @@ import { Shell } from "@/components/layout/shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Flow - Warranty Renewal Platform",
+  title: "Flow — Warranty Renewal Platform",
   description: "Warranty Renewal SaaS for LATAM IT resellers",
 };
 
