@@ -11,7 +11,7 @@ const logger = createLogger("execute-route");
 const AgentJobSchema = z.object({
   skill: z.string().min(1),
   context: z.record(z.unknown()),
-  venture_id: z.string().uuid(),
+  venture_id: z.string().min(1),
   language: z.string().min(2).default("en"),
 });
 
