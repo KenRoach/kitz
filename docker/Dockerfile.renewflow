@@ -1,0 +1,33 @@
+# Dockerfile for RenewFlow (ventures/renewflow — Next.js 14)
+# Build from repo root: docker build -f docker/Dockerfile.renewflow .
+
+# Stage 1: Install + build
+FROM node:20-alpine AS build
+RUN corepack enable && corepack prepare pnpm@10 --activate
+WORKDIR /app
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY packages/ui/package.json packages/ui/
+COPY ventures/renewflow/package.json ventures/renewflow/
+
+RUN pnpm install --frozen-lockfile --filter @kitz/renewflow...
+
+COPY packages/ui/ packages/ui/
+COPY ventures/renewflow/ ventures/renewflow/
+
+RUN pnpm --filter @kitz/renewflow build
+
+# Stage 2: Production
+FROM node:20-alpine
+RUN addgroup -S app && adduser -S app -G app
+WORKDIR /app
+
+COPY --from=build --chown=app:app /app/ventures/renewflow/.next/standalone ./
+COPY --from=build --chown=app:app /app/ventures/renewflow/.next/static ./ventures/renewflow/.next/static
+
+ENV NODE_ENV=production
+ENV PORT=3000
+USER app
+EXPOSE 3000
+
+CMD ["node", "ventures/renewflow/server.js"]
