@@ -2,6 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { complete, getDB, createLogger } from "@kitz/core";
 import type { AgentJobPayload } from "@kitz/core";
+import type { Prisma } from "@prisma/client";
 import { loadSkill } from "../skill-loader.js";
 import { createHash } from "crypto";
 
@@ -76,8 +77,8 @@ export const executeRoutes: FastifyPluginAsync = async (app) => {
           ventureId: venture_id,
           skill,
           inputHash,
-          input: context,
-          output: structuredOutput,
+          input: context as Prisma.InputJsonValue,
+          output: structuredOutput as Prisma.InputJsonValue,
           latencyMs,
         },
       });

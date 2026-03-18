@@ -8,6 +8,7 @@ ARG SERVICE
 
 # Stage 1: Install + compile
 FROM node:20-alpine AS build
+ARG SERVICE
 RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /app
 
@@ -24,12 +25,16 @@ COPY packages/core/ packages/core/
 COPY services/${SERVICE}/ services/${SERVICE}/
 COPY prisma/ prisma/
 
+# Generate Prisma client
+RUN pnpm --filter @kitz/core exec prisma generate
+
 # Build shared core + service
 RUN pnpm --filter @kitz/core build 2>/dev/null || true
 RUN pnpm --filter @kitz/${SERVICE} build
 
 # Stage 2: Production
 FROM node:20-alpine
+ARG SERVICE
 RUN addgroup -S app && adduser -S app -G app
 RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /app
@@ -43,11 +48,13 @@ RUN pnpm install --frozen-lockfile --prod --filter @kitz/${SERVICE}...
 COPY --from=build --chown=app:app /app/packages/core/dist packages/core/dist
 COPY --from=build --chown=app:app /app/services/${SERVICE}/dist services/${SERVICE}/dist
 COPY --from=build --chown=app:app /app/prisma prisma
+COPY --from=build --chown=app:app /app/node_modules/.prisma node_modules/.prisma
 
 # Skills directory (needed by agent-runtime)
 COPY --chown=app:app skills/ skills/
 
 ENV NODE_ENV=production
+ENV SERVICE=${SERVICE}
 USER app
 
-CMD ["node", "services/${SERVICE}/dist/server.js"]
+CMD node services/${SERVICE}/dist/server.js

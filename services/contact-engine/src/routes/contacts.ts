@@ -24,14 +24,15 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
   app.post<{
     Body: {
       ventureId: string;
-      name: string;
+      firstName: string;
+      lastName: string;
       email?: string;
       phone?: string;
-      companyId?: string;
-      meta?: Record<string, unknown>;
+      company?: string;
+      metadata?: Record<string, unknown>;
     };
   }>("/", async (req, reply) => {
-    const { ventureId, name, email, phone, companyId, meta } = req.body;
+    const { ventureId, firstName, lastName, email, phone, company, metadata } = req.body;
 
     // Dedup: check for existing contact with same email or phone within venture
     if (email || phone) {
@@ -53,11 +54,12 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
     return db.contact.create({
       data: {
         ventureId,
-        name,
+        firstName,
+        lastName,
         email: email || null,
         phone: phone || null,
-        companyId: companyId || null,
-        meta: meta || {},
+        company: company || null,
+        metadata: metadata || {},
       },
     });
   });

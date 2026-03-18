@@ -24,7 +24,6 @@ interface StepResult {
 /** Evaluate a simple condition string against accumulated step results. */
 function evaluateCondition(condition: string, results: Map<string, StepResult>): boolean {
   try {
-    // Conditions reference prior step outputs, e.g. "steps.extract.status === 'success'"
     const steps = Object.fromEntries(
       [...results.entries()].map(([k, v]) => [k, v]),
     );
@@ -91,8 +90,8 @@ async function executeStep(
 }
 
 /** Process a pipeline run job. */
-async function processPipelineJob(job: { data: { runId: string; pipelineId: string; input: Record<string, unknown> } }) {
-  const { runId, pipelineId, input } = job.data;
+async function processPipelineJob(job: { data: { runId: string; pipelineId: string; context: Record<string, unknown> } }) {
+  const { runId, pipelineId, context } = job.data;
   const db = getDB();
 
   logger.info({ runId, pipelineId }, "Starting pipeline run");
@@ -105,15 +104,16 @@ async function processPipelineJob(job: { data: { runId: string; pipelineId: stri
   try {
     const pipeline = await db.pipeline.findUniqueOrThrow({
       where: { id: pipelineId },
-      include: { steps: true },
     });
 
-    const steps: PipelineStep[] = pipeline.steps.map((s: any) => ({
+    // Pipeline.steps is a JSON column, not a relation
+    const rawSteps = pipeline.steps as unknown as PipelineStep[];
+    const steps: PipelineStep[] = rawSteps.map((s) => ({
       id: s.id,
       name: s.name,
       action: s.action,
-      input: (s.input as Record<string, unknown>) ?? {},
-      dependsOn: (s.dependsOn as string[]) ?? [],
+      input: s.input ?? {},
+      dependsOn: s.dependsOn ?? [],
       condition: s.condition ?? undefined,
       delayMs: s.delayMs ?? undefined,
     }));
@@ -128,18 +128,14 @@ async function processPipelineJob(job: { data: { runId: string; pipelineId: stri
       );
       if (depsFailed) {
         logger.info({ stepId: step.id }, "Skipping step – dependency not met");
-        const result: StepResult = { stepId: step.id, status: "skipped", output: null };
-        results.set(step.id, result);
-        await db.stepResult.create({ data: { pipelineRunId: runId, stepId: step.id, ...result } });
+        results.set(step.id, { stepId: step.id, status: "skipped", output: null });
         continue;
       }
 
       // Evaluate optional condition
       if (step.condition && !evaluateCondition(step.condition, results)) {
         logger.info({ stepId: step.id, condition: step.condition }, "Skipping step – condition not met");
-        const result: StepResult = { stepId: step.id, status: "skipped", output: null };
-        results.set(step.id, result);
-        await db.stepResult.create({ data: { pipelineRunId: runId, stepId: step.id, ...result } });
+        results.set(step.id, { stepId: step.id, status: "skipped", output: null });
         continue;
       }
 
@@ -148,11 +144,8 @@ async function processPipelineJob(job: { data: { runId: string; pipelineId: stri
         await new Promise((resolve) => setTimeout(resolve, step.delayMs));
       }
 
-      const result = await executeStep(step, input, results);
+      const result = await executeStep(step, context, results);
       results.set(step.id, result);
-      await db.stepResult.create({
-        data: { pipelineRunId: runId, stepId: step.id, ...result, output: result.output as any },
-      });
 
       if (result.status === "failed") {
         logger.error({ stepId: step.id }, "Step failed, aborting pipeline");
@@ -161,10 +154,15 @@ async function processPipelineJob(job: { data: { runId: string; pipelineId: stri
     }
 
     const hasFailed = [...results.values()].some((r) => r.status === "failed");
+    const resultObj = Object.fromEntries(
+      [...results.entries()].map(([k, v]) => [k, v]),
+    );
+
     await db.pipelineRun.update({
       where: { id: runId },
       data: {
         status: hasFailed ? "failed" : "completed",
+        result: resultObj,
         finishedAt: new Date(),
       },
     });

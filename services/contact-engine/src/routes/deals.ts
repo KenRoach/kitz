@@ -1,11 +1,12 @@
 import type { FastifyPluginAsync } from "fastify";
 import { getDB } from "@kitz/core";
+import type { DealStage } from "@prisma/client";
 
 export const dealRoutes: FastifyPluginAsync = async (app) => {
   const db = getDB();
 
   // List deals scoped by venture_id, optionally filtered by stage
-  app.get<{ Querystring: { venture_id: string; stage?: string } }>(
+  app.get<{ Querystring: { venture_id: string; stage?: DealStage } }>(
     "/",
     async (req, reply) => {
       if (!req.query.venture_id) return reply.badRequest("venture_id is required");
@@ -21,20 +22,20 @@ export const dealRoutes: FastifyPluginAsync = async (app) => {
       ventureId: string;
       contactId: string;
       title: string;
-      stage?: string;
+      stage?: DealStage;
       value?: number;
-      meta?: Record<string, unknown>;
+      metadata?: Record<string, unknown>;
     };
   }>("/", async (req) => {
-    const { ventureId, contactId, title, stage, value, meta } = req.body;
+    const { ventureId, contactId, title, stage, value, metadata } = req.body;
     return db.deal.create({
       data: {
         ventureId,
         contactId,
         title,
-        stage: stage || "lead",
+        stage: stage || "identified",
         value: value || 0,
-        meta: meta || {},
+        metadata: metadata || {},
       },
     });
   });

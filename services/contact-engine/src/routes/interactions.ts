@@ -18,21 +18,21 @@ export const interactionRoutes: FastifyPluginAsync = async (app) => {
     Body: {
       contactId: string;
       ventureId: string;
-      type: string;
-      channel?: string;
-      summary?: string;
-      meta?: Record<string, unknown>;
+      channel: string;
+      direction: string;
+      content: string;
+      metadata?: Record<string, unknown>;
     };
   }>("/", async (req) => {
-    const { contactId, ventureId, type, channel, summary, meta } = req.body;
+    const { contactId, ventureId, channel, direction, content, metadata } = req.body;
     return db.interaction.create({
       data: {
         contactId,
         ventureId,
-        type,
-        channel: channel || null,
-        summary: summary || null,
-        meta: meta || {},
+        channel,
+        direction,
+        content,
+        metadata: metadata || {},
       },
     });
   });

@@ -5,7 +5,7 @@ import { pipelineQueue } from "../queue.js";
 
 const TriggerBody = z.object({
   pipelineId: z.string().uuid(),
-  input: z.record(z.unknown()).optional().default({}),
+  context: z.record(z.unknown()).optional().default({}),
 });
 
 export const pipelineRoutes: FastifyPluginAsync = async (app) => {
@@ -18,7 +18,7 @@ export const pipelineRoutes: FastifyPluginAsync = async (app) => {
       return reply.badRequest(parsed.error.message);
     }
 
-    const { pipelineId, input } = parsed.data;
+    const { pipelineId, context } = parsed.data;
 
     const pipeline = await db.pipeline.findUnique({ where: { id: pipelineId } });
     if (!pipeline) {
@@ -29,11 +29,11 @@ export const pipelineRoutes: FastifyPluginAsync = async (app) => {
       data: {
         pipelineId,
         status: "queued",
-        input: input as any,
+        context: context as any,
       },
     });
 
-    await pipelineQueue.add("execute", { runId: run.id, pipelineId, input }, {
+    await pipelineQueue.add("execute", { runId: run.id, pipelineId, context }, {
       jobId: run.id,
     });
 
@@ -44,7 +44,6 @@ export const pipelineRoutes: FastifyPluginAsync = async (app) => {
   app.get<{ Params: { id: string } }>("/runs/:id", async (req, reply) => {
     const run = await db.pipelineRun.findUnique({
       where: { id: req.params.id },
-      include: { stepResults: true },
     });
     if (!run) return reply.notFound("Pipeline run not found");
     return run;
