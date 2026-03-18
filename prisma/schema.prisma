@@ -24,6 +24,7 @@ model Venture {
   deals        Deal[]
   interactions Interaction[]
   agentLogs    AgentLog[]
+  assets       Asset[]
 
   @@map("ventures")
 }
@@ -125,6 +126,7 @@ model Contact {
   venture      Venture       @relation(fields: [ventureId], references: [id])
   deals        Deal[]
   interactions Interaction[]
+  assets       Asset[]
 
   @@unique([ventureId, email])
   @@unique([ventureId, phone])
@@ -190,4 +192,30 @@ model AgentLog {
 
   @@index([ventureId, skill])
   @@map("agent_logs")
+}
+
+model Asset {
+  id           String      @id @default(cuid())
+  ventureId    String      @map("venture_id")
+  contactId    String?     @map("contact_id")
+  brand        String
+  model        String
+  serial       String
+  deviceType   String?     @map("device_type")
+  tier         String      @default("standard")
+  warrantyEnd  DateTime?   @map("warranty_end")
+  purchaseDate DateTime?   @map("purchase_date")
+  status       String      @default("discovered")
+  oem          Float?
+  tpm          Float?
+  quantity     Int         @default(1)
+  metadata     Json        @default("{}")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  venture  Venture  @relation(fields: [ventureId], references: [id])
+  contact  Contact? @relation(fields: [contactId], references: [id])
+
+  @@unique([ventureId, serial])
+  @@map("assets")
 }
