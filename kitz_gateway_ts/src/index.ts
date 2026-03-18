@@ -92,8 +92,9 @@ async function main(): Promise<void> {
   }
 
   // Create Fastify server
+  const logLevel = process.env.LOG_LEVEL || "info";
   const app = Fastify({
-    logger: true,
+    logger: { level: logLevel },
     bodyLimit: 10 * 1024 * 1024, // 10MB
   });
 
@@ -184,6 +185,13 @@ async function main(): Promise<void> {
   };
   process.on("SIGTERM", () => void shutdown("SIGTERM"));
   process.on("SIGINT", () => void shutdown("SIGINT"));
+  process.on("unhandledRejection", (reason) => {
+    app.log.error({ err: reason }, "Unhandled promise rejection");
+  });
+  process.on("uncaughtException", (err) => {
+    app.log.fatal({ err }, "Uncaught exception — shutting down");
+    process.exit(1);
+  });
 
   // Start
   const features = [
