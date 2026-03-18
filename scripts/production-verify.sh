@@ -27,10 +27,12 @@ check_file "docs/friday-ops.md"
 check_file "docs/production/02-database.md"
 check_file "docs/happy-path-checklist.md"
 check_file "docs/support-and-oncall.md"
+check_file "docs/production/06-observability.md"
 
 echo ""
 echo "Scripts:"
 check_file "scripts/happy-path-api.mjs"
+check_file "scripts/seed-kitz-skills.mjs"
 
 echo ""
 echo "CI:"

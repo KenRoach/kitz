@@ -6,14 +6,14 @@ Fill in names/handles before Friday.
 
 | Area | Owner | Backup | Slack/Contact |
 |------|-------|--------|---------------|
-| Login / Auth | _TBD_ | _TBD_ | |
-| Gateway (Fastify) | _TBD_ | _TBD_ | |
-| RenewFlow Frontend | _TBD_ | _TBD_ | |
-| KitZ Admin Dashboard | _TBD_ | _TBD_ | |
-| Database / Migrations | _TBD_ | _TBD_ | |
-| Railway Deploys | _TBD_ | _TBD_ | |
-| WhatsApp Integration | _TBD_ | _TBD_ | |
-| AI / LLM (Anthropic) | _TBD_ | _TBD_ | |
+| Login / Auth | Ken Roach | — | @kenroach |
+| Gateway (Fastify) | Ken Roach | — | @kenroach |
+| RenewFlow Frontend | Ken Roach | — | @kenroach |
+| KitZ Admin Dashboard | Ken Roach | — | @kenroach |
+| Database / Migrations | Ken Roach | — | @kenroach |
+| Railway Deploys | Ken Roach | — | @kenroach |
+| WhatsApp Integration | Ken Roach | — | @kenroach |
+| AI / LLM (Anthropic) | Ken Roach | — | @kenroach |
 
 ## Escalation Path
 

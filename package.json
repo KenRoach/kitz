@@ -16,6 +16,7 @@
     "db:migrate": "pnpm --filter @kitz/core exec prisma migrate dev",
     "db:migrate:deploy": "pnpm --filter @kitz/core exec prisma migrate deploy",
     "happy-path": "node scripts/happy-path-api.mjs",
+    "seed:skills": "node scripts/seed-kitz-skills.mjs",
     "production-verify": "bash scripts/production-verify.sh"
   },
   "devDependencies": {
