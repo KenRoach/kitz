@@ -2,9 +2,6 @@
 # Each service is deployed separately via Railway's monorepo support
 # Set the root directory per service in Railway dashboard
 
-[build]
-dockerfilePath = "Dockerfile"
-
 [deploy]
 healthcheckPath = "/health"
 restartPolicyType = "ON_FAILURE"
