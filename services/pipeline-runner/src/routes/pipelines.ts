@@ -4,7 +4,7 @@ import { getDB } from "@kitz/core";
 import { pipelineQueue } from "../queue.js";
 
 const TriggerBody = z.object({
-  pipelineId: z.string().uuid(),
+  pipelineId: z.string(),
   input: z.record(z.unknown()).optional().default({}),
 });
 
@@ -29,7 +29,7 @@ export const pipelineRoutes: FastifyPluginAsync = async (app) => {
       data: {
         pipelineId,
         status: "queued",
-        input: input as any,
+        context: input as any,
       },
     });
 
@@ -44,7 +44,6 @@ export const pipelineRoutes: FastifyPluginAsync = async (app) => {
   app.get<{ Params: { id: string } }>("/runs/:id", async (req, reply) => {
     const run = await db.pipelineRun.findUnique({
       where: { id: req.params.id },
-      include: { stepResults: true },
     });
     if (!run) return reply.notFound("Pipeline run not found");
     return run;

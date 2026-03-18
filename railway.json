@@ -80,17 +80,15 @@
       "networking": { "internalPort": 3000 },
       "variables": { "PORT": "3000" }
     },
-    "renewflo": {
+    "renewflow": {
       "source": { "repo": ".", "branch": "main" },
       "build": {
-        "dockerfilePath": "docker/Dockerfile.renewflo",
-        "buildArgs": { "VITE_API_BASE": "/api" }
+        "dockerfilePath": "docker/Dockerfile.renewflow"
       },
-      "deploy": { "healthcheckPath": "/health" },
+      "deploy": { "healthcheckPath": "/" },
       "networking": { "internalPort": 3000 },
       "variables": {
-        "PORT": "3000",
-        "GATEWAY_URL": "${{kitz-gateway.RAILWAY_PRIVATE_DOMAIN}}:8787"
+        "PORT": "3000"
       }
     }
   }

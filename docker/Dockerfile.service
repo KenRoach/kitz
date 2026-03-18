@@ -8,6 +8,7 @@ ARG SERVICE
 
 # Stage 1: Install + compile
 FROM node:20-alpine AS build
+ARG SERVICE
 RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /app
 
@@ -24,12 +25,14 @@ COPY packages/core/ packages/core/
 COPY services/${SERVICE}/ services/${SERVICE}/
 COPY prisma/ prisma/
 
-# Build shared core + service
+# Generate Prisma client + build shared core + service
+RUN PRISMA_GENERATE_SKIP_AUTOINSTALL=true pnpm --filter @kitz/core exec prisma generate
 RUN pnpm --filter @kitz/core build 2>/dev/null || true
 RUN pnpm --filter @kitz/${SERVICE} build
 
 # Stage 2: Production
 FROM node:20-alpine
+ARG SERVICE
 RUN addgroup -S app && adduser -S app -G app
 RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /app
@@ -48,6 +51,7 @@ COPY --from=build --chown=app:app /app/prisma prisma
 COPY --chown=app:app skills/ skills/
 
 ENV NODE_ENV=production
+ENV SERVICE_NAME=${SERVICE}
 USER app
 
-CMD ["node", "services/${SERVICE}/dist/server.js"]
+CMD node services/${SERVICE_NAME}/dist/server.js

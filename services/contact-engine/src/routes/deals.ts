@@ -1,4 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
+import type { DealStage, Prisma } from "@prisma/client";
 import { getDB } from "@kitz/core";
 
 export const dealRoutes: FastifyPluginAsync = async (app) => {
@@ -21,20 +22,20 @@ export const dealRoutes: FastifyPluginAsync = async (app) => {
       ventureId: string;
       contactId: string;
       title: string;
-      stage?: string;
+      stage?: DealStage;
       value?: number;
-      meta?: Record<string, unknown>;
+      metadata?: Prisma.InputJsonValue;
     };
   }>("/", async (req) => {
-    const { ventureId, contactId, title, stage, value, meta } = req.body;
+    const { ventureId, contactId, title, stage, value, metadata } = req.body;
     return db.deal.create({
       data: {
         ventureId,
         contactId,
         title,
-        stage: stage || "lead",
+        stage: stage || "identified",
         value: value || 0,
-        meta: meta || {},
+        metadata: metadata || {},
       },
     });
   });

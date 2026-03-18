@@ -7,4 +7,4 @@ export const connection = new IORedis(REDIS_URL, {
   maxRetriesPerRequest: null,
 });
 
-export const pipelineQueue = new Queue("pipeline-runs", { connection });
+export const pipelineQueue = new Queue("pipeline-runs", { connection: connection as any });
