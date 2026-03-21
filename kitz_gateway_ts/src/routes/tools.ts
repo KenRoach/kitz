@@ -3,6 +3,7 @@
 import type { FastifyInstance } from "fastify";
 import { ToolRegistry, ToolNotFoundError } from "../tools/registry.js";
 import { getSupabase } from "../db/client.js";
+import { validateToken } from "../auth/service.js";
 
 export async function toolRoutes(app: FastifyInstance, registry: ToolRegistry): Promise<void> {
   // List all tools
@@ -31,6 +32,21 @@ export async function toolRoutes(app: FastifyInstance, registry: ToolRegistry): 
       const { name } = request.params;
       const body = (request.body as { args?: Record<string, unknown> }) ?? {};
       const args = body.args ?? {};
+
+      // Auth: reject unauthenticated requests
+      const authHeader = request.headers.authorization;
+      if (!authHeader?.startsWith("Bearer ")) {
+        return reply.status(401).send({ error: "Authorization required" });
+      }
+      const token = authHeader.slice(7);
+      const user = await validateToken(token);
+      if (!user) {
+        return reply.status(401).send({ error: "Invalid or expired token" });
+      }
+      // Enforce org_id server-side
+      if (user.org_id) {
+        args.org_id = user.org_id;
+      }
 
       try {
         const result = await registry.invoke(name, args);

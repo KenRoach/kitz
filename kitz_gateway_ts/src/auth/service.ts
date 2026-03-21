@@ -6,6 +6,7 @@ export interface AuthUser {
   id: string;
   username: string;
   role: string;
+  org_id: string | null;
 }
 
 export async function initDefaultAdmin(): Promise<void> {
@@ -50,10 +51,13 @@ export async function validateToken(token: string): Promise<AuthUser | null> {
     .eq("id", data.user.id)
     .single();
 
+  const meta = data.user.user_metadata as Record<string, string> | undefined;
+
   return {
     id: data.user.id,
     username: coreUser?.full_name || data.user.email || "",
-    role: coreUser?.role || "member",
+    role: coreUser?.role || meta?.role || "member",
+    org_id: meta?.org_id || null,
   };
 }
 

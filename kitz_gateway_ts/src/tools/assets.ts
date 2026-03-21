@@ -54,7 +54,7 @@ export const assetTools: ToolDef[] = [
       // asset_item columns: id, org_id, import_batch_id, brand, model, serial, device_type, tier, warranty_end, purchase_date, status, created_at, updated_at
       const rows = assets.map((a) => ({
         id: a.id,
-        org_id: a.orgId ?? a.org_id,
+        org_id: a.orgId ?? a.org_id ?? args.org_id,
         import_batch_id: a.importBatchId ?? a.import_batch_id,
         brand: a.brand,
         model: a.model,
@@ -75,20 +75,18 @@ export const assetTools: ToolDef[] = [
   {
     name: "get_asset_metrics",
     description: "Calculate portfolio KPIs",
-    handler: async () => {
+    handler: async (args) => {
       const db = getSupabase();
-      const { data, error } = await db.from("asset_item").select("*");
+      let query = db.from("asset_item").select("*");
+      if (args.org_id) query = query.eq("org_id", args.org_id as string);
+      const { data, error } = await query;
       if (error) throw new Error(error.message);
 
       const assets = data ?? [];
-      const orgs = new Set(assets.map((a) => a.org_id));
-      // NOTE: oem, tpm, client, days_left columns don't exist in asset_item
-      // Metrics based on available columns only
       return {
         totalDevices: assets.length,
-        uniqueOrgs: orgs.size,
+        uniqueOrgs: new Set(assets.map((a) => a.org_id)).size,
         quotedCount: assets.filter((a) => a.status === "quoted").length,
-        // TODO: add oem/tpm/days_left metrics once pricing columns are available
       };
     },
   },
