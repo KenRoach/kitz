@@ -89,6 +89,7 @@ export async function registerVar(
 ): Promise<{ username: string; role: string; org_id: string }> {
   if (password.length < 8) throw new Error("Password must be at least 8 characters");
   if (!companyName.trim()) throw new Error("Company name is required");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email format");
 
   const db = getSupabase();
 
@@ -115,12 +116,18 @@ export async function registerVar(
   }
 
   // Create core_user row (consistent with existing login/validateToken lookups)
-  await db.from("core_user").insert({
+  const { error: coreUserErr } = await db.from("core_user").insert({
     id: data.user.id,
     full_name: companyName.trim(),
     role: "var",
     org_id: org.id,
   });
+  if (coreUserErr) {
+    // Rollback auth user + org if core_user creation fails
+    await db.auth.admin.deleteUser(data.user.id);
+    await db.from("core_org").delete().eq("id", org.id);
+    throw new Error(`Failed to create user profile: ${coreUserErr.message}`);
+  }
 
   return { username: data.user.email || email, role: "var", org_id: org.id };
 }
