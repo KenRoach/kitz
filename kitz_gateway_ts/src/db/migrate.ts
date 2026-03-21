@@ -75,6 +75,19 @@ export async function runMigrations(databaseUrl: string): Promise<void> {
     console.log("[migrate] Creating core_org table...");
     await client.query(coreOrgSQL);
 
+    // Ensure core_user exists (used by auth service for role/org lookups)
+    const coreUserSQL = `
+      CREATE TABLE IF NOT EXISTS core_user (
+        id UUID PRIMARY KEY,
+        full_name TEXT,
+        role TEXT DEFAULT 'member',
+        org_id UUID REFERENCES core_org(id),
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+    `;
+    console.log("[migrate] Creating core_user table...");
+    await client.query(coreUserSQL);
+
     console.log("[migrate] Creating RenewFlow schema tables...");
     await client.query(filteredSchema);
 

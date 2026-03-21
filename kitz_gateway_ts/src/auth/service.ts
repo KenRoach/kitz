@@ -47,7 +47,7 @@ export async function validateToken(token: string): Promise<AuthUser | null> {
 
   const { data: coreUser } = await db
     .from("core_user")
-    .select("role, full_name")
+    .select("role, full_name, org_id")
     .eq("id", data.user.id)
     .single();
 
@@ -57,7 +57,7 @@ export async function validateToken(token: string): Promise<AuthUser | null> {
     id: data.user.id,
     username: coreUser?.full_name || data.user.email || "",
     role: coreUser?.role || meta?.role || "member",
-    org_id: meta?.org_id || null,
+    org_id: coreUser?.org_id || meta?.org_id || null,
   };
 }
 
