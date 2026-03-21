@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Shell } from "@/components/layout/shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,9 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Shell>{children}</Shell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
