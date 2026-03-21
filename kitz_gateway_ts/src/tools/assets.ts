@@ -52,21 +52,28 @@ export const assetTools: ToolDef[] = [
       if (!Array.isArray(assets)) throw new Error("assets must be an array");
 
       // asset_item columns: id, org_id, import_batch_id, brand, model, serial, device_type, tier, warranty_end, purchase_date, status, created_at, updated_at
-      const rows = assets.map((a) => ({
-        id: a.id,
-        org_id: a.orgId ?? a.org_id ?? args.org_id,
-        import_batch_id: a.importBatchId ?? a.import_batch_id,
-        brand: a.brand,
-        model: a.model,
-        serial: a.serial,
-        tier: a.tier,
-        status: a.status,
-        warranty_end: a.warrantyEnd ?? a.warranty_end,
-        device_type: a.deviceType ?? a.device_type,
-        purchase_date: a.purchaseDate ?? a.purchase_date,
-      }));
+      const rows = assets.map((a) => {
+        const row: Record<string, unknown> = {
+          org_id: a.orgId ?? a.org_id ?? args.org_id,
+          import_batch_id: a.importBatchId ?? a.import_batch_id,
+          brand: a.brand,
+          model: a.model,
+          serial: a.serial,
+          tier: a.tier,
+          status: a.status,
+          warranty_end: a.warrantyEnd ?? a.warranty_end,
+          device_type: a.deviceType ?? a.device_type,
+          purchase_date: a.purchaseDate ?? a.purchase_date,
+        };
+        if (a.id) row.id = a.id; // only include id if provided (let DB generate otherwise)
+        return row;
+      });
 
-      const { error } = await db.from("asset_item").upsert(rows, { onConflict: "id" });
+      // Use insert for new rows (no id), upsert for rows with id
+      const hasIds = rows.every((r) => r.id);
+      const { error } = hasIds
+        ? await db.from("asset_item").upsert(rows, { onConflict: "id" })
+        : await db.from("asset_item").insert(rows);
       if (error) throw new Error(error.message);
 
       return { inserted: rows.length };
