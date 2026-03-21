@@ -82,6 +82,49 @@ export async function registerUser(
   return { username: data.user.email || email, role };
 }
 
+export async function registerVar(
+  email: string,
+  password: string,
+  companyName: string
+): Promise<{ username: string; role: string; org_id: string }> {
+  if (password.length < 8) throw new Error("Password must be at least 8 characters");
+  if (!companyName.trim()) throw new Error("Company name is required");
+
+  const db = getSupabase();
+
+  // Create org for this VAR
+  const slug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const { data: org, error: orgErr } = await db
+    .from("core_org")
+    .insert({ name: companyName.trim(), slug })
+    .select()
+    .single();
+  if (orgErr) throw new Error(`Failed to create organization: ${orgErr.message}`);
+
+  // Create Supabase Auth user with org_id in metadata
+  const { data, error } = await db.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { org_id: org.id, role: "var", full_name: companyName.trim() },
+  });
+  if (error) {
+    // Clean up org if user creation fails
+    await db.from("core_org").delete().eq("id", org.id);
+    throw new Error(error.message);
+  }
+
+  // Create core_user row (consistent with existing login/validateToken lookups)
+  await db.from("core_user").insert({
+    id: data.user.id,
+    full_name: companyName.trim(),
+    role: "var",
+    org_id: org.id,
+  });
+
+  return { username: data.user.email || email, role: "var", org_id: org.id };
+}
+
 export async function resetPassword(
   email: string,
   currentPassword: string,

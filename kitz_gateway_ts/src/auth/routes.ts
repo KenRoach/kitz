@@ -1,7 +1,7 @@
 /** Auth routes — login, register, reset-password, forgot-password. */
 
 import type { FastifyInstance } from "fastify";
-import { login, registerUser, resetPassword, forgotPassword, resetPasswordWithToken } from "./service.js";
+import { login, registerUser, registerVar, resetPassword, forgotPassword, resetPasswordWithToken } from "./service.js";
 import { loadConfig } from "../config.js";
 
 function registerAuthHandlers(app: FastifyInstance, prefix: string): void {
@@ -27,6 +27,25 @@ function registerAuthHandlers(app: FastifyInstance, prefix: string): void {
     }
     try {
       return await registerUser(username, password);
+    } catch (err) {
+      return reply.status(400).send({ error: (err as Error).message });
+    }
+  });
+
+  app.post(`${prefix}/register-var`, async (request, reply) => {
+    const { email, password, company_name } = request.body as {
+      email: string;
+      password: string;
+      company_name: string;
+    };
+    if (!email || !password || !company_name) {
+      return reply.status(400).send({ error: "email, password, and company_name required" });
+    }
+    try {
+      const result = await registerVar(email, password, company_name);
+      // Auto-login after registration
+      const loginResult = await login(email, password);
+      return { ...result, token: loginResult.token };
     } catch (err) {
       return reply.status(400).send({ error: (err as Error).message });
     }
