@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/flow/auth-provider";
+import { FlowShell } from "@/components/flow/flow-shell";
 import { invokeTool } from "@/lib/gateway";
 
 interface Metrics {
@@ -34,6 +35,7 @@ export default function DashboardPage() {
   }, [token]);
 
   return (
+    <FlowShell>
     <div className="space-y-8">
       {/* Header */}
       <div>
@@ -78,5 +80,6 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+    </FlowShell>
   );
 }

@@ -4,31 +4,59 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./auth-provider";
 
-const NAV_ITEMS = [
+const FLOW_NAV = [
   { label: "Dashboard", href: "/flow/dashboard" },
-  { label: "RenewFlow", href: "/flow/renewflow" },
 ] as const;
 
-export function FlowSidebar() {
+const RENEWFLOW_NAV = [
+  { label: "Dashboard", page: "dashboard", section: "general" },
+  { label: "Inbox", page: "inbox", section: "general" },
+  { label: "Alerts", page: "notifications", section: "general" },
+  { label: "Quoter", page: "quoter", section: "sales" },
+  { label: "Purchase Orders", page: "orders", section: "sales" },
+  { label: "Import Assets", page: "import", section: "sales" },
+  { label: "Insights", page: "insights", section: "operations" },
+  { label: "Support", page: "support", section: "operations" },
+  { label: "Rewards", page: "rewards", section: "operations" },
+] as const;
+
+interface FlowSidebarProps {
+  activePage?: string;
+  onNavigate?: (page: string) => void;
+  onToggleChat?: () => void;
+}
+
+export function FlowSidebar({ activePage, onNavigate, onToggleChat }: FlowSidebarProps) {
   const pathname = usePathname();
   const { username, logout } = useAuth();
+  const isRenewFlow = pathname.startsWith("/flow/renewflow");
+
+  const sections = ["general", "sales", "operations"] as const;
+  const sectionLabels: Record<string, string> = {
+    general: "General",
+    sales: "Sales",
+    operations: "Operations",
+  };
 
   return (
-    <aside className="flex h-screen w-60 flex-col border-r border-gray-200 bg-white">
+    <aside className="flex h-screen w-56 flex-col border-r border-gray-200 bg-white flex-shrink-0">
+      {/* Brand */}
       <div className="flex h-14 items-center gap-2 border-b border-gray-200 px-4">
         <span className="text-lg font-bold text-gray-900">Flow</span>
         <span className="rounded bg-purple-100 px-1.5 py-0.5 text-xs font-medium text-purple-700">
           workspace
         </span>
       </div>
+
       <nav className="flex-1 overflow-y-auto p-2">
-        {NAV_ITEMS.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+        {/* Flow-level nav */}
+        {FLOW_NAV.map((item) => {
+          const isActive = !isRenewFlow && pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition ${
+              className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition ${
                 isActive
                   ? "bg-purple-50 text-purple-700"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -38,7 +66,64 @@ export function FlowSidebar() {
             </Link>
           );
         })}
+
+        {/* AI Chat - Flow level */}
+        {isRenewFlow && onToggleChat && (
+          <button
+            onClick={onToggleChat}
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition"
+          >
+            AI Chat
+          </button>
+        )}
+
+        {/* RenewFlow section */}
+        <div className="mt-3">
+          <Link
+            href="/flow/renewflow"
+            className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold transition ${
+              isRenewFlow
+                ? "text-purple-700"
+                : "text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            RenewFlow
+          </Link>
+
+          {isRenewFlow && (
+            <div className="mt-1">
+              {sections.map((section) => {
+                const items = RENEWFLOW_NAV.filter((i) => i.section === section);
+                return (
+                  <div key={section} className="mb-1">
+                    <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                      {sectionLabels[section]}
+                    </div>
+                    {items.map((item) => {
+                      const isActive = activePage === item.page;
+                      return (
+                        <button
+                          key={item.page}
+                          onClick={() => onNavigate?.(item.page)}
+                          className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition ${
+                            isActive
+                              ? "bg-purple-50 text-purple-700 font-medium"
+                              : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </nav>
+
+      {/* Account */}
       {username && (
         <div className="border-t border-gray-200 p-3">
           <p className="truncate text-sm font-medium text-gray-700">{username}</p>

@@ -14,6 +14,8 @@ import { ChatPanel } from "@/features/chat";
 import type { Asset, PageId } from "@/types";
 import { useAssetStore } from "@/stores";
 
+const isEmbedded = new URLSearchParams(window.location.search).has("embedded");
+
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
     super(props);
@@ -71,10 +73,24 @@ export default function App() {
     return () => window.removeEventListener("rf_auth_updated", handleAuth);
   }, []);
 
+  // Listen for page navigation from parent Flow shell
+  useEffect(() => {
+    if (!isEmbedded) return;
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === "rf_navigate" && event.data?.page) {
+        setPage(event.data.page as PageId);
+      }
+      if (event.data?.type === "rf_toggle_chat") {
+        setChatOpen((o) => !o);
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
   if (!authenticated) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#1A1D2E", fontFamily: "DM Sans, sans-serif", flexDirection: "column", gap: 16 }}>
-        <div style={{ width: 56, height: 56, borderRadius: 14, background: "#00B894", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#fff" }}>RF</div>
         <h2 style={{ color: "#fff", margin: 0 }}>RenewFlow</h2>
         <p style={{ color: "#8B92A5", margin: 0, textAlign: "center", maxWidth: 320 }}>
           Access RenewFlow through your Flow workspace.
@@ -87,7 +103,7 @@ export default function App() {
   }
 
   const colors = isDark ? DARK : LIGHT;
-  const unread = 0; // TODO: wire to real inbox data
+  const unread = 0;
   const alerts = assets.filter((a) => a.daysLeft <= 30 && a.daysLeft >= 0).length;
 
   const handleImport = (newAssets: Asset[] | null) => {
@@ -142,14 +158,16 @@ export default function App() {
           rel="stylesheet"
         />
 
-        <Sidebar
-          activePage={page}
-          onNavigate={setPage}
-          chatOpen={chatOpen}
-          onToggleChat={() => setChatOpen((o) => !o)}
-          unreadCount={unread}
-          alertCount={alerts}
-        />
+        {!isEmbedded && (
+          <Sidebar
+            activePage={page}
+            onNavigate={setPage}
+            chatOpen={chatOpen}
+            onToggleChat={() => setChatOpen((o) => !o)}
+            unreadCount={unread}
+            alertCount={alerts}
+          />
+        )}
 
         <ChatPanel open={chatOpen} onClose={() => setChatOpen(false)} />
 

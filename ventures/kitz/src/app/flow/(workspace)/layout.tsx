@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/flow/auth-provider";
-import { FlowShell } from "@/components/flow/flow-shell";
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
@@ -11,7 +10,6 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (token === null) {
-      // Check localStorage directly — auth state may not have hydrated yet
       const stored = localStorage.getItem("flow_token");
       if (!stored) {
         router.push("/flow/login");
@@ -23,5 +21,5 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     return null;
   }
 
-  return <FlowShell>{children}</FlowShell>;
+  return <>{children}</>;
 }
