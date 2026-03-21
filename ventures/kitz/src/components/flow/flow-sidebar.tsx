@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./auth-provider";
@@ -23,11 +24,12 @@ interface FlowSidebarProps {
   chatOpen?: boolean;
 }
 
-export function FlowSidebar({ activePage, onNavigate, onToggleChat, chatOpen }: FlowSidebarProps) {
+export function FlowSidebar({ activePage, onNavigate }: FlowSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { username, logout } = useAuth();
   const isRenewFlow = pathname.startsWith("/flow/renewflow");
+  const [renewFlowOpen, setRenewFlowOpen] = useState(true);
 
   const sections = ["general", "sales", "operations"] as const;
   const sectionLabels: Record<string, string> = {
@@ -67,59 +69,52 @@ export function FlowSidebar({ activePage, onNavigate, onToggleChat, chatOpen }: 
           Dashboard
         </Link>
 
-        {/* AI Chat toggle */}
-        <button
-          onClick={onToggleChat}
-          className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition ${
-            chatOpen
-              ? "bg-purple-50 text-purple-700"
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-          }`}
-        >
-          AI Chat
-        </button>
-
-        {/* RenewFlow section — always visible */}
+        {/* RenewFlow section — collapsible */}
         <div className="mt-3">
-          <Link
-            href="/flow/renewflow"
-            className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold transition ${
+          <button
+            onClick={() => setRenewFlowOpen((prev) => !prev)}
+            className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-bold transition ${
               isRenewFlow
                 ? "text-purple-700"
                 : "text-gray-700 hover:bg-gray-50"
             }`}
           >
-            RenewFlow
-          </Link>
+            <span>RenewFlow</span>
+            <span className={`text-[10px] text-gray-400 transition-transform ${renewFlowOpen ? "rotate-90" : ""}`}>
+              &#9654;
+            </span>
+          </button>
 
-          <div className="mt-1">
-            {sections.map((section) => {
-              const items = RENEWFLOW_NAV.filter((i) => i.section === section);
-              return (
-                <div key={section} className="mb-1">
-                  <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
-                    {sectionLabels[section]}
+          {renewFlowOpen && (
+            <div className="mt-1">
+              {sections.map((section) => {
+                const items = RENEWFLOW_NAV.filter((i) => i.section === section);
+                return (
+                  <div key={section} className="mb-1">
+                    <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                      {sectionLabels[section]}
+                    </div>
+                    {items.map((item) => {
+                      const isActive = isRenewFlow && activePage === item.page;
+                      return (
+                        <button
+                          key={item.page}
+                          onClick={() => handleRenewFlowNav(item.page)}
+                          className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition ${
+                            isActive
+                              ? "bg-purple-50 text-purple-700 font-medium"
+                              : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
                   </div>
-                  {items.map((item) => {
-                    const isActive = isRenewFlow && activePage === item.page;
-                    return (
-                      <button
-                        key={item.page}
-                        onClick={() => handleRenewFlowNav(item.page)}
-                        className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition ${
-                          isActive
-                            ? "bg-purple-50 text-purple-700 font-medium"
-                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </nav>
 
