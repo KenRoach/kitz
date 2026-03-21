@@ -1,7 +1,6 @@
 import { Component, useCallback, useEffect, useState, type ReactNode } from "react";
 import { ThemeContext, LIGHT, DARK, FONT } from "@/theme";
 import { Sidebar } from "@/components/layout";
-import { LoginPage } from "@/features/auth";
 import { DashboardPage } from "@/features/dashboard";
 import { QuoterPage } from "@/features/quoter";
 import { InboxPage } from "@/features/inbox";
@@ -65,8 +64,26 @@ export default function App() {
     return () => window.removeEventListener("rf_logout", handleLogout);
   }, [handleLogout]);
 
+  // Listen for auth token from parent Flow shell (iframe)
+  useEffect(() => {
+    const handleAuth = () => setAuthenticated(true);
+    window.addEventListener("rf_auth_updated", handleAuth);
+    return () => window.removeEventListener("rf_auth_updated", handleAuth);
+  }, []);
+
   if (!authenticated) {
-    return <LoginPage onLogin={() => setAuthenticated(true)} />;
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#1A1D2E", fontFamily: "DM Sans, sans-serif", flexDirection: "column", gap: 16 }}>
+        <div style={{ width: 56, height: 56, borderRadius: 14, background: "#00B894", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#fff" }}>RF</div>
+        <h2 style={{ color: "#fff", margin: 0 }}>RenewFlow</h2>
+        <p style={{ color: "#8B92A5", margin: 0, textAlign: "center", maxWidth: 320 }}>
+          Access RenewFlow through your Flow workspace.
+        </p>
+        <a href="https://kitz-flow.vercel.app/flow/login" style={{ color: "#00B894", textDecoration: "none", fontSize: 14, marginTop: 8 }}>
+          Go to Flow →
+        </a>
+      </div>
+    );
   }
 
   const colors = isDark ? DARK : LIGHT;
