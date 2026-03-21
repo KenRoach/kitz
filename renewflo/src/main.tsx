@@ -6,6 +6,7 @@ import App from "@/app/App";
 window.addEventListener("message", (event) => {
   const allowedOrigins = [
     "https://flow.kitz.services",
+    "https://kitz-flow-kenroachs-projects.vercel.app",
     "http://localhost:4000",
     "http://localhost:3000",
   ];
