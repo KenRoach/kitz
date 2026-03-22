@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/flow/auth-provider";
+import { FlowShell } from "@/components/flow/flow-shell";
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
@@ -21,5 +22,5 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     return null;
   }
 
-  return <>{children}</>;
+  return <FlowShell>{children}</FlowShell>;
 }
