@@ -47,64 +47,140 @@ export default function QuoterPage() {
   const totalTpm = selectedAssets.reduce((s, a) => s + a.tpm, 0);
   const totalOem = selectedAssets.reduce((s, a) => s + a.oem, 0);
 
+  const quoteNumber = `QTE-${String(Date.now()).slice(-6)}`;
+  const today = new Date();
+  const validUntil = new Date(today.getTime() + 14 * 86400000);
+  const clientName = selectedAssets.length > 0 ? selectedAssets[0].client : "";
+
   if (quoteGenerated) {
     return (
-      <div className="space-y-6">
-        <button onClick={() => setQuoteGenerated(false)} className="text-sm font-semibold text-purple-600 hover:underline">
-          &larr; Back to asset selection
-        </button>
-        <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm print:shadow-none" id="quote-printable">
-          <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">RenewFlow Quote</h2>
-              <p className="text-sm text-gray-500">QTE-{String(Date.now()).slice(-6)}</p>
-            </div>
-            <div className="text-right text-sm text-gray-500">
-              <p>{new Date().toLocaleDateString()}</p>
-              <p>Valid for 14 days</p>
-            </div>
-          </div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-200 text-left text-xs font-semibold uppercase text-gray-500">
-                <th className="py-2">Device</th>
-                <th className="py-2">S/N</th>
-                <th className="py-2">Client</th>
-                <th className="py-2 text-right">TPM</th>
-                <th className="py-2 text-right">OEM</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedAssets.map((a) => (
-                <tr key={a.id} className="border-b border-gray-100">
-                  <td className="py-3 font-medium text-gray-900">{a.device}</td>
-                  <td className="py-3 font-mono text-xs text-gray-500">{a.id}</td>
-                  <td className="py-3 text-gray-600">{a.client}</td>
-                  <td className="py-3 text-right font-semibold text-gray-900">${a.tpm}</td>
-                  <td className="py-3 text-right text-gray-500">{a.oem ? `$${a.oem}` : "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="border-t-2 border-gray-300 font-bold">
-                <td colSpan={3} className="py-3 text-gray-900">Total</td>
-                <td className="py-3 text-right text-green-700">${totalTpm.toLocaleString()}</td>
-                <td className="py-3 text-right text-gray-600">{totalOem ? `$${totalOem.toLocaleString()}` : "—"}</td>
-              </tr>
-              {totalOem > 0 && (
-                <tr className="text-sm">
-                  <td colSpan={3} className="py-1 text-gray-500">TPM Savings vs OEM</td>
-                  <td colSpan={2} className="py-1 text-right font-semibold text-green-600">
-                    ${(totalOem - totalTpm).toLocaleString()} ({Math.round(((totalOem - totalTpm) / totalOem) * 100)}%)
-                  </td>
-                </tr>
-              )}
-            </tfoot>
-          </table>
-          <div className="mt-6 flex gap-3 print:hidden">
-            <button onClick={() => window.print()} className="rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between print:hidden">
+          <button onClick={() => setQuoteGenerated(false)} className="text-sm font-semibold text-purple-600 hover:underline">
+            &larr; Back to asset selection
+          </button>
+          <div className="flex gap-2">
+            <button onClick={() => window.print()} className="rounded-lg bg-purple-600 px-5 py-2 text-sm font-semibold text-white hover:bg-purple-700">
               Print / PDF
             </button>
+          </div>
+        </div>
+
+        {/* Branded printable quote */}
+        <div className="mx-auto max-w-3xl rounded-lg border border-gray-200 bg-white shadow-sm print:shadow-none print:border-0 print:max-w-none" id="quote-printable">
+          {/* Header with purple brand bar */}
+          <div className="bg-purple-700 px-8 py-6 text-white print:bg-purple-700 print:text-white" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold">RenewFlow</h1>
+                <p className="mt-0.5 text-sm text-purple-200">Warranty Renewal Platform</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold">QUOTE</p>
+                <p className="text-sm text-purple-200">{quoteNumber}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-8 py-6 space-y-6">
+            {/* Quote meta */}
+            <div className="flex justify-between border-b border-gray-200 pb-4">
+              <div>
+                <p className="text-xs font-semibold uppercase text-gray-400">Prepared for</p>
+                <p className="mt-1 text-lg font-bold text-gray-900">{clientName}</p>
+              </div>
+              <div className="text-right">
+                <div className="flex gap-8">
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-gray-400">Date</p>
+                    <p className="mt-1 text-sm font-medium text-gray-900">{today.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-gray-400">Valid Until</p>
+                    <p className="mt-1 text-sm font-medium text-gray-900">{validUntil.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Line items */}
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b-2 border-purple-200 text-left text-xs font-bold uppercase text-purple-700">
+                  <th className="py-3">#</th>
+                  <th className="py-3">Device</th>
+                  <th className="py-3">Serial</th>
+                  <th className="py-3">Coverage</th>
+                  <th className="py-3 text-right">TPM (12mo)</th>
+                  <th className="py-3 text-right">OEM (12mo)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedAssets.map((a, i) => (
+                  <tr key={a.id} className="border-b border-gray-100">
+                    <td className="py-3 text-gray-400">{i + 1}</td>
+                    <td className="py-3 font-medium text-gray-900">{a.device}</td>
+                    <td className="py-3 font-mono text-xs text-gray-500">{a.id}</td>
+                    <td className="py-3 text-gray-600 capitalize">{a.tier}</td>
+                    <td className="py-3 text-right font-semibold text-gray-900">${a.tpm.toFixed(2)}</td>
+                    <td className="py-3 text-right text-gray-500">{a.oem ? `$${a.oem.toFixed(2)}` : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Totals */}
+            <div className="border-t-2 border-gray-300 pt-4">
+              <div className="flex justify-end">
+                <div className="w-72 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Subtotal (TPM)</span>
+                    <span className="font-semibold text-gray-900">${totalTpm.toFixed(2)}</span>
+                  </div>
+                  {totalOem > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">OEM Equivalent</span>
+                      <span className="text-gray-400 line-through">${totalOem.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-t border-gray-200 pt-2">
+                    <span className="text-base font-bold text-gray-900">Total Due</span>
+                    <span className="text-base font-bold text-purple-700">${totalTpm.toFixed(2)}</span>
+                  </div>
+                  {totalOem > 0 && (
+                    <div className="flex justify-between rounded-lg bg-green-50 px-3 py-2">
+                      <span className="text-sm font-semibold text-green-700">Your Savings</span>
+                      <span className="text-sm font-bold text-green-700">
+                        ${(totalOem - totalTpm).toFixed(2)} ({Math.round(((totalOem - totalTpm) / totalOem) * 100)}%)
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Terms */}
+            <div className="border-t border-gray-200 pt-4 space-y-2">
+              <p className="text-xs font-semibold uppercase text-gray-400">Terms & Conditions</p>
+              <ul className="text-xs text-gray-500 space-y-1 list-disc pl-4">
+                <li>All prices in USD. Coverage period: 12 months from activation.</li>
+                <li>TPM (Third-Party Maintenance) includes hardware support, parts, and labor.</li>
+                <li>Quote valid for 14 days from date of issue.</li>
+                <li>Payment due within 30 days of PO acceptance.</li>
+              </ul>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-bold text-purple-700">RenewFlow</p>
+                <p className="text-xs text-gray-400">Powered by KitZ</p>
+              </div>
+              <div className="text-right text-xs text-gray-400">
+                <p>hello@kitz.services</p>
+                <p>www.renewflow.io</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
