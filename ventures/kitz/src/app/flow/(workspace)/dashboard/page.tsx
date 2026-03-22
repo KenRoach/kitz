@@ -23,13 +23,14 @@ function MetricCard({ label, value }: { label: string; value: string }) {
 export default function DashboardPage() {
   const { token, username } = useAuth();
   const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [metricsError, setMetricsError] = useState(false);
 
   useEffect(() => {
     if (!token) return;
     invokeTool<Metrics>("get_asset_metrics", {}, token)
       .then((res) => setMetrics(res.result))
       .catch(() => {
-        /* metrics unavailable */
+        setMetricsError(true);
       });
   }, [token]);
 
@@ -42,20 +43,33 @@ export default function DashboardPage() {
       </div>
 
       {/* Metrics grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <MetricCard
-          label="Active Devices"
-          value={metrics ? String(metrics.totalDevices) : "..."}
-        />
-        <MetricCard
-          label="Quoted"
-          value={metrics ? String(metrics.quotedCount) : "..."}
-        />
-        <MetricCard
-          label="Organizations"
-          value={metrics ? String(metrics.uniqueOrgs) : "..."}
-        />
-      </div>
+      {metricsError ? (
+        <p className="text-sm text-gray-400">Unable to load metrics</p>
+      ) : !metrics ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm animate-pulse">
+              <div className="h-4 w-24 bg-gray-200 rounded mb-2" />
+              <div className="h-7 w-16 bg-gray-200 rounded" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <MetricCard
+            label="Active Devices"
+            value={String(metrics.totalDevices)}
+          />
+          <MetricCard
+            label="Quoted"
+            value={String(metrics.quotedCount)}
+          />
+          <MetricCard
+            label="Organizations"
+            value={String(metrics.uniqueOrgs)}
+          />
+        </div>
+      )}
 
       {/* Products section */}
       <div className="space-y-4">

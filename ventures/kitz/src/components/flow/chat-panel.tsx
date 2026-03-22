@@ -40,9 +40,15 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
         { message: text, history: messages },
         token
       );
+      const reply =
+        typeof res.result === "object" && res.result !== null && "reply" in res.result
+          ? (res.result as { reply: string }).reply
+          : typeof res.result === "string"
+            ? res.result
+            : null;
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: res.result?.reply || "I couldn't process that request." },
+        { role: "assistant", content: reply || "I couldn't process that request." },
       ]);
     } catch {
       setMessages((prev) => [

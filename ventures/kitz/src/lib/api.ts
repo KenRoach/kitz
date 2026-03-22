@@ -1,7 +1,12 @@
 // Server-side only — do not import from client components
-const FACTORY_URL = process.env.FACTORY_API_URL || "http://localhost:3000";
-const CONTACT_URL = process.env.CONTACT_ENGINE_URL || "http://localhost:3003";
-const AGENT_URL = process.env.AGENT_RUNTIME_URL || "http://localhost:3001";
+const isLocal =
+  typeof window !== "undefined" && window.location.hostname === "localhost";
+const FACTORY_URL =
+  process.env.FACTORY_API_URL || (isLocal ? "http://localhost:3000" : "");
+const CONTACT_URL =
+  process.env.CONTACT_ENGINE_URL || (isLocal ? "http://localhost:3003" : "");
+const AGENT_URL =
+  process.env.AGENT_RUNTIME_URL || (isLocal ? "http://localhost:3001" : "");
 const API_KEY = process.env.API_KEY || "";
 
 function authHeaders(): Record<string, string> {
@@ -11,6 +16,7 @@ function authHeaders(): Record<string, string> {
 }
 
 async function request<T>(baseUrl: string, path: string, init?: RequestInit): Promise<T> {
+  if (!baseUrl) throw new Error("API base URL not configured");
   const res = await fetch(`${baseUrl}${path}`, {
     headers: authHeaders(),
     cache: "no-store",
