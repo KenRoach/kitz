@@ -118,13 +118,53 @@ Provide recommendations optimizing for the best balance of cost savings and risk
   },
   {
     name: "chat",
-    description: "RenewFlow AI chat — warranty renewal assistant for VARs and partners",
+    description: "KitZ workspace AI chat — answers questions using the user's workspace data",
     handler: async (args) => {
       const client = getClient();
-      const messages = args.messages as { role: string; text: string }[];
+      const messages = args.messages as { role: string; text: string }[] | undefined;
       const userMessage = args.message as string;
+      const orgId = args.org_id as string | undefined;
 
       if (!userMessage) throw new Error("message is required");
+
+      // Fetch user's workspace data for context
+      let dataContext = "";
+      if (orgId) {
+        try {
+          const { getSupabase } = await import("../db/client.js");
+          const db = getSupabase();
+
+          // Get assets
+          const { data: assets } = await db
+            .from("asset_item")
+            .select("brand, model, serial, device_type, warranty_end, status")
+            .eq("org_id", orgId)
+            .limit(50);
+
+          // Get metrics
+          const { count: totalDevices } = await db
+            .from("asset_item")
+            .select("id", { count: "exact", head: true })
+            .eq("org_id", orgId);
+
+          const { count: quotedCount } = await db
+            .from("asset_item")
+            .select("id", { count: "exact", head: true })
+            .eq("org_id", orgId)
+            .eq("status", "quoted");
+
+          if (assets && assets.length > 0) {
+            dataContext = `\n\nUSER'S WORKSPACE DATA:
+- Total devices: ${totalDevices ?? 0}
+- Quoted: ${quotedCount ?? 0}
+- Device list:\n${assets.map(a => `  • ${a.brand} ${a.model} (${a.device_type}) SN:${a.serial} — warranty ends ${a.warranty_end} [${a.status || "active"}]`).join("\n")}`;
+          } else {
+            dataContext = "\n\nUSER'S WORKSPACE DATA: No devices imported yet.";
+          }
+        } catch {
+          dataContext = "\n\nUSER'S WORKSPACE DATA: Unable to fetch (temporary error).";
+        }
+      }
 
       // Convert chat history to Anthropic format
       const history = (messages ?? []).map((m) => ({
@@ -137,16 +177,11 @@ Provide recommendations optimizing for the best balance of cost savings and risk
       const response = await client.messages.create({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
-        system: `You are RenewFlow AI — the intelligent warranty renewal assistant for LATAM IT channel partners.
+        system: `You are Kitz, the AI workspace assistant. You help users manage their business — devices, warranties, quotes, contacts, and deals.
 
-You help VARs (Value-Added Resellers) and delivery partners with:
-- Warranty renewal strategy and pricing
-- TPM vs OEM coverage decisions
-- Portfolio risk assessment
-- Client communication drafts
-- LATAM IT market insights
+You have access to the user's real workspace data below. Use it to answer questions accurately. If asked about their devices, metrics, or workspace status, reference the actual data.
 
-Communication is email-only. Keep responses under 200 words. Be direct and actionable.`,
+Keep responses concise (under 200 words). Be warm, direct, and helpful. Respond in the same language the user writes in.${dataContext}`,
         messages: history,
       });
 

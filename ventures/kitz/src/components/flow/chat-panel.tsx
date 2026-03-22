@@ -35,17 +35,16 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
     setLoading(true);
 
     try {
-      const res = await invokeTool<{ reply: string }>(
-        "flow_chat",
-        { message: text, history: messages },
+      const res = await invokeTool<{ response: string }>(
+        "chat",
+        { message: text, history: messages.map(m => ({ role: m.role === "assistant" ? "ai" : "user", text: m.content })) },
         token
       );
-      const reply =
-        typeof res.result === "object" && res.result !== null && "reply" in res.result
-          ? (res.result as { reply: string }).reply
-          : typeof res.result === "string"
-            ? res.result
-            : null;
+      const r = res.result as Record<string, unknown> | null;
+      const reply = typeof r?.response === "string" ? r.response
+        : typeof r?.reply === "string" ? r.reply
+        : typeof res.result === "string" ? res.result
+        : null;
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: reply || "I couldn't process that request." },
