@@ -2,31 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "./auth-provider";
 
 const RENEWFLOW_NAV = [
-  { label: "Dashboard", page: "dashboard", section: "general" },
-  { label: "Inbox", page: "inbox", section: "general" },
-  { label: "Alerts", page: "notifications", section: "general" },
-  { label: "Quoter", page: "quoter", section: "sales" },
-  { label: "Purchase Orders", page: "orders", section: "sales" },
-  { label: "Import Assets", page: "import", section: "sales" },
-  { label: "Insights", page: "insights", section: "operations" },
-  { label: "Support", page: "support", section: "operations" },
-  { label: "Rewards", page: "rewards", section: "operations" },
+  { label: "Dashboard", href: "/flow/renewflow/dashboard", section: "general" },
+  { label: "Inbox", href: "/flow/renewflow/inbox", section: "general" },
+  { label: "Alerts", href: "/flow/renewflow/notifications", section: "general" },
+  { label: "Quoter", href: "/flow/renewflow/quoter", section: "sales" },
+  { label: "Purchase Orders", href: "/flow/renewflow/orders", section: "sales" },
+  { label: "Import Assets", href: "/flow/renewflow/import", section: "sales" },
+  { label: "Insights", href: "/flow/renewflow/insights", section: "operations" },
+  { label: "Support", href: "/flow/renewflow/support", section: "operations" },
+  { label: "Rewards", href: "/flow/renewflow/rewards", section: "operations" },
 ] as const;
 
 interface FlowSidebarProps {
   activePage?: string;
   onNavigate?: (page: string) => void;
-  onToggleChat?: () => void;
-  chatOpen?: boolean;
 }
 
-export function FlowSidebar({ activePage, onNavigate }: FlowSidebarProps) {
+export function FlowSidebar({ }: FlowSidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const { username, logout } = useAuth();
   const isRenewFlow = pathname.startsWith("/flow/renewflow");
   const [renewFlowOpen, setRenewFlowOpen] = useState(true);
@@ -38,12 +35,8 @@ export function FlowSidebar({ activePage, onNavigate }: FlowSidebarProps) {
     operations: "Operations",
   };
 
-  function handleRenewFlowNav(page: string) {
-    if (isRenewFlow) {
-      onNavigate?.(page);
-    } else {
-      router.push(`/flow/renewflow?page=${page}`);
-    }
+  function isActive(href: string) {
+    return pathname === href;
   }
 
   return (
@@ -61,7 +54,7 @@ export function FlowSidebar({ activePage, onNavigate }: FlowSidebarProps) {
         <Link
           href="/flow/dashboard"
           className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition ${
-            !isRenewFlow && pathname.startsWith("/flow/dashboard")
+            pathname === "/flow/dashboard"
               ? "bg-purple-50 text-purple-700"
               : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
           }`}
@@ -94,22 +87,19 @@ export function FlowSidebar({ activePage, onNavigate }: FlowSidebarProps) {
                     <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
                       {sectionLabels[section]}
                     </div>
-                    {items.map((item) => {
-                      const isActive = isRenewFlow && activePage === item.page;
-                      return (
-                        <button
-                          key={item.page}
-                          onClick={() => handleRenewFlowNav(item.page)}
-                          className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition ${
-                            isActive
-                              ? "bg-purple-50 text-purple-700 font-medium"
-                              : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                          }`}
-                        >
-                          {item.label}
-                        </button>
-                      );
-                    })}
+                    {items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition ${
+                          isActive(item.href)
+                            ? "bg-purple-50 text-purple-700 font-medium"
+                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
                   </div>
                 );
               })}

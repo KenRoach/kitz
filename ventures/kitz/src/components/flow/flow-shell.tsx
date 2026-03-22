@@ -6,11 +6,9 @@ import { ChatPanel } from "./chat-panel";
 
 interface FlowShellProps {
   children: React.ReactNode;
-  activePage?: string;
-  onNavigate?: (page: string) => void;
 }
 
-export function FlowShell({ children, activePage, onNavigate }: FlowShellProps) {
+export function FlowShell({ children }: FlowShellProps) {
   const [chatOpen, setChatOpen] = useState(false);
 
   const handleToggleChat = useCallback(() => {
@@ -19,10 +17,7 @@ export function FlowShell({ children, activePage, onNavigate }: FlowShellProps) 
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <FlowSidebar
-        activePage={activePage}
-        onNavigate={onNavigate}
-      />
+      <FlowSidebar />
       <main className="flex-1 overflow-y-auto p-6">{children}</main>
       <ChatPanel open={chatOpen} onClose={() => setChatOpen(false)} />
 
