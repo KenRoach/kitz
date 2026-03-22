@@ -22,6 +22,8 @@ async function authPlugin(app: FastifyInstance): Promise<void> {
       path === "/v0.1/tools" ||
       path.startsWith("/v0.1/auth/") ||
       path.startsWith("/api/v1/auth/") ||
+      // Allow workspace creation without auth (onboarding)
+      (request.method === "POST" && path === "/v0.1/ventures") ||
       // Skip auth for static assets and SPA routes (non-API paths)
       path.startsWith("/assets/") ||
       path === "/" ||
