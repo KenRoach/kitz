@@ -16,7 +16,7 @@ function authHeaders(): Record<string, string> {
 }
 
 async function request<T>(baseUrl: string, path: string, init?: RequestInit): Promise<T> {
-  if (!baseUrl) throw new Error("API base URL not configured");
+  if (!baseUrl) return {} as T;
   const res = await fetch(`${baseUrl}${path}`, {
     headers: authHeaders(),
     cache: "no-store",
