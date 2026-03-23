@@ -19,13 +19,31 @@ const UpdateVenture = z.object({
 export const ventureRoutes: FastifyPluginAsync = async (app) => {
   const db = getDB();
 
-  app.get("/", async () => {
-    return db.venture.findMany({ orderBy: { createdAt: "desc" } });
+  // Tenant-isolated listing: requires x-org-id header or ?org_id query param.
+  // Callers must supply the authenticated user's org_id to restrict results.
+  app.get<{ Querystring: { org_id?: string } }>("/", async (req, reply) => {
+    const orgId =
+      (req.headers["x-org-id"] as string | undefined) ??
+      req.query.org_id;
+
+    if (!orgId) {
+      return reply.badRequest("org_id is required (pass x-org-id header or ?org_id query param)");
+    }
+
+    return db.venture.findMany({
+      where: { id: orgId },
+      orderBy: { createdAt: "desc" },
+    });
   });
 
   app.get<{ Params: { id: string } }>("/:id", async (req, reply) => {
+    const orgId = req.headers["x-org-id"] as string | undefined;
     const venture = await db.venture.findUnique({ where: { id: req.params.id } });
     if (!venture) return reply.notFound("Venture not found");
+    // Enforce tenant isolation: if org_id is provided, ensure it matches
+    if (orgId && venture.id !== orgId) {
+      return reply.notFound("Venture not found");
+    }
     return venture;
   });
 
@@ -43,8 +61,10 @@ export const ventureRoutes: FastifyPluginAsync = async (app) => {
   });
 
   app.patch<{ Params: { id: string }; Body: Record<string, unknown> }>("/:id", async (req, reply) => {
+    const orgId = req.headers["x-org-id"] as string | undefined;
     const venture = await db.venture.findUnique({ where: { id: req.params.id } });
     if (!venture) return reply.notFound("Venture not found");
+    if (orgId && venture.id !== orgId) return reply.notFound("Venture not found");
     const parsed = UpdateVenture.safeParse(req.body);
     if (!parsed.success) return reply.badRequest(parsed.error.issues[0].message);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,8 +72,10 @@ export const ventureRoutes: FastifyPluginAsync = async (app) => {
   });
 
   app.delete<{ Params: { id: string } }>("/:id", async (req, reply) => {
+    const orgId = req.headers["x-org-id"] as string | undefined;
     const venture = await db.venture.findUnique({ where: { id: req.params.id } });
     if (!venture) return reply.notFound("Venture not found");
+    if (orgId && venture.id !== orgId) return reply.notFound("Venture not found");
     await db.venture.delete({ where: { id: req.params.id } });
     return { deleted: true };
   });

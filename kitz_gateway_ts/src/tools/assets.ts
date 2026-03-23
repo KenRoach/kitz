@@ -3,6 +3,12 @@
 import type { ToolDef } from "./registry.js";
 import { getSupabase } from "../db/client.js";
 
+/** Strip angle brackets to prevent stored XSS in user-supplied strings. */
+function sanitize(s: unknown): string {
+  if (typeof s !== "string") return "";
+  return s.replace(/[<>]/g, "").trim();
+}
+
 function toCamel(row: Record<string, unknown>): Record<string, unknown> {
   const map: Record<string, string> = {
     warranty_end: "warrantyEnd",
@@ -56,27 +62,41 @@ export const assetTools: ToolDef[] = [
         const row: Record<string, unknown> = {
           org_id: a.orgId ?? a.org_id ?? args.org_id,
           import_batch_id: a.importBatchId ?? a.import_batch_id,
-          brand: a.brand,
-          model: a.model,
-          serial: a.serial,
+          brand: sanitize(a.brand),
+          model: sanitize(a.model),
+          serial: sanitize(a.serial),
+          device_type: sanitize(a.deviceType ?? a.device_type),
           tier: a.tier,
           status: a.status,
           warranty_end: a.warrantyEnd ?? a.warranty_end,
-          device_type: a.deviceType ?? a.device_type,
           purchase_date: a.purchaseDate ?? a.purchase_date,
         };
         if (a.id) row.id = a.id; // only include id if provided (let DB generate otherwise)
         return row;
       });
 
-      // Use insert for new rows (no id), upsert for rows with id
-      const hasIds = rows.every((r) => r.id);
-      const { error } = hasIds
-        ? await db.from("asset_item").upsert(rows, { onConflict: "id" })
-        : await db.from("asset_item").insert(rows);
-      if (error) throw new Error(error.message);
+      // Deduplicate by serial+org_id: query existing serials for the org, skip duplicates
+      const orgId = rows[0]?.org_id as string | undefined;
+      const serials = rows.map((r) => r.serial as string).filter(Boolean);
+      let existingSerials = new Set<string>();
+      if (orgId && serials.length > 0) {
+        const { data: existing } = await db
+          .from("asset_item")
+          .select("serial")
+          .eq("org_id", orgId)
+          .in("serial", serials);
+        existingSerials = new Set((existing ?? []).map((e) => e.serial as string));
+      }
 
-      return { inserted: rows.length };
+      const newRows = rows.filter((r) => !existingSerials.has(r.serial as string));
+      const skipped = rows.length - newRows.length;
+
+      if (newRows.length > 0) {
+        const { error } = await db.from("asset_item").insert(newRows);
+        if (error) throw new Error(error.message);
+      }
+
+      return { inserted: newRows.length, skipped };
     },
   },
   {
