@@ -61,7 +61,7 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
 
   return (
     <div
-      className={`flex flex-col h-screen border-l border-gray-200 bg-white transition-all duration-300 ease-in-out ${
+      className={`flex flex-col h-full border-l border-gray-200 bg-white transition-all duration-300 ease-in-out ${
         open ? "w-80" : "w-0"
       } overflow-hidden flex-shrink-0`}
     >
